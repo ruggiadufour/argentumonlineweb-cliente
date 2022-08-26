@@ -8,8 +8,9 @@ import _ from "lodash";
 export async function fetchUrl(url, options = {}) {
     const env = getConfig().publicRuntimeConfig.backend_url;
 
-    const response = await fetch(config.api(env) + url, options);
-
+    
+    // const response = await fetch(config.api(env) + url, options);
+    const response = await fetch('http://localhost:3000/api' + url, options);
     const result = await response.json();
 
     return result;

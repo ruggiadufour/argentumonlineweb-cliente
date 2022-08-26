@@ -1,6 +1,6 @@
-@import "../../styles/variables.scss";
+@import "./variables.scss";
 
-nav {
+.nav {
     width: 444px;
     height: 232px;
     font-family: tahoma;
@@ -70,7 +70,7 @@ nav {
         }
     }
 
-    nav {
+    .nav {
         width: 100%;
         background-size: 100%;
         bottom: 30px;

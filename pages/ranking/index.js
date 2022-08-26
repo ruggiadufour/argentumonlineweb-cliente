@@ -8,7 +8,7 @@ import inits from "../../engine/inits";
 import { fetchUrl } from "../../config/utils";
 import { nameClases } from "../../config/config";
 
-import style from "./style.scss";
+import style from "../../styles/Ranking.module.scss";
 
 class Home extends React.Component {
     static async getInitialProps({ reduxStore, req }) {

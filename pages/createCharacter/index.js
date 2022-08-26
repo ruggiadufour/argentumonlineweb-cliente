@@ -16,7 +16,7 @@ import {
     nameRazas
 } from "../../config/config";
 
-import style from "./style.scss";
+import style from "../../styles/CreateCharacter.module.scss";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";

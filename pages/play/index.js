@@ -7,7 +7,7 @@ import _ from "lodash";
 
 import { fetchUrl, routerPush } from "../../config/utils";
 
-import style from "./style.scss";
+import style from "../../styles/Play.module.scss";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComment } from "@fortawesome/free-solid-svg-icons";

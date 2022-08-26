@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import style from "./style.scss";
+import style from "../../styles/Header.module.scss";
 
 import { fetchUrl, routerPush } from "../../config/utils";
 import { setInitLoaded } from "../../store";
@@ -197,7 +197,7 @@ class Header extends React.Component {
                     </CreateLink>
                 </div>
 
-                <nav>
+                <nav className={style.nav}>
                     <ul>
                         <CreateLink href="/">
                             <a>

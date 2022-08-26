@@ -1,6 +1,6 @@
 import Head from "next/head";
 
-export default () => (
+const HeadComponent = () => (
     <Head>
         <title>Argentum Online Web</title>
         <meta
@@ -9,3 +9,5 @@ export default () => (
         />
     </Head>
 );
+
+export default HeadComponent

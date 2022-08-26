@@ -6,7 +6,7 @@ import MainContainer from "../../components/mainContainer/index";
 import { fetchUrl, routerPush } from "../../config/utils";
 import { setAccount } from "../../store";
 
-import style from "./style.scss";
+import style from "../../styles/Register.module.scss";
 
 class Register extends React.Component {
     static async getInitialProps({ reduxStore, req, res }) {

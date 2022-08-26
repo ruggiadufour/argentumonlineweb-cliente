@@ -6,7 +6,7 @@ import MainContainer from "../../components/mainContainer/index";
 
 import MobileDetect from "mobile-detect";
 
-import style from "./style.scss";
+import style from "../../styles/Home.module.scss";
 
 class Home extends React.Component {
     static async getInitialProps({ reduxStore, req }) {
@@ -41,6 +41,7 @@ class Home extends React.Component {
                         <p>
                             Síguemos en nuestra página de{" "}
                             <a
+                                className="link"
                                 href="https://www.facebook.com/ArgentumOnlineWeb"
                                 rel="noreferrer"
                                 target="_blank"

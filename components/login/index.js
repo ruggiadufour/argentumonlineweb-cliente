@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import style from "./style.scss";
+import style from "../../styles/Login.module.scss";
 
 import { fetchUrl } from "../../config/utils";
 import { setAccount } from "../../store";

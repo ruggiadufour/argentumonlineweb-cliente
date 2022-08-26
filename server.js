@@ -20,11 +20,28 @@ const passport = require("passport"),
 
 if (dev) {
     const urlMongo = "mongodb://localhost:27017/aoweb";
-    mongoose.connect(urlMongo, { useNewUrlParser: true });
+    mongoose.connect(urlMongo, { useNewUrlParser: true, useUnifiedTopology: true });
 } else {
     const urlMongo = "";
-    mongoose.connect(urlMongo, { useNewUrlParser: true });
+    mongoose.connect(urlMongo, { useNewUrlParser: true, useUnifiedTopology: true });
 }
+
+mongoose.connection.on('connecting', () => { 
+    console.log('connecting')
+    console.log(mongoose.connection.readyState); //logs 2
+  });
+  mongoose.connection.on('connected', () => {
+    console.log('connected');
+    console.log(mongoose.connection.readyState); //logs 1
+  });
+  mongoose.connection.on('disconnecting', () => {
+    console.log('disconnecting');
+    console.log(mongoose.connection.readyState); // logs 3
+  });
+  mongoose.connection.on('disconnected', () => {
+    console.log('disconnected');
+    console.log(mongoose.connection.readyState); //logs 0
+  });
 
 const robotsOptions = {
     root: __dirname + "/static/",
