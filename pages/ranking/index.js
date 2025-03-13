@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import MainContainer from "../../components/mainContainer/index";
+import MainContainer from "../../components/MainContainer";
 
 import inits from "../../engine/inits";
 
@@ -12,7 +12,7 @@ import style from "../../styles/Ranking.module.scss";
 
 class Home extends React.Component {
     static async getInitialProps({ reduxStore, req }) {
-        const result = await fetchUrl("/ranking/general");
+        const result = await fetchUrl("/character/ranking");
 
         const userAgent = req ? req.headers["user-agent"] : navigator.userAgent;
 

@@ -1,8 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import CreateLink from "../../components/createLink/index";
-import MainContainer from "../../components/mainContainer/index";
+import CreateLink from "../../components/CreateLink";
+import MainContainer from "../../components/MainContainer";
 
 import MobileDetect from "mobile-detect";
 

@@ -14,7 +14,19 @@ const nextConfig = {
                 fs: false
             };
         }
+        
+        // Optimizaciones generales
+        config.watchOptions = {
+            poll: 1000,
+            aggregateTimeout: 300,
+        };
+        
         return config;
+    },
+    // Reducir la cantidad de archivos observados
+    onDemandEntries: {
+        maxInactiveAge: 25 * 1000,
+        pagesBufferLength: 2,
     }
 };
 

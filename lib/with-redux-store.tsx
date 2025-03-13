@@ -1,25 +1,32 @@
-import React from "react";
-import { initializeStore } from "../store";
+import React from 'react';
+import { Store } from 'redux';
+import { initializeStore } from '../store';
+import { RootState } from '../types/store';
 
-const isServer = typeof window === "undefined";
-const __NEXT_REDUX_STORE__ = "__NEXT_REDUX_STORE__";
+const isServer = typeof window === 'undefined';
+let reduxStore: Store<RootState> | undefined;
 
-function getOrCreateStore(initialState) {
+function getOrCreateStore(initialState?: RootState): Store<RootState> {
     // Always make a new store if server, otherwise state is shared between requests
     if (isServer) {
         return initializeStore(initialState);
     }
 
     // Create store if unavailable on the client and set it on the window object
-    if (!window[__NEXT_REDUX_STORE__]) {
-        window[__NEXT_REDUX_STORE__] = initializeStore(initialState);
+    if (!reduxStore) {
+        reduxStore = initializeStore(initialState);
     }
-    return window[__NEXT_REDUX_STORE__];
+
+    return reduxStore;
 }
 
-const withReduxStore = App => {
-    return class AppWithRedux extends React.Component {
-        static async getInitialProps(appContext) {
+export default function withReduxStore<P extends { reduxStore: Store<RootState> }>(
+    App: React.ComponentType<P>
+) {
+    return class AppWithRedux extends React.Component<Omit<P, 'reduxStore'>> {
+        private reduxStore: Store<RootState>;
+
+        static async getInitialProps(appContext: any) {
             // Get or Create the store with `undefined` as initialState
             // This allows you to set a custom default initialState
             const reduxStore = getOrCreateStore();
@@ -28,7 +35,7 @@ const withReduxStore = App => {
             appContext.ctx.reduxStore = reduxStore;
 
             let appProps = {};
-            if (typeof App.getInitialProps === "function") {
+            if (typeof App.getInitialProps === 'function') {
                 appProps = await App.getInitialProps(appContext);
             }
 
@@ -38,15 +45,15 @@ const withReduxStore = App => {
             };
         }
 
-        constructor(props) {
+        constructor(props: Omit<P, 'reduxStore'>) {
             super(props);
+            // @ts-ignore
             this.reduxStore = getOrCreateStore(props.initialReduxState);
         }
 
         render() {
+            // @ts-ignore
             return <App {...this.props} reduxStore={this.reduxStore} />;
         }
     };
-};
-
-export default withReduxStore;
+} 

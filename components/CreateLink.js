@@ -2,7 +2,7 @@ import { Component } from "react";
 import { connect } from "react-redux";
 
 import Link from "next/link";
-import { buildUrl } from "../../config/utils";
+import { buildUrl } from "../config/utils";
 
 class CreateLink extends Component {
     render() {

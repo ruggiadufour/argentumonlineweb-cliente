@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import MainContainer from "../../components/mainContainer/index";
+import MainContainer from "../../components/MainContainer";
 
 import { fetchUrl, routerPush } from "../../config/utils";
 import { setAccount } from "../../store";
@@ -33,7 +33,7 @@ class Register extends React.Component {
         super(props);
 
         this.state = {
-            name: "",
+            username: "",
             password: "",
             repassword: "",
             email: ""
@@ -49,10 +49,10 @@ class Register extends React.Component {
     };
 
     handleSave = async () => {
-        const { name, password, repassword, email } = this.state;
+        const { username, password, repassword, email } = this.state;
         const { dispatch } = this.props;
 
-        if (!name || !password || !repassword || !email) {
+        if (!username || !password || !repassword || !email) {
             return alert("Faltan campos por completar.");
         }
 
@@ -67,12 +67,12 @@ class Register extends React.Component {
         }
 
         const body = {
-            name: name,
+            username: username,
             password: password,
             email: email.toLowerCase()
         };
 
-        const result = await fetchUrl("/register", {
+        const result = await fetchUrl("/auth/register", {
             method: "POST",
             body: JSON.stringify(body),
             headers: {
@@ -91,7 +91,7 @@ class Register extends React.Component {
     };
 
     render() {
-        const { name, password, repassword, email } = this.state;
+        const { username, password, repassword, email } = this.state;
         const { userAgent } = this.props;
 
         return (
@@ -106,8 +106,8 @@ class Register extends React.Component {
                                     <input
                                         type="text"
                                         className={style.inputText}
-                                        name="name"
-                                        value={name}
+                                        name="username"
+                                        value={username}
                                         onChange={this.handleInput}
                                     />
                                 </div>

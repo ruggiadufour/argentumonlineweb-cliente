@@ -7,6 +7,8 @@ class CharacterController {
     }
 
     async getCharacter(req, res, next) {
+        console.log(req.query);
+        
         const { idAccount, idCharacter, email } = req.query;
         const { authorization } = req.headers;
 

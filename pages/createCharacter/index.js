@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import MainContainer from "../../components/mainContainer/index";
+import MainContainer from "../../components/MainContainer";
 
 import inits from "../../engine/inits";
 import RenderCharacters from "../../engine/renderCharacters";
