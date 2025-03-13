@@ -1,6 +1,5 @@
-import { createStore, applyMiddleware } from "redux";
-import { composeWithDevTools } from "redux-devtools-extension";
-import thunkMiddleware from "redux-thunk";
+import { createStore, applyMiddleware, compose } from "redux";
+import { thunk } from "redux-thunk";
 
 const InitialState = {
     account: {},
@@ -44,9 +43,12 @@ export const setInitLoaded = initsLoaded => dispatch => {
 };
 
 export function initializeStore(initialState = InitialState) {
+    const composeEnhancers =
+        (typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
+
     return createStore(
         reducer,
         initialState,
-        composeWithDevTools(applyMiddleware(thunkMiddleware))
+        composeEnhancers(applyMiddleware(thunk))
     );
 }

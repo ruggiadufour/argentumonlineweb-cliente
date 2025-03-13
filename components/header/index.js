@@ -191,18 +191,14 @@ class Header extends React.Component {
             <React.Fragment>
                 <div className={style.logo}>
                     <CreateLink href="/">
-                        <a>
-                            <img src="/static/imgs/logo.png" alt="logo" />
-                        </a>
+                        <img src="/static/imgs/logo.png" alt="logo" />
                     </CreateLink>
                 </div>
 
                 <nav className={style.nav}>
                     <ul>
                         <CreateLink href="/">
-                            <a>
-                                <li className={style.inicio}>INICIO</li>
-                            </a>
+                            <li className={style.inicio}>INICIO</li>
                         </CreateLink>
 
                         <a onClick={this.openModal}>
@@ -210,9 +206,7 @@ class Header extends React.Component {
                         </a>
 
                         <CreateLink href="/ranking">
-                            <a>
-                                <li className={style.inicio}>RANKING</li>
-                            </a>
+                            <li className={style.inicio}>RANKING</li>
                         </CreateLink>
                     </ul>
                 </nav>
@@ -260,9 +254,9 @@ class Header extends React.Component {
                             data-js="createCharacter"
                         >
                             <CreateLink href="/createCharacter">
-                                <a className={style.buttonRegister}>
+                                <div className={style.buttonRegister}>
                                     {buttonCreatePj}
-                                </a>
+                                </div>
                             </CreateLink>
                         </div>
                     </div>

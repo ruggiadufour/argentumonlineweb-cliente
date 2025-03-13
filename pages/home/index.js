@@ -32,7 +32,7 @@ class Home extends React.Component {
                         {!md.mobile() ? (
                             <p>
                                 <CreateLink href="/register">
-                                    <a>Regístrate</a>
+                                    Regístrate
                                 </CreateLink>{" "}
                                 o <strong>Ingresa</strong> para poder jugar!
                             </p>

@@ -4,7 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "dev": "set NODE_ENV=development&& nodemon --watch server --watch server.js server.js",
+        "dev": "NODE_ENV=development nodemon server.js",
         "build": "next build",
         "start": "NODE_ENV=production node server.js",
         "ci": "NODE_ENV=ci node server.js"
@@ -16,11 +16,10 @@
         "@fortawesome/free-regular-svg-icons": "^5.15.4",
         "@fortawesome/free-solid-svg-icons": "^5.15.4",
         "@fortawesome/react-fontawesome": "^0.1.19",
-        "@zeit/next-css": "^1.0.1",
-        "@zeit/next-sass": "^1.0.1",
-        "autoprefixer": "^9.8.8",
-        "axios": "^0.19.2",
+        "autoprefixer": "^10.4.21",
+        "axios": "^1.8.3",
         "bcryptjs": "^2.4.3",
+        "body-parser": "^1.20.3",
         "bytebuffer": "^5.0.1",
         "compression": "^1.7.4",
         "cookie-parser": "^1.4.6",
@@ -30,20 +29,21 @@
         "express-flash": "0.0.2",
         "express-session": "^1.17.3",
         "isomorphic-fetch": "^2.2.1",
+        "lodash": "^4.17.21",
         "mobile-detect": "^1.4.5",
         "mongoose": "^5.13.15",
-        "next": "^9.5.5",
+        "next": "^13.5.6",
         "passport": "^0.4.1",
         "passport-local": "^1.0.0",
-        "react": "^16.14.0",
-        "react-dom": "^16.14.0",
-        "react-redux": "^7.2.8",
-        "redux": "^4.2.0",
-        "redux-devtools-extension": "^2.13.9",
-        "redux-thunk": "^2.4.1",
-        "sass": "^1.54.5"
+        "postcss": "^8.5.3",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "react-redux": "^9.2.0",
+        "redux": "^5.0.1",
+        "redux-thunk": "^3.1.0",
+        "sass": "^1.85.1"
     },
     "devDependencies": {
-        "nodemon": "^1.19.4"
+        "nodemon": "^3.1.9"
     }
 }

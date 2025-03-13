@@ -122,7 +122,7 @@ class Login extends React.Component {
                         </div>
 
                         <CreateLink href="/register">
-                            <a
+                            <div
                                 style={{
                                     textDecoration: "none",
                                     color: "#006e2e",
@@ -130,7 +130,7 @@ class Login extends React.Component {
                                 }}
                             >
                                 CREAR CUENTA
-                            </a>
+                            </div>
                         </CreateLink>
 
                         <button
