@@ -1,6 +1,77 @@
-const ByteBuffer = require("bytebuffer");
+import ByteBuffer from "bytebuffer";
 
 class Package {
+    clientPacketID: {
+        getMyCharacter: number;
+        getCharacter: number;
+        changeRopa: number;
+        actPosition: number;
+        changeHeading: number;
+        deleteCharacter: number;
+        dialog: number;
+        console: number;
+        pong: number;
+        animFX: number;
+        inmo: number;
+        updateHP: number;
+        updateMaxHP: number;
+        updateMana: number;
+        telepMe: number;
+        actOnline: number;
+        consoleOnline: number;
+        actPositionServer: number;
+        actExp: number;
+        actMyLevel: number;
+        actGold: number;
+        actColorName: number;
+        changeHelmet: number;
+        changeWeapon: number;
+        error: number;
+        changeName: number;
+        getNpc: number;
+        changeShield: number;
+        putBodyAndHeadDead: number;
+        revivirUsuario: number;
+        quitarUserInvItem: number;
+        renderItem: number;
+        deleteItem: number;
+        agregarUserInvItem: number;
+        changeArrow: number;
+        blockMap: number;
+        changeObjIndex: number;
+        openTrade: number;
+        aprenderSpell: number;
+        closeForce: number;
+        nameMap: number;
+        changeBody: number;
+        navegando: number;
+        updateAgilidad: number;
+        updateFuerza: number;
+        playSound: number;
+    };
+
+    serverPacketID: {
+        changeHeading: number;
+        click: number;
+        useItem: number;
+        equiparItem: number;
+        connectCharacter: number;
+        position: number;
+        dialog: number;
+        ping: number;
+        attackMele: number;
+        attackRange: number;
+        attackSpell: number;
+        tirarItem: number;
+        agarrarItem: number;
+        buyItem: number;
+        sellItem: number;
+        changeSeguro: number;
+    };
+
+    bufferRcv: ByteBuffer;
+    bufferSnd: ByteBuffer;
+
     constructor() {
         this.clientPacketID = {
             getMyCharacter: 1,
@@ -89,7 +160,7 @@ class Package {
         this.writeByte(packageID);
     };
 
-    writeByte = (numByte, signed) => {
+    writeByte = (numByte, signed = null) => {
         if (!numByte) {
             numByte = 0;
         }
@@ -101,7 +172,7 @@ class Package {
         }
     };
 
-    writeShort = (numShort, signed) => {
+    writeShort = (numShort, signed = null) => {
         if (!numShort) {
             numShort = 0;
         }
@@ -113,7 +184,7 @@ class Package {
         }
     };
 
-    writeInt = (numInt, signed) => {
+    writeInt = (numInt, signed = null) => {
         if (!numInt) {
             numInt = 0;
         }
@@ -125,7 +196,7 @@ class Package {
         }
     };
 
-    writeFloat = numFloat => {
+    writeFloat = (numFloat) => {
         if (!numFloat) {
             numFloat = 0;
         }
@@ -151,7 +222,7 @@ class Package {
         this.bufferSnd.writeString(dataString);
     };
 
-    getByte = signed => {
+    getByte = (signed = null) => {
         var dByte = 0;
 
         if (signed) {
@@ -163,7 +234,7 @@ class Package {
         return dByte;
     };
 
-    getShort = signed => {
+    getShort = (signed = null) => {
         var dShort = 0;
 
         if (signed) {
@@ -175,7 +246,7 @@ class Package {
         return dShort;
     };
 
-    getInt = signed => {
+    getInt = (signed = null) => {
         var dInt = 0;
 
         if (signed) {

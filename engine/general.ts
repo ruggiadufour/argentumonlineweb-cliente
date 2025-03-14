@@ -1,10 +1,15 @@
+import { Package, Config } from "./index";
+
 class General {
-    constructor(pkg, config) {
+    pkg: Package;
+    config: Config;
+
+    constructor(pkg: Package, config: Config) {
         this.pkg = pkg;
         this.config = config;
     }
 
-    sendDialog = msg => {
+    sendDialog = (msg: string) => {
         msg = msg.trim();
         if (msg) {
             const msgsplit = msg.split(" ");

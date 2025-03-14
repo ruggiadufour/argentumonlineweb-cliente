@@ -1,10 +1,18 @@
+import { UI, User, Package, Config, Inits } from "./index";
+
 class Game {
-    constructor(inits, user, pkg, config, react) {
+    inits: Inits;
+    ui: UI;
+    user: User;
+    pkg: Package;
+    config: Config;
+
+    constructor(inits: Inits, ui: UI, user: User, pkg: Package, config: Config) {
         this.inits = inits;
+        this.ui = ui;
         this.user = user;
         this.pkg = pkg;
         this.config = config;
-        this.react = react;
     }
 
     useItem = idPos => {
@@ -13,9 +21,7 @@ class Game {
             const objItem = this.inits.objs[items[idPos].idItem];
 
             if (objItem.proyectil && items[idPos].equipped) {
-                this.react.setState({
-                    crosshair: true
-                });
+                this.ui.setProperty("crosshair", true);
 
                 this.config.itemSelected = items[idPos].idItem;
             } else {
@@ -50,8 +56,8 @@ class Game {
         this.config.ws.send(this.pkg.dataSend());
     };
 
-    writeConsole = (msg, color, bold, italic) => {
-        const { messagesConsole } = this.react.state;
+    writeConsole = (msg, color, bold = null, italic = null) => {
+        const messagesConsole = this.ui.state.messagesConsole;
 
         if (!color) {
             color = "white";
@@ -70,27 +76,31 @@ class Game {
         }
 
         messagesConsole.push(
-            <span
-                style={{ color: color, fontWeight: bold, fontStyle: italic }}
-                key={+new Date()}
-                dangerouslySetInnerHTML={{ __html: msg }}
-            />
+            {
+                style: {
+                    color: color,
+                    fontWeight: bold,
+                    fontStyle: italic
+                },
+                id: +new Date(),
+                message: msg
+            }
         );
 
         if (messagesConsole.length > 8) {
             messagesConsole.shift();
         }
 
-        this.react.setState({
-            messagesConsole: messagesConsole
-        });
+        this.ui.setProperty("messagesConsole", messagesConsole);
 
-        const consoleElem = this.react.refs.console;
-        const scrollHeight = consoleElem.scrollHeight;
-        const height = consoleElem.clientHeight;
+        const consoleElem = this.ui.refs.console;
+        if (consoleElem) {
+            const scrollHeight = consoleElem.scrollHeight;
+            const height = consoleElem.clientHeight;
 
-        const maxScrollTop = scrollHeight - height;
-        consoleElem.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
+            const maxScrollTop = scrollHeight - height;
+            consoleElem.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
+        }
     };
 }
 

@@ -1,5 +1,24 @@
+import { UI } from "./index";
+
 class Inits {
-    constructor(engine) {
+    ui: UI;
+    preCacheGraphics: Record<string, any>;
+    graphics: Record<string, any>;
+    heads: Record<string, any>;
+    bodies: Record<string, any>;
+    armas: Record<string, any>;
+    escudos: Record<string, any>;
+    cascos: Record<string, any>;
+    objs: Record<string, any>;
+    mapData: Record<string, any>;
+    mapa: Record<string, any>;
+    mapasCargados: number;
+    completedCount: number;
+    loaded: boolean;
+    fxs: Record<string, any>;
+
+    constructor(ui: UI) {
+        this.ui = ui;
         this.preCacheGraphics = {};
         this.graphics = {};
         this.heads = {};
@@ -15,12 +34,10 @@ class Inits {
         this.completedCount = 0;
 
         this.loaded = false;
-
-        this.react = "";
     }
 
-    setReact = react => {
-        this.react = react;
+    setUI = (properties) => {
+        this.ui.setProperties(properties);
     };
 
     initialize = async () => {
@@ -46,18 +63,14 @@ class Inits {
         const typeGame = parseInt(localStorage.getItem("typeGame"));
 
         if (typeGame === 2) {
-            this.react.setState({
-                mapasToLoad: 1
-            });
+            this.ui.setProperty("mapasToLoad", 1);
 
-            arLoadMaps.push(inits.loadMap(272));
+            arLoadMaps.push(this.loadMap(272));
         } else {
-            this.react.setState({
-                mapasToLoad: 290
-            });
+            this.ui.setProperty("mapasToLoad", 290);
 
             for (var i = 1; i <= 290; i++) {
-                arLoadMaps.push(inits.loadMap(i));
+                arLoadMaps.push(this.loadMap(i));
             }
         }
 
@@ -74,11 +87,7 @@ class Inits {
 
         this.mapasCargados++;
 
-        if (this.react) {
-            this.react.setState({
-                mapasCargados: this.mapasCargados
-            });
-        }
+        this.ui.setProperty("mapasCargados", this.mapasCargados);
     };
 
     createMapData = idMap => {
@@ -102,7 +111,7 @@ class Inits {
             image.src = "/static/graficos/" + numFile + ".png";
 
             image.onload = () => {
-                inits.preCacheGraphics[numFile] = image;
+                this.preCacheGraphics[numFile] = image;
 
                 resolve(true);
             };
@@ -170,6 +179,4 @@ class Inits {
     };
 }
 
-const inits = new Inits();
-
-export default inits;
+export default Inits;

@@ -1,15 +1,27 @@
+import { UI, User, Package, Config, Game, Engine, Messages } from "../index";
+
 class Connection {
-    constructor(messages, pkg, game, engine, user, config, react) {
+    ui: UI;
+    messages: Messages;
+    pkg: Package;
+    game: Game;
+    engine: Engine;
+    user: User;
+    config: Config;
+    items: Record<string, unknown>;
+    spells: Record<string, unknown>;
+
+    constructor(ui: UI, messages: Messages, pkg: Package, game: Game, engine: Engine, user: User, config: Config) {
+        this.ui = ui;
         this.messages = messages;
         this.pkg = pkg;
         this.game = game;
         this.engine = engine;
         this.user = user;
         this.config = config;
-        this.react = react;
 
         window.onbeforeunload = () => {
-            this.config.ws.onclose = () => {};
+            this.config.ws.onclose = () => { };
             this.config.ws.close();
         };
     }
@@ -24,9 +36,7 @@ class Connection {
         this.config.ws.binaryType = "arraybuffer";
 
         this.config.ws.onopen = () => {
-            this.react.setState({
-                showModalReconnect: false
-            });
+            this.ui.setProperty("showModalReconnect", false);
 
             console.log("Conecto Web Socket");
             this.game.connectCharacter();
@@ -56,10 +66,8 @@ class Connection {
             this.items = {};
             this.spells = {};
 
-            this.react.setState({
-                user: this.user,
-                messagesConsole: []
-            });
+            this.ui.setProperty("user", this.user);
+            this.ui.setProperty("messagesConsole", []);
 
             this.engine.clearRender("items");
             this.engine.clearRender("background");
@@ -68,9 +76,7 @@ class Connection {
             this.engine.clearRender("textos");
 
             if (!this.config.varCloseForce) {
-                this.react.setState({
-                    showModalReconnect: true
-                });
+                this.ui.setProperty("showModalReconnect", true);
 
                 setTimeout(() => {
                     if (this.config.debug) {

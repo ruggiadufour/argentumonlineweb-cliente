@@ -1,11 +1,41 @@
+import { UI, User, Package, Config, Game, General, Inits } from "./index";
+
 class Engine {
-    constructor(inits, user, pkg, config, game, refCanvas, react) {
+    ui: UI;
+    user: User;
+    pkg: Package;
+    config: Config;
+    game: Game;
+    inits: Inits;
+    engineBaseSpeed: number;
+    delta: number;
+    personajes: any;
+    lastDelta: number;
+    timerTicksPerFrame: number;
+    lFrameTimer: number;
+    framesPerSecCounter: number;
+    FPS: number;
+    ping: number;
+    offsetCounterX: number;
+    offsetCounterY: number;
+    scrollPixelsPerFrameX: number;
+    scrollPixelsPerFrameY: number;
+    posYDescClient: number;
+    sumPosY: number;
+    lifeDescClient: number;
+    timeMoveDescClient: number;
+    timeWalk: number;
+    canvas: any;
+    refCanvas: any;
+    keydown: Record<string, any>;
+
+    constructor(inits: Inits, ui: UI, user: User, pkg: Package, config: Config, game: Game, refCanvas: any) {
         this.inits = inits;
+        this.ui = ui;
         this.user = user;
         this.pkg = pkg;
         this.config = config;
         this.game = game;
-        this.react = react;
 
         this.engineBaseSpeed = 0.016;
 
@@ -40,11 +70,11 @@ class Engine {
 
         document.addEventListener("keydown", e => {
             if (
-                e.keyCode == this.react.state.keyCodeDefault[0] ||
-                e.keyCode == this.react.state.keyCodeDefault[1] ||
-                e.keyCode == this.react.state.keyCodeDefault[2] ||
-                e.keyCode == this.react.state.keyCodeDefault[3] ||
-                e.keyCode == this.react.state.keyCodeDefault[4]
+                e.keyCode == this.ui.state.keyCodeDefault[0] ||
+                e.keyCode == this.ui.state.keyCodeDefault[1] ||
+                e.keyCode == this.ui.state.keyCodeDefault[2] ||
+                e.keyCode == this.ui.state.keyCodeDefault[3] ||
+                e.keyCode == this.ui.state.keyCodeDefault[4]
             ) {
                 this.keydown[e.keyCode] = true;
             }
@@ -52,11 +82,11 @@ class Engine {
 
         document.addEventListener("keyup", e => {
             if (
-                e.keyCode == this.react.state.keyCodeDefault[0] ||
-                e.keyCode == this.react.state.keyCodeDefault[1] ||
-                e.keyCode == this.react.state.keyCodeDefault[2] ||
-                e.keyCode == this.react.state.keyCodeDefault[3] ||
-                e.keyCode == this.react.state.keyCodeDefault[4]
+                e.keyCode == this.ui.state.keyCodeDefault[0] ||
+                e.keyCode == this.ui.state.keyCodeDefault[1] ||
+                e.keyCode == this.ui.state.keyCodeDefault[2] ||
+                e.keyCode == this.ui.state.keyCodeDefault[3] ||
+                e.keyCode == this.ui.state.keyCodeDefault[4]
             ) {
                 this.keydown[e.keyCode] = false;
             }
@@ -145,10 +175,8 @@ class Engine {
         this.config.ws.send(this.pkg.dataSend());
 
         if (this.config.hechizoSelected) {
-            this.react.setState({
-                crosshair: false
-            });
-
+            this.ui.setProperty("crosshair", false);
+            
             if (
                 +Date.now() - this.config.timeSpellStart >
                 this.config.intervalSpell
@@ -178,9 +206,7 @@ class Engine {
         }
 
         if (this.config.itemSelected) {
-            this.react.setState({
-                crosshair: false
-            });
+            this.ui.setProperty("crosshair", false);
 
             if (
                 +Date.now() - this.config.timeRangeStart >
@@ -339,7 +365,7 @@ class Engine {
     };
 
     check = () => {
-        const { showInputText } = this.react.state;
+        const showInputText = this.ui.state.showInputText;
 
         if (
             !this.user.moving &&
@@ -349,7 +375,7 @@ class Engine {
         ) {
             if (
                 this.keydown[
-                    this.react.state.keyCodeDefault[
+                    this.ui.state.keyCodeDefault[
                         this.config.nameKeyCode.flechaIzquierda
                     ]
                 ]
@@ -357,7 +383,7 @@ class Engine {
                 this.moveTo(this.user.id, this.config.direcciones.left);
             } else if (
                 this.keydown[
-                    this.react.state.keyCodeDefault[
+                    this.ui.state.keyCodeDefault[
                         this.config.nameKeyCode.flechaDerecha
                     ]
                 ]
@@ -365,7 +391,7 @@ class Engine {
                 this.moveTo(this.user.id, this.config.direcciones.right);
             } else if (
                 this.keydown[
-                    this.react.state.keyCodeDefault[
+                    this.ui.state.keyCodeDefault[
                         this.config.nameKeyCode.flechaArriba
                     ]
                 ]
@@ -373,7 +399,7 @@ class Engine {
                 this.moveTo(this.user.id, this.config.direcciones.up);
             } else if (
                 this.keydown[
-                    this.react.state.keyCodeDefault[
+                    this.ui.state.keyCodeDefault[
                         this.config.nameKeyCode.flechaAbajo
                     ]
                 ]
@@ -461,7 +487,7 @@ class Engine {
         }
     };
 
-    updateItems = (pixelOffsetX, pixelOffsetY) => {
+    updateItems = (pixelOffsetX: number, pixelOffsetY: number) => {
         this.clearRender("items");
 
         const tileX = this.user.pos.x - this.user.addtoUserPos.x;
@@ -961,7 +987,7 @@ class Engine {
         }
     };
 
-    drawGrhCapa = (capa, grh, x, y, alpha) => {
+    drawGrhCapa = (capa: string, grh: any, x: number, y: number, alpha: boolean) => {
         try {
             if (grh) {
                 const image = this.inits.preCacheGraphics[grh.numFile];
@@ -1699,9 +1725,7 @@ class Engine {
 
             this.timeWalk = +Date.now();
 
-            this.react.setState({
-                user: this.user
-            });
+            this.ui.setProperty("user", this.user);
         } catch (err) {
             dumpError(err);
         }

@@ -7,7 +7,7 @@ import { routerPush } from "../config/utils";
 
 import pvpChars from "../config/pvpChars.json";
 import inits from "../engine/inits";
-import RenderCharacters from "../engine/renderCharacters";
+import RenderCharacters from "../engine/RenderCharacters";
 
 import CreateLink from "./CreateLink";
 

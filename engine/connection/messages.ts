@@ -1,14 +1,24 @@
+import { UI, User, Engine, Inits, Package, Config, Game } from "../index";
 import { htmlEntities } from "../utils";
 
 class Messages {
-    constructor(user, engine, inits, pkg, config, game, react) {
+    ui: UI;
+    user: User;
+    engine: Engine;
+    inits: Inits;
+    pkg: Package;
+    config: Config;
+    game: Game;
+    dictionaryClient: Record<string, () => unknown>;
+
+    constructor(ui: UI, user: User, engine: Engine, inits: Inits, pkg: Package, config: Config, game: Game) {
+        this.ui = ui;
         this.user = user;
         this.engine = engine;
         this.inits = inits;
         this.pkg = pkg;
         this.config = config;
         this.game = game;
-        this.react = react;
 
         this.dictionaryClient = {
             [this.pkg.clientPacketID.getMyCharacter]: this.getMyCharacter,
@@ -72,7 +82,7 @@ class Messages {
     };
 
     getMyCharacter = () => {
-        this.user.id = parseInt(this.pkg.getDouble());
+        this.user.id = Math.trunc(this.pkg.getDouble());
         this.user.nameCharacter = this.pkg.getString();
         this.user.idClase = this.pkg.getByte();
         this.config.mapNumber = this.pkg.getShort();
@@ -134,9 +144,7 @@ class Messages {
             }
         }
 
-        this.react.setState({
-            user: this.user
-        });
+        this.ui.setProperty("user", this.user);
 
         let tmpPersonaje = JSON.parse(JSON.stringify(this.user));
         tmpPersonaje.moveOffsetX = 0;
@@ -170,7 +178,7 @@ class Messages {
     getCharacter = () => {
         var id = this.pkg.getDouble();
 
-        var tmpPersonaje = {};
+        var tmpPersonaje = new User();
 
         tmpPersonaje.id = id;
         tmpPersonaje.nameCharacter = this.pkg.getString();
@@ -214,7 +222,7 @@ class Messages {
     getNpc = () => {
         const id = this.pkg.getDouble();
 
-        let tmpPersonaje = {};
+        let tmpPersonaje = new User();
 
         tmpPersonaje.id = id;
         tmpPersonaje.nameCharacter = this.pkg.getString();
@@ -270,7 +278,7 @@ class Messages {
                 const item = this.user.items[idIndexPos];
 
                 if (item.objType == this.config.objType.armaduras) {
-                    if (idIndexPos != idPos) {
+                    if (String(idIndexPos) != String(idPos)) {
                         this.user.items[idIndexPos].equipped = false;
                     }
                 }
@@ -280,9 +288,7 @@ class Messages {
 
             this.user.items[idPos].equipped = !item.equipped;
 
-            this.react.setState({
-                user: this.user
-            });
+            this.ui.setProperty("user", this.user);
         }
 
         this.engine.setAttrPersonaje(id, "idBody", grhRopa);
@@ -299,7 +305,7 @@ class Messages {
                 const item = this.user.items[idIndexPos];
 
                 if (item.objType == this.config.objType.cascos) {
-                    if (idIndexPos != idPos) {
+                    if (String(idIndexPos) != String(idPos)) {
                         this.user.items[idIndexPos].equipped = false;
                     }
                 }
@@ -309,9 +315,7 @@ class Messages {
 
             this.user.items[idPos].equipped = !item.equipped;
 
-            this.react.setState({
-                user: this.user
-            });
+            this.ui.setProperty("user", this.user);
         }
 
         this.engine.setAttrPersonaje(id, "idHelmet", grhHelmet);
@@ -328,7 +332,7 @@ class Messages {
                 const item = this.user.items[idIndexPos];
 
                 if (item.objType == this.config.objType.armas) {
-                    if (idIndexPos != idPos) {
+                    if (String(idIndexPos) != String(idPos)) {
                         this.user.items[idIndexPos].equipped = false;
                     }
                 }
@@ -338,9 +342,7 @@ class Messages {
 
             this.user.items[idPos].equipped = !item.equipped;
 
-            this.react.setState({
-                user: this.user
-            });
+            this.ui.setProperty("user", this.user);
         }
 
         this.engine.setAttrPersonaje(id, "idWeapon", grhWeapon);
@@ -355,7 +357,7 @@ class Messages {
                 const item = this.user.items[idIndexPos];
 
                 if (item.objType == this.config.objType.flechas) {
-                    if (idIndexPos != idPos) {
+                    if (String(idIndexPos) != String(idPos)) {
                         this.user.items[idIndexPos].equipped = false;
                     }
                 }
@@ -365,9 +367,7 @@ class Messages {
 
             this.user.items[idPos].equipped = !item.equipped;
 
-            this.react.setState({
-                user: this.user
-            });
+            this.ui.setProperty("user", this.user);
         }
     };
 
@@ -382,7 +382,7 @@ class Messages {
                 const item = this.user.items[idIndexPos];
 
                 if (item.objType == this.config.objType.escudos) {
-                    if (idIndexPos != idPos) {
+                    if (String(idIndexPos) != String(idPos)) {
                         this.user.items[idIndexPos].equipped = false;
                     }
                 }
@@ -392,9 +392,7 @@ class Messages {
 
             this.user.items[idPos].equipped = !item.equipped;
 
-            this.react.setState({
-                user: this.user
-            });
+            this.ui.setProperty("user", this.user);
         }
 
         this.engine.setAttrPersonaje(id, "idShield", grhShield);
@@ -496,9 +494,7 @@ class Messages {
 
         this.user.hp = hp;
 
-        this.react.setState({
-            user: this.user
-        });
+        this.ui.setProperty("user", this.user);
     };
 
     updateMaxHP = () => {
@@ -508,9 +504,7 @@ class Messages {
         this.user.hp = hp;
         this.user.maxHp = maxHp;
 
-        this.react.setState({
-            user: this.user
-        });
+        this.ui.setProperty("user", this.user);
     };
 
     updateMana = () => {
@@ -518,9 +512,7 @@ class Messages {
 
         this.user.mana = mana;
 
-        this.react.setState({
-            user: this.user
-        });
+        this.ui.setProperty("user", this.user);
     };
 
     updateAgilidad = () => {
@@ -528,9 +520,7 @@ class Messages {
 
         this.user.attrAgilidad = agilidad;
 
-        this.react.setState({
-            user: this.user
-        });
+        this.ui.setProperty("user", this.user);
     };
 
     updateFuerza = () => {
@@ -538,9 +528,7 @@ class Messages {
 
         this.user.attrFuerza = fuerza;
 
-        this.react.setState({
-            user: this.user
-        });
+        this.ui.setProperty("user", this.user);
     };
 
     deleteCharacter = () => {
@@ -566,7 +554,7 @@ class Messages {
         this.config.usersOnline = this.pkg.getShort();
     };
 
-    consoleOnline = () => {};
+    consoleOnline = () => { };
 
     actPositionServer = () => {
         const pos = {
@@ -584,9 +572,7 @@ class Messages {
 
         this.user.exp = exp;
 
-        this.react.setState({
-            user: this.user
-        });
+        this.ui.setProperty("user", this.user);
     };
 
     actMyLevel = () => {
@@ -603,9 +589,7 @@ class Messages {
         this.user.maxHp = hp;
         this.user.maxMana = mana;
 
-        this.react.setState({
-            user: this.user
-        });
+        this.ui.setProperty("user", this.user);
     };
 
     actGold = () => {
@@ -613,9 +597,7 @@ class Messages {
 
         this.user.gold = gold;
 
-        this.react.setState({
-            user: this.user
-        });
+        this.ui.setProperty("user", this.user);
     };
 
     actColorName = () => {
@@ -643,9 +625,7 @@ class Messages {
             }
         }
 
-        this.react.setState({
-            user: this.user
-        });
+        this.ui.setProperty("user", this.user);
 
         this.engine.setAttrPersonaje(id, "idHead", idHead);
         this.engine.setAttrPersonaje(id, "idHelmet", idHelmet);
@@ -666,7 +646,8 @@ class Messages {
     };
 
     quitarUserInvItem = () => {
-        const { showModalTrade, trade } = this.react.state;
+        const trade = this.ui.state.trade;
+        const showModalTrade = this.ui.state.showModalTrade;
 
         const idUser = this.pkg.getDouble();
         const idPos = this.pkg.getByte();
@@ -690,10 +671,8 @@ class Messages {
             }
         }
 
-        this.react.setState({
-            user: this.user,
-            trade: trade
-        });
+        this.ui.setProperty("user", this.user);
+        this.ui.setProperty("trade", trade);
     };
 
     renderItem = () => {
@@ -720,7 +699,8 @@ class Messages {
     };
 
     agregarUserInvItem = () => {
-        const { showModalTrade, trade } = this.react.state;
+        const trade = this.ui.state.trade;
+        const showModalTrade = this.ui.state.showModalTrade;
 
         const idPos = this.pkg.getByte();
 
@@ -745,18 +725,15 @@ class Messages {
                 cant: item.cant,
                 info: item.info,
                 gold: item.gold,
-                imgItem: `/static/graficos/${
-                    this.inits.graphics[item.grhIndex].numFile
-                }.png`,
+                imgItem: `/static/graficos/${this.inits.graphics[item.grhIndex].numFile
+                    }.png`,
                 validUser: item.validUser,
                 equipped: item.equipped
             };
         }
 
-        this.react.setState({
-            user: this.user,
-            trade: trade
-        });
+        this.ui.setProperty("user", this.user);
+        this.ui.setProperty("trade", trade);
     };
 
     blockMap = () => {
@@ -778,7 +755,7 @@ class Messages {
     };
 
     openTrade = () => {
-        const { trade } = this.react.state;
+        const trade = this.ui.state.trade;
 
         let itemsLength = this.pkg.getByte();
 
@@ -799,10 +776,9 @@ class Messages {
                 name: name,
                 info: info,
                 cant: cant,
-                gold: parseInt(gold / 2),
-                imgItem: `/static/graficos/${
-                    this.inits.graphics[objIndex].numFile
-                }.png`,
+                gold: Math.trunc(gold / 2),
+                imgItem: `/static/graficos/${this.inits.graphics[objIndex].numFile
+                    }.png`,
                 validUser: itemValidUser
             };
         }
@@ -827,18 +803,15 @@ class Messages {
                 cant: cantItemInv,
                 info: infoItemInv,
                 gold: goldItemInv,
-                imgItem: `/static/graficos/${
-                    this.inits.graphics[objIndexItemInv].numFile
-                }.png`,
+                imgItem: `/static/graficos/${this.inits.graphics[objIndexItemInv].numFile
+                    }.png`,
                 validUser: itemValidUserItemInv,
                 equipped: equippedItemInv
             };
         }
 
-        this.react.setState({
-            showModalTrade: true,
-            trade: trade
-        });
+        this.ui.setProperty("showModalTrade", true);
+        this.ui.setProperty("trade", trade);
     };
 
     aprenderSpell = () => {
@@ -850,9 +823,7 @@ class Messages {
             manaRequired: this.pkg.getShort()
         };
 
-        this.react.setState({
-            user: this.user
-        });
+        this.ui.setProperty("user", this.user);
     };
 
     closeForce = () => {
@@ -862,9 +833,7 @@ class Messages {
     nameMap = () => {
         const name = this.pkg.getString();
 
-        this.react.setState({
-            nameMap: name
-        });
+        this.ui.setProperty("nameMap", name);
     };
 
     changeBody = () => {
@@ -880,9 +849,7 @@ class Messages {
     navegando = () => {
         this.user.navegando = this.pkg.getByte();
 
-        this.react.setState({
-            user: this.user
-        });
+        this.ui.setProperty("user", this.user);
     };
 }
 

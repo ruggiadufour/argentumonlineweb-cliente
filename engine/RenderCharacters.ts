@@ -1,5 +1,15 @@
+import { Inits } from "./index";
+import { ICharacter } from "../models";
+
 class RenderCharacters {
-    constructor(inits, ctx, character, sX, sY) {
+    inits: Inits;
+    ctx: CanvasRenderingContext2D;
+    character: ICharacter;
+    sX: number;
+    sY: number;
+    OffsetXHead: number;
+
+    constructor(inits: Inits, ctx: CanvasRenderingContext2D, character: ICharacter, sX: number, sY: number) {
         this.inits = inits;
         this.ctx = ctx;
         this.character = character;
