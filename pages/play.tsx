@@ -18,6 +18,7 @@ import Connection from "../engine/connection/connection";
 import Game from "../engine/game";
 import User from "../engine/user";
 import Package from "../engine/connection/package";
+import Inventary from "../components/Inventary";
 
 const nameKeyCode = {
     flechaArriba: 0,
@@ -38,7 +39,7 @@ const Play = (props) => {
     const uiStore = useSnapshot(UIStore);
 
     const macros = useRef([]);
-    const modalMacro = useRef({});
+    const modalMacro = useRef<Record<string, any>>({});
     const canvas = useRef({
         background: {},
         techos: {},
@@ -46,9 +47,6 @@ const Play = (props) => {
         items: {},
         textos: {}
     });
-
-    const clickUse = useRef(0);
-    const lastClickIdItem = useRef(0);
 
     const ui = useRef(new UI(UIStore));
     const pkg = useRef<Package | null>({});
@@ -164,26 +162,16 @@ const Play = (props) => {
             };
 
             document.onkeyup = e => {
-                // TODO: ver si la destructuracion no tiene efectos de reactividad
-                const {
-                    selectItem,
-                    showInputText,
-                    textDialog,
-                    showMacroConfig,
-                    valueKeyMacro,
-                    keyCodeMacros
-                } = uiStore;
-
                 const keyCode = e.keyCode;
 
                 if (showMacroConfig) return;
 
-                if (!showInputText && !isNaN(parseInt(keyCodeMacros[keyCode]))) {
-                    const macro = valueKeyMacro[keyCodeMacros[keyCode]];
+                if (!uiStore.showInputText && !isNaN(parseInt(uiStore.keyCodeMacros[keyCode]))) {
+                    const macro = uiStore.valueKeyMacro[uiStore.keyCodeMacros[keyCode]];
 
                     if (macro.idPosItem !== "") {
                         game.current.useItem(macro.idPosItem);
-                    } else if (macro.idSpell !== "") {
+                    } else if (macro.idSpell !== -1) {
                         selectSpell(macro.idPosSpell);
                     }
 
@@ -194,9 +182,9 @@ const Play = (props) => {
                 if (
                     keyCode ==
                         uiStore.keyCodeDefault[config.current.nameKeyCode.usar] &&
-                    !showInputText
+                    !uiStore.showInputText
                 ) {
-                    if (selectItem) game.current.useItem(selectItem);
+                    if (uiStore.selectItem) game.current.useItem(uiStore.selectItem);
                 }
 
                 //Equipar
@@ -205,12 +193,12 @@ const Play = (props) => {
                         uiStore.keyCodeDefault[
                             config.current.nameKeyCode.equipar
                         ] &&
-                    !showInputText
+                    !uiStore.showInputText
                 ) {
-                    const item = user.current.items[selectItem];
+                    const item = user.current.items[uiStore.selectItem];
 
-                    if (selectItem && item)
-                        game.current.equiparItem(selectItem, item.idItem);
+                    if (uiStore.selectItem && item)
+                        game.current.equiparItem(uiStore.selectItem, item.idItem);
                 }
 
                 //Agarrar
@@ -219,7 +207,7 @@ const Play = (props) => {
                         uiStore.keyCodeDefault[
                             config.current.nameKeyCode.agarrar
                         ] &&
-                    !showInputText
+                    !uiStore.showInputText
                 ) {
                     pkg.current.setPackageID(pkg.current.serverPacketID.agarrarItem);
                     config.current.ws.send(pkg.current.dataSend());
@@ -229,17 +217,18 @@ const Play = (props) => {
                 if (
                     keyCode ==
                         uiStore.keyCodeDefault[config.current.nameKeyCode.tirar] &&
-                    !showInputText
+                    !uiStore.showInputText
                 ) {
                     let cantItem = 1;
 
-                    if (selectItem) {
-                        cantItem = prompt("¿Cuántos quieres tirar?", 1);
+                    if (uiStore.selectItem) {
+                        const promptResult = prompt("¿Cuántos quieres tirar?", "1");
+                        cantItem = parseInt(promptResult || "1");
                     }
 
                     if (cantItem > 0) {
                         pkg.current.setPackageID(pkg.current.serverPacketID.tirarItem);
-                        pkg.current.writeInt(selectItem);
+                        pkg.current.writeInt(uiStore.selectItem);
                         pkg.current.writeShort(Math.trunc(cantItem));
                         config.current.ws.send(pkg.current.dataSend());
                     }
@@ -247,23 +236,26 @@ const Play = (props) => {
 
                 //Enter
                 if (keyCode == 13) {
-                    if (showInputText) {
-                        general.current.sendDialog(textDialog);
+                    if (uiStore.showInputText) {
+                        general.current.sendDialog(uiStore.textDialog);
 
                         ui.current.setProperty("textDialog", "");
                     }
-
-                    ui.current.setProperty('showInputText', !showInputText)
+                    console.log({showInputText: uiStore.showInputText});
+                    
+                    ui.current.setProperty('showInputText', !uiStore.showInputText)
+                    console.log({showInputText: uiStore.showInputText});
+                    
                 }
 
-                if (keyCode == 77 && !showInputText) {
+                if (keyCode == 77 && !uiStore.showInputText) {
                     general.current.sendDialog("/meditar");
                 }
 
                 if (
                     keyCode ==
                         uiStore.keyCodeDefault[config.current.nameKeyCode.seguro] &&
-                    !showInputText
+                    !uiStore.showInputText
                 ) {
                     if (config.current.seguroActivado) {
                         config.current.seguroActivado = false;
@@ -286,15 +278,15 @@ const Play = (props) => {
                     }
                 }
 
-                event = event || window.event;
-                if (event.ctrlKey) {
-                    const c = event.which || keyCode;
+                const event_ = (event || window.event) as any;
+                if (event_.ctrlKey) {
+                    const c = event_.which || keyCode;
                     switch (c) {
                         case 83:
                         case 87:
                         case 68:
-                            event.preventDefault();
-                            event.stopPropagation();
+                            event_.preventDefault();
+                            event_.stopPropagation();
                             break;
                     }
                 }
@@ -318,49 +310,16 @@ const Play = (props) => {
         ui.current.setProperty("showConsole", !uiStore.showConsole);
     };
 
-    const selectItem = i => {
-        const { keyMacro: currentKeyMacro, showMacroConfig: isShowMacroConfig, user: userData } = uiStore;
-
-        ui.current.setProperty("selectItem", i);
-
-        if (isShowMacroConfig) {
-            const items = userData.items;
-            const item = items[i];
-
-            if (item) {
-                currentKeyMacro.idSpell = "";
-                currentKeyMacro.idPosItem = i;
-                currentKeyMacro.img = `/static/graficos/${
-                    inits.current.graphics[item.grhIndex].numFile
-                }.png`;
-            }
-
-            ui.current.setProperty("keyMacro", currentKeyMacro);
-
-            return;
-        }
-
-        if (clickUse.current > 1 && lastClickIdItem.current == i) {
-            clickUse.current = 0;
-            game.current.useItem(i);
-        }
-
-        clickUse.current++;
-
-        lastClickIdItem.current = i;
-    };
-
     const selectSpell = i => {
-        const { keyMacro: currentKeyMacro, showMacroConfig: isShowMacroConfig } = uiStore;
         const spell = user.current.spells[i];
 
-        if (isShowMacroConfig && spell) {
-            currentKeyMacro.idSpell = spell.idSpell;
-            currentKeyMacro.idPosSpell = i;
-            currentKeyMacro.idPosItem = "";
-            currentKeyMacro.img = `/static/spells/${spell.idSpell}.png`;
+        if (uiStore.showMacroConfig && spell) {
+            UIStore.keyMacro.idSpell = spell.idSpell;
+            UIStore.keyMacro.idPosSpell = i;
+            UIStore.keyMacro.idPosItem = "";
+            UIStore.keyMacro.img = `/static/spells/${spell.idSpell}.png`;
 
-            ui.current.setProperty("keyMacro", currentKeyMacro);
+            // ui.current.setProperty("keyMacro", currentKeyMacro);
 
             return;
         }
@@ -385,50 +344,8 @@ const Play = (props) => {
         });
     };
 
-    const renderBoxItems = () => {
-        const { user: userData, selectItem } = uiStore;
-        const items = userData.items || {};
-
-        let html = [];
-
-        for (let i = 1; i < 22; i++) {
-            const item = items[i];
-
-            html.push(
-                <div
-                    className={`${style.slot_inv} ${
-                        selectItem === i ? style.item_selected : ""
-                    }`}
-                    key={i}
-                    onClick={() => selectItem(i)}
-                >
-                    <div
-                        className={`${style.img_item} ${
-                            item && !item.validUser ? style.itemNotValid : ""
-                        }`}
-                        style={{
-                            backgroundImage: item
-                                ? `url("/static/graficos/${
-                                    inits.current.graphics[item.grhIndex].numFile
-                                  }.png")`
-                                : "none"
-                        }}
-                    />
-                    <div className={style.amount}>{item ? item.cant : ""}</div>
-
-                    {item && item.equipped ? (
-                        <div className={style.equipped}>E</div>
-                    ) : null}
-                </div>
-            );
-        }
-
-        return html;
-    };
-
     const renderBoxSpells = () => {
-        const { user: userData } = uiStore;
-        const spells = userData.spells || {};
+        const spells = uiStore.user.spells || {};
 
         let html = [];
 
@@ -482,7 +399,7 @@ const Play = (props) => {
                         />
                     ) : null}
 
-                    {macro.idSpell !== "" && macro.img ? (
+                    {macro.idSpell !== -1 && macro.img ? (
                         <div
                             className={style.spell}
                             style={{
@@ -502,17 +419,15 @@ const Play = (props) => {
     };
 
     const renderBoxItemsUserTrade = () => {
-        const { trade } = uiStore;
-
         let html = [];
 
         for (let i = 1; i < 26; i++) {
-            const item = trade.itemsUser[i];
+            const item = uiStore.trade.itemsUser[i];
 
             html.push(
                 <div
                     className={`${style.slotInventary} ${
-                        trade.idPosInv === i ? style.slotInventarySelected : ""
+                        uiStore.trade.idPosInv === i ? style.slotInventarySelected : ""
                     }`}
                     key={i}
                     onClick={() => selectItemUserTrade(i)}
@@ -570,67 +485,58 @@ const Play = (props) => {
     };
 
     const selectItemUserTrade = i => {
-        const { trade } = uiStore;
+        const item = uiStore.trade.itemsUser[i];
 
-        const item = trade.itemsUser[i];
-
-        trade.idPosInv = i;
+        UIStore.trade.idPosInv = i;
 
         if (item) {
-            trade.titleItem = item.name;
-            trade.infoItem = item.info;
-            trade.imgItem = item.imgItem;
-            trade.goldItem = item.gold;
+            UIStore.trade.titleItem = item.name;
+            UIStore.trade.infoItem = item.info;
+            UIStore.trade.imgItem = item.imgItem;
+            UIStore.trade.goldItem = item.gold;
         } else {
-            trade.titleItem = "";
-            trade.infoItem = "";
-            trade.imgItem = "";
-            trade.goldItem = "";
+            UIStore.trade.titleItem = "";
+            UIStore.trade.infoItem = "";
+            UIStore.trade.imgItem = "";
+            UIStore.trade.goldItem = "";
         }
 
-        ui.current.setProperty("trade", trade);
+        ui.current.setProperty("trade", UIStore.trade);
     };
 
     const selectItemTrade = i => {
-        const { trade } = uiStore;
-
-        const item = trade.itemsTrade[i];
-
-        trade.idPosTrade = i;
+        const item = UIStore.trade.itemsTrade[i];
+        UIStore.trade.idPosTrade = i;
 
         if (item) {
-            trade.titleItem = item.name;
-            trade.infoItem = item.info;
-            trade.imgItem = item.imgItem;
-            trade.goldItem = item.gold;
+            UIStore.trade.titleItem = item.name;
+            UIStore.trade.infoItem = item.info;
+            UIStore.trade.imgItem = item.imgItem;
+            UIStore.trade.goldItem = item.gold;
         } else {
-            trade.titleItem = "";
-            trade.infoItem = "";
-            trade.imgItem = "";
-            trade.goldItem = "";
+            UIStore.trade.titleItem = "";
+            UIStore.trade.infoItem = "";
+            UIStore.trade.imgItem = "";
+            UIStore.trade.goldItem = "";
         }
 
-        ui.current.setProperty("trade", trade);
+        ui.current.setProperty("trade", UIStore.trade);
     };
 
     const buyTrade = () => {
-        const { trade, cantTrade } = uiStore;
-
-        if (trade.idPosTrade) {
+        if (UIStore.trade.idPosTrade) {
             pkg.current.setPackageID(pkg.current.serverPacketID.buyItem);
-            pkg.current.writeByte(trade.idPosTrade);
-            pkg.current.writeShort(cantTrade);
+            pkg.current.writeByte(UIStore.trade.idPosTrade);
+            pkg.current.writeShort(UIStore.cantTrade);
             config.current.ws.send(pkg.current.dataSend());
         }
     };
 
     const sellTrade = () => {
-        const { trade, cantTrade } = uiStore;
-
-        if (trade.idPosInv) {
+        if (UIStore.trade.idPosInv) {
             pkg.current.setPackageID(pkg.current.serverPacketID.sellItem);
-            pkg.current.writeByte(trade.idPosInv);
-            pkg.current.writeShort(cantTrade);
+            pkg.current.writeByte(UIStore.trade.idPosInv);
+            pkg.current.writeShort(UIStore.cantTrade);
             config.current.ws.send(pkg.current.dataSend());
         }
     };
@@ -643,9 +549,7 @@ const Play = (props) => {
         ui.current.setProperty("showInventary", false);
     };
 
-    const showMacroConfig = (e, key) => {
-        let { keyMacro } = uiStore;
-
+    const showMacroConfig = (e, key: number) => {
         e.preventDefault();
 
         const refMacro = macros[key];
@@ -653,31 +557,28 @@ const Play = (props) => {
         modalMacro.current.style.left = `${refMacro.offsetLeft - 57}px`;
         modalMacro.current.style.top = `${refMacro.offsetTop - 210}px`;
 
-        keyMacro = {
-            indexMacro: key,
-            idPosItem: "",
-            idPosSpell: "",
-            idSpell: "",
-            key: "",
-            keyChar: ""
-        };
+        UIStore.keyMacro.indexMacro = key;
+        UIStore.keyMacro.idPosItem = "";
+        UIStore.keyMacro.idPosSpell = "";
+        UIStore.keyMacro.idSpell = -1;
+        UIStore.keyMacro.key = "";
+        UIStore.keyMacro.keyChar = "";
 
         ui.current.setProperties({
             showMacroConfig: true,
-            keyMacro: keyMacro
+            keyMacro: UIStore.keyMacro
         });
     };
 
     const handleKeyMacro = e => {
-        const { keyMacro: currentKeyMacro, keyCodeMacros, keyCodeDefault: currentKeyCodeDefault } = uiStore;
         const keyCode = e.keyCode;
 
         if (
-            Object.values(currentKeyCodeDefault).indexOf(keyCode) > -1 ||
-            !isNaN(parseInt(keyCodeMacros[keyCode]))
+            Object.values(uiStore.keyCodeDefault).indexOf(keyCode) > -1 ||
+            !isNaN(parseInt(uiStore.keyCodeMacros[keyCode]))
         ) {
-            currentKeyMacro.key = "";
-            currentKeyMacro.keyChar = "";
+            UIStore.keyMacro.key = "";
+            UIStore.keyMacro.keyChar = "";
             alert("La tecla ya está asignada");
         } else {
             let fromChar = String.fromCharCode(keyCode);
@@ -686,47 +587,40 @@ const Play = (props) => {
                 fromChar = config.current.keyCodeMap[keyCode];
             }
 
-            currentKeyMacro.key = keyCode;
-            currentKeyMacro.keyChar = fromChar;
+            UIStore.keyMacro.key = keyCode;
+            UIStore.keyMacro.keyChar = fromChar;
         }
 
-        ui.current.setProperty("keyMacro", currentKeyMacro);
+        ui.current.setProperty("keyMacro", UIStore.keyMacro);
     };
 
     const saveMacro = () => {
-        const { keyMacro: currentKeyMacro, valueKeyMacro: currentValueKeyMacro, keyCodeMacros } = uiStore;
-
-        currentValueKeyMacro[currentKeyMacro.indexMacro] = {
-            idPosItem: currentKeyMacro.idPosItem,
-            idSpell: currentKeyMacro.idSpell,
-            idPosSpell: currentKeyMacro.idPosSpell,
-            img: currentKeyMacro.img,
-            key: currentKeyMacro.key,
-            keyChar: currentKeyMacro.keyChar
+        UIStore.valueKeyMacro[UIStore.keyMacro.indexMacro] = {
+            idPosItem: UIStore.keyMacro.idPosItem,
+            idSpell: UIStore.keyMacro.idSpell,
+            idPosSpell: UIStore.keyMacro.idPosSpell,
+            img: UIStore.keyMacro.img,
+            key: UIStore.keyMacro.key,
+            keyChar: UIStore.keyMacro.keyChar
         };
 
-        keyCodeMacros[currentKeyMacro.key] = currentKeyMacro.indexMacro;
+        UIStore.keyCodeMacros[UIStore.keyMacro.key] = UIStore.keyMacro.indexMacro;
 
         ui.current.setProperties({
-            valueKeyMacro: currentValueKeyMacro,
-            keyCodeMacros: keyCodeMacros,
+            valueKeyMacro: UIStore.valueKeyMacro,
+            keyCodeMacros: UIStore.keyCodeMacros,
             showMacroConfig: false
         });
 
-        window.localStorage.setItem("macros", JSON.stringify(currentValueKeyMacro));
+        window.localStorage.setItem("macros", JSON.stringify(UIStore.valueKeyMacro));
     };
 
-    const handleKeyDefault = (e, keyType) => {
-        const {
-            keyCodeMacros,
-            charKeyCodeDefault: currentCharKeyCodeDefault,
-            tmpKeyCodeDefault: currentTmpKeyCodeDefault
-        } = uiStore;
+    const handleKeyDefault = (e: React.KeyboardEvent<HTMLInputElement>, keyType: number) => {
         const keyCode = e.keyCode;
 
         if (
-            Object.values(currentTmpKeyCodeDefault).indexOf(keyCode) > -1 ||
-            !isNaN(parseInt(keyCodeMacros[keyCode]))
+            Object.values(UIStore.tmpKeyCodeDefault).indexOf(keyCode) > -1 ||
+            !isNaN(parseInt(UIStore.keyCodeMacros[keyCode]))
         ) {
             alert("La tecla ya está asignada");
         } else {
@@ -736,13 +630,13 @@ const Play = (props) => {
                 fromChar = config.current.keyCodeMap[keyCode];
             }
 
-            currentTmpKeyCodeDefault[keyType] = keyCode;
-            currentCharKeyCodeDefault[keyType] = fromChar;
+            UIStore.tmpKeyCodeDefault[keyType] = keyCode;
+            uiStore.charKeyCodeDefault[keyType] = fromChar;
         }
 
         ui.current.setProperties({
-            charKeyCodeDefault: currentCharKeyCodeDefault,
-            tmpKeyCodeDefault: currentTmpKeyCodeDefault
+            charKeyCodeDefault: uiStore.charKeyCodeDefault,
+            tmpKeyCodeDefault: UIStore.tmpKeyCodeDefault
         });
     };
 
@@ -783,7 +677,7 @@ const Play = (props) => {
             valueKeyMacro: [
                 {
                     idPosItem: "",
-                    idSpell: "",
+                    idSpell: -1,
                     idPosSpell: "",
                     img: "",
                     key: "",
@@ -791,7 +685,7 @@ const Play = (props) => {
                 },
                 {
                     idPosItem: "",
-                    idSpell: "",
+                    idSpell: -1,
                     idPosSpell: "",
                     img: "",
                     key: "",
@@ -799,7 +693,7 @@ const Play = (props) => {
                 },
                 {
                     idPosItem: "",
-                    idSpell: "",
+                    idSpell: -1,
                     idPosSpell: "",
                     img: "",
                     key: "",
@@ -807,7 +701,7 @@ const Play = (props) => {
                 },
                 {
                     idPosItem: "",
-                    idSpell: "",
+                    idSpell: -1,
                     idPosSpell: "",
                     img: "",
                     key: "",
@@ -815,7 +709,7 @@ const Play = (props) => {
                 },
                 {
                     idPosItem: "",
-                    idSpell: "",
+                    idSpell: -1,
                     idPosSpell: "",
                     img: "",
                     key: "",
@@ -823,7 +717,7 @@ const Play = (props) => {
                 },
                 {
                     idPosItem: "",
-                    idSpell: "",
+                    idSpell: -1,
                     idPosSpell: "",
                     img: "",
                     key: "",
@@ -835,39 +729,26 @@ const Play = (props) => {
         alert("Macros reseteados.");
     };
 
-    const {
-        showInventary: isShowInventary,
-        showMacroConfig: isShowMacroConfig,
-        loading,
-        user: userData,
-        showConsole,
-        messagesConsole,
-        crosshair,
-        nameMap,
-        showModalReconnect,
-        showInputText,
-        textDialog,
-        showModalTrade,
-        trade,
-        cantTrade,
-        mapasToLoad,
-        mapasCargados,
-        keyMacro,
-        showModalControlPanel,
-        keyCodeDefault: currentKeyCodeDefault,
-        charKeyCodeDefault: currentCharKeyCodeDefault
-    } = uiStore;
+    const handleSelectItem = (i: number) => {
+        console.log("handleSelectItem", i);
+        ui.current.setProperty("selectItem", i);
+    };
+
+    const handleUseItem = (i: number) => {
+        console.log("handleUseItem", i);
+        game.current.useItem(i);
+    };
 
     return (
         <>
             <div
                 className={style.progressBar}
-                style={{ display: loading ? "block" : "none" }}
+                style={{ display: uiStore.loading ? "block" : "none" }}
             >
                 <div className={style.logo_tmp} />
                 <div className={style.text}>
                     <span id="porcentajeBarra">
-                        {mapasCargados} / {mapasToLoad} Mapas
+                        {uiStore.mapasCargados} / {uiStore.mapasToLoad} Mapas
                     </span>
                 </div>
                 <div className={style.contentBar}>
@@ -875,8 +756,8 @@ const Play = (props) => {
                     <div
                         className={style.barra}
                         style={{
-                            width: `${(mapasCargados * 578) /
-                                mapasToLoad}px`
+                            width: `${(uiStore.mapasCargados * 578) /
+                                uiStore.mapasToLoad}px`
                         }}
                     />
                 </div>
@@ -918,7 +799,7 @@ const Play = (props) => {
             <div
                 className={style.modalControlPanel}
                 style={{
-                    display: showModalControlPanel ? "block" : "none"
+                    display: uiStore.showModalControlPanel ? "block" : "none"
                 }}
             >
                 <div
@@ -935,7 +816,7 @@ const Play = (props) => {
                             style.margin_left_tecla
                         }`}
                         value={
-                            currentCharKeyCodeDefault[
+                            uiStore.charKeyCodeDefault[
                                 nameKeyCode.flechaArriba
                             ]
                         }
@@ -951,7 +832,7 @@ const Play = (props) => {
                         type="text"
                         className={style.tecla}
                         value={
-                            currentCharKeyCodeDefault[nameKeyCode.flechaAbajo]
+                            uiStore.charKeyCodeDefault[nameKeyCode.flechaAbajo]
                         }
                         onKeyUp={e => {
                             handleKeyDefault(
@@ -965,7 +846,7 @@ const Play = (props) => {
                         type="text"
                         className={style.tecla}
                         value={
-                            currentCharKeyCodeDefault[
+                            uiStore.charKeyCodeDefault[
                                 nameKeyCode.flechaIzquierda
                             ]
                         }
@@ -981,7 +862,7 @@ const Play = (props) => {
                         type="text"
                         className={style.tecla}
                         value={
-                            currentCharKeyCodeDefault[
+                            uiStore.charKeyCodeDefault[
                                 nameKeyCode.flechaDerecha
                             ]
                         }
@@ -999,7 +880,7 @@ const Play = (props) => {
                         className={`${style.tecla} ${
                             style.margin_left_tecla
                         }`}
-                        value={currentCharKeyCodeDefault[nameKeyCode.usar]}
+                        value={uiStore.charKeyCodeDefault[nameKeyCode.usar]}
                         onKeyUp={e => {
                             handleKeyDefault(e, nameKeyCode.usar);
                         }}
@@ -1008,7 +889,7 @@ const Play = (props) => {
                     <input
                         type="text"
                         className={style.tecla}
-                        value={currentCharKeyCodeDefault[nameKeyCode.atacar]}
+                        value={uiStore.charKeyCodeDefault[nameKeyCode.atacar]}
                         onKeyUp={e => {
                             handleKeyDefault(
                                 e,
@@ -1020,7 +901,7 @@ const Play = (props) => {
                     <input
                         type="text"
                         className={style.tecla}
-                        value={currentCharKeyCodeDefault[nameKeyCode.agarrar]}
+                        value={uiStore.charKeyCodeDefault[nameKeyCode.agarrar]}
                         onKeyUp={e => {
                             handleKeyDefault(
                                 e,
@@ -1032,7 +913,7 @@ const Play = (props) => {
                     <input
                         type="text"
                         className={style.tecla}
-                        value={currentCharKeyCodeDefault[nameKeyCode.tirar]}
+                        value={uiStore.charKeyCodeDefault[nameKeyCode.tirar]}
                         onKeyUp={e => {
                             handleKeyDefault(
                                 e,
@@ -1047,7 +928,7 @@ const Play = (props) => {
                         className={`${style.tecla} ${
                             style.margin_left_tecla
                         }`}
-                        value={currentCharKeyCodeDefault[nameKeyCode.equipar]}
+                        value={uiStore.charKeyCodeDefault[nameKeyCode.equipar]}
                         onKeyUp={e => {
                             handleKeyDefault(
                                 e,
@@ -1059,7 +940,7 @@ const Play = (props) => {
                     <input
                         type="text"
                         className={style.tecla}
-                        value={currentCharKeyCodeDefault[nameKeyCode.domar]}
+                        value={uiStore.charKeyCodeDefault[nameKeyCode.domar]}
                         onKeyUp={e => {
                             handleKeyDefault(
                                 e,
@@ -1071,7 +952,7 @@ const Play = (props) => {
                     <input
                         type="text"
                         className={style.tecla}
-                        value={currentCharKeyCodeDefault[nameKeyCode.robar]}
+                        value={uiStore.charKeyCodeDefault[nameKeyCode.robar]}
                         onKeyUp={e => {
                             handleKeyDefault(
                                 e,
@@ -1083,7 +964,7 @@ const Play = (props) => {
                     <input
                         type="text"
                         className={style.tecla}
-                        value={currentCharKeyCodeDefault[nameKeyCode.seguro]}
+                        value={uiStore.charKeyCodeDefault[nameKeyCode.seguro]}
                         onKeyUp={e => {
                             handleKeyDefault(
                                 e,
@@ -1115,7 +996,7 @@ const Play = (props) => {
 
             <div
                 className={style.modalMacro}
-                style={{ display: isShowMacroConfig ? "block" : "none" }}
+                style={{ display: uiStore.showMacroConfig ? "block" : "none" }}
                 ref={ref => {
                     modalMacro.current = ref;
                 }}
@@ -1130,24 +1011,24 @@ const Play = (props) => {
                     type="text"
                     onKeyUp={handleKeyMacro}
                     className={style.keyMacro}
-                    value={keyMacro.keyChar}
+                    value={uiStore.keyMacro.keyChar}
                     onChange={()=>{}}
                 />
                 <div className={style.img}>
-                    {keyMacro.idPosItem && keyMacro.img ? (
+                    {uiStore.keyMacro.idPosItem && uiStore.keyMacro.img ? (
                         <div
                             className={style.item}
                             style={{
-                                backgroundImage: `url("${keyMacro.img}")`
+                                backgroundImage: `url("${uiStore.keyMacro.img}")`
                             }}
                         />
                     ) : null}
 
-                    {keyMacro.idSpell && keyMacro.img ? (
+                    {uiStore.keyMacro.idSpell && uiStore.keyMacro.img ? (
                         <div
                             className={style.spell}
                             style={{
-                                backgroundImage: `url("${keyMacro.img}")`
+                                backgroundImage: `url("${uiStore.keyMacro.img}")`
                             }}
                         />
                     ) : null}
@@ -1160,28 +1041,28 @@ const Play = (props) => {
 
             <div
                 className={style.modalTrade}
-                style={{ display: showModalTrade ? "block" : "none" }}
+                style={{ display: uiStore.showModalTrade ? "block" : "none" }}
             >
                 <div className={style.headTrade}>
                     <div className={style.imgItemTrade}>
                         <div
                             className={style.imgItem}
                             style={{
-                                backgroundImage: trade.imgItem
-                                    ? `url("${trade.imgItem}")`
+                                backgroundImage: uiStore.trade.imgItem
+                                    ? `url("${uiStore.trade.imgItem}")`
                                     : "none"
                             }}
                         />
                     </div>
                     <div className={style.titleAndGold}>
                         <div className={style.titleItemTrade}>
-                            {trade.titleItem}
+                            {uiStore.trade.titleItem}
                         </div>
                         <div className={style.infoItem}>
-                            {trade.infoItem}
+                            {uiStore.trade.infoItem}
                         </div>
                         <div className={style.goldItemTrade}>
-                            {trade.goldItem}
+                            {uiStore.trade.goldItem}
                         </div>
                     </div>
                     <div
@@ -1206,7 +1087,7 @@ const Play = (props) => {
                     <input
                         type="text"
                         className={style.cantTrade}
-                        value={cantTrade}
+                        value={uiStore.cantTrade}
                         onChange={e => {
                             ui.current.setProperty("cantTrade", e.target.value);
                         }}
@@ -1221,7 +1102,7 @@ const Play = (props) => {
 
             <div
                 className={style.outer}
-                style={{ display: loading ? "none" : "table" }}
+                style={{ display: uiStore.loading ? "none" : "table" }}
             >
                 <div className={style.middle}>
                     <div className={style.content}>
@@ -1234,11 +1115,11 @@ const Play = (props) => {
                                     autoFocus
                                     className={style.text}
                                     style={{
-                                        display: showInputText
+                                        display: uiStore.showInputText
                                             ? "block"
                                             : "none"
                                     }}
-                                    value={textDialog}
+                                    value={uiStore.textDialog}
                                     onChange={e => {
                                         ui.current.setProperty("textDialog", e.target.value);
                                     }}
@@ -1295,7 +1176,7 @@ const Play = (props) => {
                                     className={style.mouseEvent}
                                     onClick={clickCanvas}
                                     style={{
-                                        cursor: crosshair
+                                        cursor: uiStore.crosshair
                                             ? "crosshair"
                                             : "default"
                                     }}
@@ -1304,13 +1185,13 @@ const Play = (props) => {
                                     id="console"
                                     className={style.console}
                                     style={{
-                                        display: showConsole
+                                        display: uiStore.showConsole
                                             ? "block"
                                             : "none"
                                     }}
                                 >
                                     {
-                                        messagesConsole.map(message => (
+                                        uiStore.messagesConsole.map(message => (
                                             <span
                                                 style={message.style}
                                                 key={message.id}
@@ -1335,7 +1216,7 @@ const Play = (props) => {
                         <div className={style.content_right}>
                             <div className={style.header}>
                                 <div className={style.level}>
-                                    {userData.level}
+                                    {uiStore.user.level}
                                 </div>
                                 <div
                                     className={style.configuration}
@@ -1343,37 +1224,37 @@ const Play = (props) => {
                                         ui.current.setProperties({
                                             showModalControlPanel: true,
                                             tmpKeyCodeDefault: _.cloneDeep(
-                                                currentKeyCodeDefault
+                                                uiStore.keyCodeDefault
                                             )
                                         });
                                         charKeyCodeDefault();
                                     }}
                                 />
                                 <div className={style.name}>
-                                    {userData.nameCharacter}
+                                    {uiStore.user.nameCharacter}
                                 </div>
                                 <div className={style.exp}>
                                     <div
                                         className={style.progress_bar}
                                         style={{
-                                            width: `${(((userData.exp * 100) /
-                                                userData.expNextLevel) *
+                                            width: `${(((uiStore.user.exp * 100) /
+                                                uiStore.user.expNextLevel) *
                                                 config.current.xpLength) /
                                                 100}px`
                                         }}
                                     />
                                     <div className={style.porcentaje}>{`${(
-                                        (userData.exp * 100) /
-                                        userData.expNextLevel
+                                        (uiStore.user.exp * 100) /
+                                        uiStore.user.expNextLevel
                                     ).toFixed(2)}%`}</div>
                                     <div className={style.num}>{`${
-                                        userData.exp
-                                    } / ${userData.expNextLevel}`}</div>
+                                        uiStore.user.exp
+                                    } / ${uiStore.user.expNextLevel}`}</div>
                                 </div>
                                 <div className={style.buttons}>
                                     <div
                                         className={`${style.button_inv} ${
-                                            !isShowInventary
+                                            !uiStore.showInventary
                                                 ? style.buttonInvSelected
                                                 : ""
                                         }`}
@@ -1381,7 +1262,7 @@ const Play = (props) => {
                                     />
                                     <div
                                         className={`${style.button_spell} ${
-                                            isShowInventary
+                                            uiStore.showInventary
                                                 ? style.buttonInvSelected
                                                 : ""
                                         }`}
@@ -1393,17 +1274,22 @@ const Play = (props) => {
                                 <div
                                     className={style.inventary}
                                     style={{
-                                        display: isShowInventary
+                                        display: uiStore.showInventary
                                             ? "block"
                                             : "none"
                                     }}
                                 >
-                                    {renderBoxItems()}
+                                    {/* {renderBoxItems()} */}
+                                    <Inventary
+                                        graphics={inits.current.graphics}
+                                        handleSelectItem={handleSelectItem}
+                                        handleUseItem={handleUseItem}
+                                    />
                                 </div>
                                 <div
                                     className={style.spell}
                                     style={{
-                                        display: isShowInventary
+                                        display: uiStore.showInventary
                                             ? "none"
                                             : "block"
                                     }}
@@ -1414,14 +1300,14 @@ const Play = (props) => {
                             <div className={style.footer}>
                                 <div className={style.info_map}>
                                     <div className={style.name_map}>
-                                        {nameMap}
+                                        {uiStore.nameMap}
                                     </div>
                                     <div className={style.pos_map}>
-                                        {userData.pos
+                                        {uiStore.user.pos
                                             ? `Mapa: ${
                                                   config.current.mapNumber
-                                              } X: ${userData.pos.x} Y: ${
-                                                  userData.pos.y
+                                              } X: ${uiStore.user.pos.x} Y: ${
+                                                  uiStore.user.pos.y
                                               }`
                                             : ""}
                                     </div>
@@ -1431,38 +1317,38 @@ const Play = (props) => {
                                         <div
                                             className={style.progress_bar}
                                             style={{
-                                                width: `${(userData.hp *
+                                                width: `${(uiStore.user.hp *
                                                     config.current.hpLength) /
-                                                    userData.maxHp}px`
+                                                    uiStore.user.maxHp}px`
                                             }}
                                         />
                                         <div className={style.num}>{`${
-                                            userData.hp
-                                        } / ${userData.maxHp}`}</div>
+                                            uiStore.user.hp
+                                        } / ${uiStore.user.maxHp}`}</div>
                                     </div>
                                     <div className={style.mana}>
                                         <div
                                             className={style.progress_bar}
                                             style={{
-                                                width: `${(userData.mana *
+                                                width: `${(uiStore.user.mana *
                                                     config.current
                                                         .manaLength) /
-                                                    userData.maxMana}px`
+                                                    uiStore.user.maxMana}px`
                                             }}
                                         />
                                         <div className={style.num}>{`${
-                                            userData.mana
-                                        } / ${userData.maxMana}`}</div>
+                                            uiStore.user.mana
+                                        } / ${uiStore.user.maxMana}`}</div>
                                     </div>
                                     <div className={style.gold}>
-                                        {userData.gold}
+                                        {uiStore.user.gold}
                                     </div>
                                     <div className={style.attr}>
                                         <div className={style.agilidad}>
-                                            {userData.attrAgilidad}
+                                            {uiStore.user.attrAgilidad}
                                         </div>
                                         <div className={style.fuerza}>
-                                            {userData.attrFuerza}
+                                            {uiStore.user.attrFuerza}
                                         </div>
                                     </div>
                                 </div>
@@ -1481,11 +1367,11 @@ const Play = (props) => {
                                         <div
                                             className={style.point_minimap}
                                             style={{
-                                                top: userData.pos
-                                                    ? `${userData.pos.y - 1}px`
+                                                top: uiStore.user.pos
+                                                    ? `${uiStore.user.pos.y - 1}px`
                                                     : 0,
-                                                left: userData.pos
-                                                    ? `${userData.pos.x - 1}px`
+                                                left: uiStore.user.pos
+                                                    ? `${uiStore.user.pos.x - 1}px`
                                                     : 0
                                             }}
                                         />

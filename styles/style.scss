@@ -1,15 +1,5 @@
 @import "./variables.scss";
-
-//General Styles
-// @font-face {
-//     font-family: "Avenir-Light";
-//     src: url("/static/fonts/AvenirLTStd-Light.otf");
-// }
-
-// @font-face {
-//     font-family: "Avenir-Roman";
-//     src: url("/static/fonts/AvenirLTStd-Roman.otf");
-// }
+@import 'tailwindcss';
 
 body,
 html {

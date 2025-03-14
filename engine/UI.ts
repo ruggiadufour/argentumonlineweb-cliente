@@ -20,8 +20,6 @@ class UI {
     }
     
     setProperty(property: string, value: any) {
-        console.log(property, value);
-        console.log(this.state);
         
         if(property in this.state) {
             this.state[property] = value;

@@ -1,3 +1,5 @@
+import { User } from "@/engine";
+
 export type TUI = {
     mapasToLoad: number;
     mapasCargados: number;
@@ -26,7 +28,7 @@ export type TUI = {
     showInventary: boolean,
     showMacroConfig: boolean,
     loading: boolean,
-    user: unknown,
+    user: User,
     selectItem: number,
     showConsole: boolean,
     textDialog: string,
@@ -42,16 +44,17 @@ export type TUI = {
     },
     cantTrade: number,
     keyMacro: {
-        indexMacro: string,
+        indexMacro: number,
         idPosItem: string,
-        idSpell: string,
+        idSpell: number,
         idPosSpell: string,
         key: string,
-        keyChar: string
+        keyChar: string,
+        img: string,
     },
     valueKeyMacro: {
         idPosItem: string,
-        idSpell: string,
+        idSpell: number,
         idPosSpell: string,
         img: string,
         key: string,

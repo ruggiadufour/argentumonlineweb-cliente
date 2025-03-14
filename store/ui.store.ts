@@ -1,5 +1,6 @@
 import { proxy } from 'valtio';
 import { TUI, TNameKeyCode } from '../types';
+import { User } from '@/engine';
 
 export const UIStore = proxy<TUI>({
     itemSelected: false,
@@ -11,7 +12,7 @@ export const UIStore = proxy<TUI>({
     showInventary: true,
     showMacroConfig: false,
     loading: true,
-    user: {},
+    user: new User(),
     selectItem: 0,
     showConsole: true,
     messagesConsole: [],
@@ -35,17 +36,18 @@ export const UIStore = proxy<TUI>({
     mapasToLoad: 0,
     mapasCargados: 0,
     keyMacro: {
-        indexMacro: "",
+        indexMacro: 0,
         idPosItem: "",
-        idSpell: "",
+        idSpell: -1,
         idPosSpell: "",
         key: "",
-        keyChar: ""
+        keyChar: "",
+        img: ""
     },
     valueKeyMacro: [
         {
             idPosItem: "",
-            idSpell: "",
+            idSpell: -1,
             idPosSpell: "",
             img: "",
             key: "",
@@ -53,7 +55,7 @@ export const UIStore = proxy<TUI>({
         },
         {
             idPosItem: "",
-            idSpell: "",
+            idSpell: -1,
             idPosSpell: "",
             img: "",
             key: "",
@@ -61,7 +63,7 @@ export const UIStore = proxy<TUI>({
         },
         {
             idPosItem: "",
-            idSpell: "",
+            idSpell: -1,
             idPosSpell: "",
             img: "",
             key: "",
@@ -69,7 +71,7 @@ export const UIStore = proxy<TUI>({
         },
         {
             idPosItem: "",
-            idSpell: "",
+            idSpell: -1,
             idPosSpell: "",
             img: "",
             key: "",
@@ -77,7 +79,7 @@ export const UIStore = proxy<TUI>({
         },
         {
             idPosItem: "",
-            idSpell: "",
+            idSpell: -1,
             idPosSpell: "",
             img: "",
             key: "",
@@ -85,7 +87,7 @@ export const UIStore = proxy<TUI>({
         },
         {
             idPosItem: "",
-            idSpell: "",
+            idSpell: -1,
             idPosSpell: "",
             img: "",
             key: "",

@@ -6,7 +6,8 @@ import style from "../styles/Header.module.scss";
 import { routerPush } from "../config/utils";
 
 import pvpChars from "../config/pvpChars.json";
-import inits from "../engine/inits";
+import Inits from "../engine/inits";
+import UI from "../engine/UI";
 import RenderCharacters from "../engine/RenderCharacters";
 
 import CreateLink from "./CreateLink";
@@ -15,8 +16,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
 import MobileDetect from "mobile-detect";
+import { useSnapshot } from "valtio";
+
+import { UIStore } from "../store/ui.store";
 
 const Header = ({ userAgent }) => {
+    const uiStore = useSnapshot(UIStore);
+    const ui = new UI(UIStore);
+    const inits = new Inits(ui);
     const [openModalCharacters, setOpenModalCharacters] = useState(false);
     const [characters, setCharacters] = useState([]);
     const [charactersPvP] = useState(pvpChars);

@@ -9,8 +9,22 @@ class User {
         y: number;
     };
     id: number;
-    items: Record<string, unknown>;
-    spells: Record<string, unknown>;
+    items: Record<string, {
+        idItem: number,
+        nameItem: string,
+        equipped: number,
+        grhIndex: number,
+        cant: number,
+        gold: number,
+        objType: number,
+        validUser: number,
+        info: string
+    }>;
+    spells: Record<string, {
+        idSpell: number,
+        name: string,
+        manaRequired: number
+    }>;
     clan: string;
     color: string;
     exp: number;
