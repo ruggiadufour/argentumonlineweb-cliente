@@ -62,8 +62,9 @@ const Play = (props) => {
     const config = useRef<Config | null>({});
 
     const charKeyCodeDefault = () => {
-        const keyCodeDefault = uiStore.keyCodeDefault;
-        const charKeyCodeDefault = uiStore.charKeyCodeDefault;
+        const keyCodeDefault = UIStore.keyCodeDefault;
+        const charKeyCodeDefault = UIStore.charKeyCodeDefault;
+        
 
         Object.keys(keyCodeDefault).map(key => {
             const keyCode = keyCodeDefault[key];
@@ -857,7 +858,8 @@ const Play = (props) => {
         charKeyCodeDefault: currentCharKeyCodeDefault
     } = uiStore;
 
-    return <>
+    return (
+        <>
             <div
                 className={style.progressBar}
                 style={{ display: loading ? "block" : "none" }}
@@ -1337,13 +1339,13 @@ const Play = (props) => {
                                 </div>
                                 <div
                                     className={style.configuration}
-                                    onClick={async () => {
+                                    onClick={() => {
                                         ui.current.setProperties({
                                             showModalControlPanel: true,
                                             tmpKeyCodeDefault: _.cloneDeep(
                                                 currentKeyCodeDefault
                                             )
-                                        }));
+                                        });
                                         charKeyCodeDefault();
                                     }}
                                 />
@@ -1499,7 +1501,7 @@ const Play = (props) => {
                 </div>
             </div>
         </>
-
+    );
 };
 
 export default connect()(Play);
