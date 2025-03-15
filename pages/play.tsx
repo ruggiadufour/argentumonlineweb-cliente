@@ -29,7 +29,6 @@ const Play = (props) => {
         items: {},
         textos: {},
     });
-
     const ui = useRef(new UI(UIStore));
     const pkg = useRef<Package | null>({});
     const inits = useRef<Inits | null>({});
