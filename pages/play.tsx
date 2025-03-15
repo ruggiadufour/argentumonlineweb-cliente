@@ -200,15 +200,13 @@ const Play = (props) => {
 
                 //Enter
                 if (keyCode == 13) {
-                    if (uiStore.showInputText) {
-                        general.current.sendDialog(uiStore.textDialog);
+                    if (UIStore.showInputText) {
+                        general.current.sendDialog(UIStore.textDialog);
 
                         ui.current.setProperty("textDialog", "");
                     }
-                    console.log({ showInputText: uiStore.showInputText });
 
-                    ui.current.setProperty("showInputText", !uiStore.showInputText);
-                    console.log({ showInputText: uiStore.showInputText });
+                    ui.current.setProperty("showInputText", !UIStore.showInputText);
                 }
 
                 if (keyCode == 77 && !uiStore.showInputText) {
@@ -346,6 +344,7 @@ const Play = (props) => {
                                     name="text"
                                     autoFocus
                                     className={style.text}
+                                    ref={input => input && input.focus()}
                                     style={{
                                         display: uiStore.showInputText ? "block" : "none",
                                     }}
