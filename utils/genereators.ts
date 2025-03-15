@@ -1,4 +1,4 @@
-import { TKeyMacro, TNameKeyCode } from "@/types"
+import { TGraphic, TKeyMacro, TNameKeyCode } from "@/types"
 import { AMOUNT_SLOTS_MACROS } from "@/utils/constants";
 
 export const generateKeyMacro = (): TKeyMacro => {
@@ -33,3 +33,17 @@ export const generateKeyCodeDefault = (): Record<string, number> => {
         [TNameKeyCode.seguro]: 83
     }
 }
+
+export const generateObject = (): TGraphic => ({
+    numFrames: 0,
+    numFile: "",
+    sX: 0,
+    sY: 0,
+    width: 0,
+    height: 0,
+    frames: {},
+    offset: { x: 0, y: 0 },
+    grhIndex: 0,
+    frameCounter: 0,
+    speed: 0,
+})

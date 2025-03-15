@@ -265,7 +265,7 @@ class Messages {
     changeName = () => {
         const id = this.pkg.getDouble();
 
-        this.engine.setAttrPersonaje(id, "nameCharacter", this.pkg.getString());
+        this.engine.setAttrPersonaje(id.toString(), "nameCharacter", this.pkg.getString());
     };
 
     changeRopa = () => {
@@ -291,7 +291,7 @@ class Messages {
             this.ui.setProperty("user", this.user);
         }
 
-        this.engine.setAttrPersonaje(id, "idBody", grhRopa);
+        this.engine.setAttrPersonaje(id.toString(), "idBody", grhRopa);
     };
 
     changeHelmet = () => {
@@ -318,7 +318,7 @@ class Messages {
             this.ui.setProperty("user", this.user);
         }
 
-        this.engine.setAttrPersonaje(id, "idHelmet", grhHelmet);
+        this.engine.setAttrPersonaje(id.toString(), "idHelmet", grhHelmet);
     };
 
     changeWeapon = () => {
@@ -345,7 +345,7 @@ class Messages {
             this.ui.setProperty("user", this.user);
         }
 
-        this.engine.setAttrPersonaje(id, "idWeapon", grhWeapon);
+        this.engine.setAttrPersonaje(id.toString(), "idWeapon", grhWeapon);
     };
 
     changeArrow = () => {
@@ -395,7 +395,7 @@ class Messages {
             this.ui.setProperty("user", this.user);
         }
 
-        this.engine.setAttrPersonaje(id, "idShield", grhShield);
+        this.engine.setAttrPersonaje(id.toString(), "idShield", grhShield);
     };
 
     actPosition = () => {
@@ -410,7 +410,7 @@ class Messages {
         const id = this.pkg.getDouble();
         const heading = this.pkg.getByte();
 
-        this.engine.setAttrPersonaje(id, "heading", heading);
+        this.engine.setAttrPersonaje(id.toString(), "heading", heading);
     };
 
     dialog = () => {
@@ -466,7 +466,7 @@ class Messages {
         const id = this.pkg.getDouble();
         const fxID = this.pkg.getShort();
 
-        this.engine.setAttrPersonaje(id, "fxId", fxID);
+        this.engine.setAttrPersonaje(id.toString(), "fxId", fxID);
     };
 
     playSound = () => {
@@ -604,7 +604,7 @@ class Messages {
         const id = this.pkg.getDouble();
         const color = this.pkg.getString();
 
-        this.engine.setAttrPersonaje(id, "color", color);
+        this.engine.setAttrPersonaje(id.toString(), "color", color);
     };
 
     error = () => {
@@ -627,12 +627,12 @@ class Messages {
 
         this.ui.setProperty("user", this.user);
 
-        this.engine.setAttrPersonaje(id, "idHead", idHead);
-        this.engine.setAttrPersonaje(id, "idHelmet", idHelmet);
-        this.engine.setAttrPersonaje(id, "idWeapon", idWeapon);
-        this.engine.setAttrPersonaje(id, "idShield", idShield);
-        this.engine.setAttrPersonaje(id, "idBody", idBody);
-        this.engine.setAttrPersonaje(id, "muerto", true);
+        this.engine.setAttrPersonaje(id.toString(), "idHead", idHead);
+        this.engine.setAttrPersonaje(id.toString(), "idHelmet", idHelmet);
+        this.engine.setAttrPersonaje(id.toString(), "idWeapon", idWeapon);
+        this.engine.setAttrPersonaje(id.toString(), "idShield", idShield);
+        this.engine.setAttrPersonaje(id.toString(), "idBody", idBody);
+        this.engine.setAttrPersonaje(id.toString(), "muerto", true);
     };
 
     revivirUsuario = () => {
@@ -640,9 +640,9 @@ class Messages {
         const idHead = this.pkg.getShort();
         const idBody = this.pkg.getShort();
 
-        this.engine.setAttrPersonaje(id, "idHead", idHead);
-        this.engine.setAttrPersonaje(id, "idBody", idBody);
-        this.engine.setAttrPersonaje(id, "muerto", false);
+        this.engine.setAttrPersonaje(id.toString(), "idHead", idHead);
+        this.engine.setAttrPersonaje(id.toString(), "idBody", idBody);
+        this.engine.setAttrPersonaje(id.toString(), "muerto", false);
     };
 
     quitarUserInvItem = () => {
@@ -840,11 +840,11 @@ class Messages {
     changeBody = () => {
         const id = this.pkg.getDouble();
 
-        this.engine.setAttrPersonaje(id, "idHead", this.pkg.getShort());
-        this.engine.setAttrPersonaje(id, "idBody", this.pkg.getShort());
-        this.engine.setAttrPersonaje(id, "idHelmet", this.pkg.getShort());
-        this.engine.setAttrPersonaje(id, "idWeapon", this.pkg.getShort());
-        this.engine.setAttrPersonaje(id, "idShield", this.pkg.getShort());
+        this.engine.setAttrPersonaje(id.toString(), "idHead", this.pkg.getShort());
+        this.engine.setAttrPersonaje(id.toString(), "idBody", this.pkg.getShort());
+        this.engine.setAttrPersonaje(id.toString(), "idHelmet", this.pkg.getShort());
+        this.engine.setAttrPersonaje(id.toString(), "idWeapon", this.pkg.getShort());
+        this.engine.setAttrPersonaje(id.toString(), "idShield", this.pkg.getShort());
     };
 
     navegando = () => {

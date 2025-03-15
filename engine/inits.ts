@@ -1,183 +1,183 @@
-import { TGraphic } from "@/types";
+import { TGraphic, TMap } from "@/types";
 import { UI } from "@/engine";
 
 class Inits {
-    ui: UI;
-    preCacheGraphics: Record<string, any>;
-    graphics: Record<string, TGraphic>;
-    heads: Record<string, any>;
-    bodies: Record<string, any>;
-    armas: Record<string, any>;
-    escudos: Record<string, any>;
-    cascos: Record<string, any>;
-    objs: Record<string, any>;
-    mapData: Record<string, any>;
-    mapa: Record<string, any>;
-    mapasCargados: number;
-    completedCount: number;
-    loaded: boolean;
-    fxs: Record<string, any>;
+  ui: UI;
+  preCacheGraphics: Record<string, any>;
+  graphics: Record<string, TGraphic>;
+  heads: Record<string, any>;
+  bodies: Record<string, any>;
+  armas: Record<string, any>;
+  escudos: Record<string, any>;
+  cascos: Record<string, any>;
+  objs: Record<string, any>;
+  mapData: Record<string, any>;
+  mapa: TMap;
+  mapasCargados: number;
+  completedCount: number;
+  loaded: boolean;
+  fxs: Record<string, any>;
 
-    constructor(ui: UI = null) {
-        this.ui = ui;
-        this.preCacheGraphics = {};
-        this.graphics = {};
-        this.heads = {};
-        this.bodies = {};
-        this.armas = {};
-        this.escudos = {};
-        this.cascos = {};
-        this.objs = {};
-        this.mapData = {};
-        this.mapa = {};
+  constructor(ui: UI = null) {
+    this.ui = ui;
+    this.preCacheGraphics = {};
+    this.graphics = {};
+    this.heads = {};
+    this.bodies = {};
+    this.armas = {};
+    this.escudos = {};
+    this.cascos = {};
+    this.objs = {};
+    this.mapData = {};
+    this.mapa = {};
 
-        this.mapasCargados = 0;
-        this.completedCount = 0;
+    this.mapasCargados = 0;
+    this.completedCount = 0;
 
-        this.loaded = false;
+    this.loaded = false;
+  }
+
+  setUI = (properties) => {
+    this.ui.setProperties(properties);
+  };
+
+  initialize = async () => {
+    if (!this.loaded) {
+      await Promise.all([
+        this.loadCascos(),
+        this.loadHeads(),
+        this.loadArmas(),
+        this.loadEscudos(),
+        this.loadBodies(),
+        this.loadGraphics(),
+      ]);
+
+      this.loaded = true;
     }
 
-    setUI = (properties) => {
-        this.ui.setProperties(properties);
-    };
+    console.log("Loaded", this.loaded);
+  };
 
-    initialize = async () => {
-        if (!this.loaded) {
-            await Promise.all([
-                this.loadCascos(),
-                this.loadHeads(),
-                this.loadArmas(),
-                this.loadEscudos(),
-                this.loadBodies(),
-                this.loadGraphics()
-            ]);
+  loadMaps = async () => {
+    var arLoadMaps = [];
 
-            this.loaded = true;
-        }
+    const typeGame = parseInt(localStorage.getItem("typeGame"));
 
-        console.log("Loaded", this.loaded);
-    };
+    if (typeGame === 2) {
+      this.ui.setProperty("mapasToLoad", 1);
 
-    loadMaps = async () => {
-        var arLoadMaps = [];
+      arLoadMaps.push(this.loadMap(272));
+    } else {
+      this.ui.setProperty("mapasToLoad", 290);
 
-        const typeGame = parseInt(localStorage.getItem("typeGame"));
+      for (var i = 1; i <= 290; i++) {
+        arLoadMaps.push(this.loadMap(i));
+      }
+    }
 
-        if (typeGame === 2) {
-            this.ui.setProperty("mapasToLoad", 1);
+    await Promise.all(arLoadMaps);
+  };
 
-            arLoadMaps.push(this.loadMap(272));
-        } else {
-            this.ui.setProperty("mapasToLoad", 290);
+  loadMap = async (map) => {
+    const response = await fetch("/static/mapas/mapa_" + map + ".map");
+    const result = await response.json();
 
-            for (var i = 1; i <= 290; i++) {
-                arLoadMaps.push(this.loadMap(i));
-            }
-        }
+    this.mapa[map] = result[map];
 
-        await Promise.all(arLoadMaps);
-    };
+    this.createMapData(map);
 
-    loadMap = async map => {
-        const response = await fetch("/static/mapas/mapa_" + map + ".map");
-        const result = await response.json();
+    this.mapasCargados++;
 
-        this.mapa[map] = result[map];
+    this.ui.setProperty("mapasCargados", this.mapasCargados);
+  };
 
-        this.createMapData(map);
+  createMapData = (idMap) => {
+    this.mapData[idMap] = [];
 
-        this.mapasCargados++;
+    for (var y = 1; y <= 100; y++) {
+      this.mapData[idMap][y] = [];
 
-        this.ui.setProperty("mapasCargados", this.mapasCargados);
-    };
+      for (var x = 1; x <= 100; x++) {
+        this.mapData[idMap][y][x] = {
+          id: 0,
+        };
+      }
+    }
+  };
 
-    createMapData = idMap => {
-        this.mapData[idMap] = [];
+  loadImage = (numFile) => {
+    return new Promise((resolve, reject) => {
+      var image = new Image();
 
-        for (var y = 1; y <= 100; y++) {
-            this.mapData[idMap][y] = [];
+      image.src = "/static/graficos/" + numFile + ".png";
 
-            for (var x = 1; x <= 100; x++) {
-                this.mapData[idMap][y][x] = {
-                    id: 0
-                };
-            }
-        }
-    };
+      image.onload = () => {
+        this.preCacheGraphics[numFile] = image;
 
-    loadImage = numFile => {
-        return new Promise((resolve, reject) => {
-            var image = new Image();
+        resolve(true);
+      };
 
-            image.src = "/static/graficos/" + numFile + ".png";
+      image.onerror = (e) => {
+        reject(true);
+      };
+    });
+  };
 
-            image.onload = () => {
-                this.preCacheGraphics[numFile] = image;
+  loadObjs = async () => {
+    const response = await fetch("/static/init/objs.json");
+    const result = await response.json();
 
-                resolve(true);
-            };
+    this.objs = result;
+  };
 
-            image.onerror = e => {
-                reject(true);
-            };
-        });
-    };
+  loadHeads = async () => {
+    const response = await fetch("/static/init/heads.json");
+    const result = await response.json();
 
-    loadObjs = async () => {
-        const response = await fetch("/static/init/objs.json");
-        const result = await response.json();
+    this.heads = result;
+  };
 
-        this.objs = result;
-    };
+  loadBodies = async () => {
+    const response = await fetch("/static/init/bodies.json");
+    const result = await response.json();
 
-    loadHeads = async () => {
-        const response = await fetch("/static/init/heads.json");
-        const result = await response.json();
+    this.bodies = result;
+  };
 
-        this.heads = result;
-    };
+  loadGraphics = async () => {
+    const response = await fetch("/static/init/graficos.json");
+    const result = await response.json();
 
-    loadBodies = async () => {
-        const response = await fetch("/static/init/bodies.json");
-        const result = await response.json();
+    this.graphics = result;
+  };
 
-        this.bodies = result;
-    };
+  loadArmas = async () => {
+    const response = await fetch("/static/init/armas.json");
+    const result = await response.json();
 
-    loadGraphics = async () => {
-        const response = await fetch("/static/init/graficos.json");
-        const result = await response.json();
+    this.armas = result;
+  };
 
-        this.graphics = result;
-    };
+  loadEscudos = async () => {
+    const response = await fetch("/static/init/escudos.json");
+    const result = await response.json();
 
-    loadArmas = async () => {
-        const response = await fetch("/static/init/armas.json");
-        const result = await response.json();
+    this.escudos = result;
+  };
 
-        this.armas = result;
-    };
+  loadCascos = async () => {
+    const response = await fetch("/static/init/cascos.json");
+    const result = await response.json();
 
-    loadEscudos = async () => {
-        const response = await fetch("/static/init/escudos.json");
-        const result = await response.json();
+    this.cascos = result;
+  };
 
-        this.escudos = result;
-    };
+  loadFxs = async () => {
+    const response = await fetch("/static/init/fxs.json");
+    const result = await response.json();
 
-    loadCascos = async () => {
-        const response = await fetch("/static/init/cascos.json");
-        const result = await response.json();
-
-        this.cascos = result;
-    };
-
-    loadFxs = async () => {
-        const response = await fetch("/static/init/fxs.json");
-        const result = await response.json();
-
-        this.fxs = result;
-    };
+    this.fxs = result;
+  };
 }
 
 export default Inits;

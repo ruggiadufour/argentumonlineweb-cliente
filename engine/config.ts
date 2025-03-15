@@ -45,7 +45,7 @@ class Config {
     timeRangeStart: number;
     usersOnline: number;
     debug: boolean;
-    descClient: Record<string, unknown>;
+    descClient: string[];
     PROD_SERVER_ENDPOINT: string;
     LOCAL_SERVER_ENDPOINT: string;
     hechizoSelected: number;
@@ -138,7 +138,7 @@ class Config {
         //Conections
         this.debug = true;
 
-        this.descClient = {};
+        this.descClient = [];
 
         this.PROD_SERVER_ENDPOINT = "";
         this.LOCAL_SERVER_ENDPOINT = "ws://127.0.0.1:7666";

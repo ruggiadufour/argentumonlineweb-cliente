@@ -7,4 +7,7 @@ export type TGraphic = {
   height: number,
   frames: Record<string, string>,
   offset: { x: number, y: number },
+  grhIndex: number,
+  frameCounter: number,
+  speed: number,
 };

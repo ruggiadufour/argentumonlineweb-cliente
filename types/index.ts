@@ -5,3 +5,4 @@ export * from "./TKeyMacro";
 export * from "./TKeyCode";
 export * from "./TDialog";
 export * from "./TGraphic";
+export * from "./TMap";

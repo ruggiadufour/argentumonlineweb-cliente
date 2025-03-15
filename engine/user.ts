@@ -73,6 +73,7 @@ class User {
     keysTemp: string[];
     feedBackButtonOpen: boolean;
     volume: number;
+    muerto: boolean;
     
     constructor() {
         this.addtoUserPos = {
@@ -129,7 +130,7 @@ class User {
         this.scrollDirectionX = 0;
         this.scrollDirectionY = 0;
         this.frameCounter = 0;
-        
+        this.muerto = false;
     }
 }
 
