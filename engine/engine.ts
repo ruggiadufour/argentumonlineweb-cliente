@@ -228,8 +228,6 @@ class Engine {
   };
 
   setPersonaje = (personaje: User) => {
-    console.log({ personaje });
-
     this.personajes[personaje.id] = personaje;
   };
 
@@ -1138,9 +1136,9 @@ class Engine {
           Math.ceil(personaje.frameCounter) <=
             this.inits.graphics[grhRopa].numFrames
         ) {
-          let graphicsGrhRopa: TGraphic = generateObject();
-          let graphicsGrhWeapon: TGraphic = generateObject();
-          let graphicsGrhShield: TGraphic = generateObject();
+          let graphicsGrhRopa: TGraphic | null = null;
+          let graphicsGrhWeapon: TGraphic | null = null;
+          let graphicsGrhShield: TGraphic | null = null;
 
           if (grhRopa) {
             const CurrentGrhRopa =
