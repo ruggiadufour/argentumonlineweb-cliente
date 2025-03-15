@@ -71,6 +71,8 @@ export interface ICharacter {
     spells: ISpell[];
     createdAt?: Date;
     updatedAt?: Date;
+    isNpc: boolean;
+    experience: number;
 }
 
 export interface ICharacterDocument extends ICharacter, Document {

@@ -1,5 +1,5 @@
 class User {
-    moving: number;
+    moving: boolean;
     addtoUserPos: {
         x: number;
         y: number;
@@ -12,7 +12,7 @@ class User {
     items: Record<string, {
         idItem: number,
         nameItem: string,
-        equipped: number,
+        equipped: boolean,
         grhIndex: number,
         cant: number,
         gold: number,
@@ -75,7 +75,6 @@ class User {
     volume: number;
     
     constructor() {
-        this.moving = 0;
         this.addtoUserPos = {
             x: 0,
             y: 0
@@ -110,7 +109,7 @@ class User {
         this.mana = 0;
         this.maxHp = 0;
         this.maxMana = 0;
-        this.moving = 0;
+        this.moving = false;
         this.nameCharacter = "";
         this.navegando = 0;
         this.privileges = 0;

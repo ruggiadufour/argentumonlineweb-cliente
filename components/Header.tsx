@@ -1,24 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-
-import style from "../styles/Header.module.scss";
-
-import { routerPush } from "../config/utils";
-
-import pvpChars from "../config/pvpChars.json";
-import Inits from "../engine/inits";
-import UI from "../engine/UI";
-import RenderCharacters from "../engine/RenderCharacters";
-
-import CreateLink from "./CreateLink";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
-
 import MobileDetect from "mobile-detect";
 import { useSnapshot } from "valtio";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { routerPush } from "@/config/utils";
+import { Inits, UI, RenderCharacters } from "@/engine";
+import CreateLink from "@/components/CreateLink";
+import { UIStore } from "@/store/ui.store";
+import { RootState } from "@/types/store";
+import pvpChars from "@/config/pvpChars.json";
+import style from "@/styles/Header.module.scss";
 
-import { UIStore } from "../store/ui.store";
 
 const Header = ({ userAgent }) => {
     const uiStore = useSnapshot(UIStore);
@@ -33,7 +26,7 @@ const Header = ({ userAgent }) => {
 
     const canvasCharacterRefs = useRef([]);
     const dispatch = useDispatch();
-    const account = useSelector((state) => state.account);
+    const account = useSelector((state: RootState) => state.account);
 
     useEffect(() => {
         const initializeComponent = async () => {
@@ -106,7 +99,7 @@ const Header = ({ userAgent }) => {
             window.localStorage.setItem("idChar", key);
         }
 
-        window.localStorage.setItem("typeGame", typeGame === "PvE" ? 1 : 2);
+        window.localStorage.setItem("typeGame", typeGame === "PvE" ? "1" : "2");
 
         return routerPush("/play", "", true);
     };

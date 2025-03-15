@@ -1,7 +1,9 @@
 import { NextApiResponse } from 'next';
 import { withAuth } from '../../../lib/middleware';
 import { ApiResponse, ExtendedNextApiRequest, RegisterCredentials } from '../../../types/api';
-import Account from '../../../models/Account';
+import getAccount from '../../../models/Account';
+
+const Account = getAccount();
 
 async function handler(
     req: ExtendedNextApiRequest,
@@ -12,10 +14,10 @@ async function handler(
     }
 
     try {
-        const { username, email, password } = req.body as RegisterCredentials;
+        const { name, email, password } = req.body as RegisterCredentials;
 
         // Validar campos requeridos
-        if (!username || !email || !password) {
+        if (!name || !email || !password) {
             return res.status(400).json({
                 success: false,
                 error: 'Todos los campos son requeridos'
@@ -25,7 +27,7 @@ async function handler(
         // Verificar si el usuario ya existe
         const existingUser = await Account.findOne({
             $or: [
-                { username: username.toLowerCase() },
+                { username: name.toLowerCase() },
                 { email: email.toLowerCase() }
             ]
         });
@@ -39,7 +41,7 @@ async function handler(
 
         // Crear nuevo usuario
         const newUser = new Account({
-            username: username.toLowerCase(),
+            name: name.toLowerCase(),
             email: email.toLowerCase(),
             password
         });
@@ -60,7 +62,7 @@ async function handler(
                 data: {
                     user: {
                         id: newUser._id,
-                        username: newUser.username,
+                        username: newUser.name,
                         email: newUser.email
                     }
                 }

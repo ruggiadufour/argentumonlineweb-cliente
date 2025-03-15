@@ -1,13 +1,19 @@
-import { UIStore } from "@/store/ui.store";
 import { proxy, useSnapshot } from "valtio";
-import style from "../styles/Play.module.scss";
 import { User } from "@/engine";
+import { UIStore } from "@/store/ui.store";
+import style from "@/styles/Play.module.scss";
+
+type TProps = {
+  graphics: any;
+  handleSelectItem: (i: number) => void;
+  handleUseItem: (i: number) => void;
+}
 
 const Inventary = ({
   graphics,
   handleSelectItem,
   handleUseItem,
-}) => {
+}: TProps) => {
   const uiStore = useSnapshot(UIStore);
   const state = proxy({
     lastClickIdItem: 0,
@@ -23,6 +29,8 @@ const Inventary = ({
   };
 
   const selectItem = (i) => {
+    console.log(uiStore);
+    
     handleSelectItem(i);
 
     if (uiStore.showMacroConfig) {

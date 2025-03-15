@@ -1,13 +1,14 @@
-import Engine from "./engine";
-import UI from "./UI"
-import User from "./user"
-import Package from "./connection/package"
-import Messages from "./connection/messages"
-import Connection from "./connection/connection"
-import Config from "./config"
-import Game from "./game"
-import General from "./general"
-import Inits from "./inits"
+import Engine from "@/engine/engine";
+import UI from "@/engine/UI"
+import User from "@/engine/user"
+import Package from "@/engine/connection/package"
+import Messages from "@/engine/connection/messages"
+import Connection from "@/engine/connection/connection"
+import Config from "@/engine/config"
+import Game from "@/engine/game"
+import General from "@/engine/general"
+import Inits from "@/engine/inits"
+import RenderCharacters from "@/engine/RenderCharacters"
 
 export {
     Engine,
@@ -20,4 +21,5 @@ export {
     Game,
     General,
     Inits,
+    RenderCharacters,
 }

@@ -1,9 +1,10 @@
-import { UI } from "./index";
+import { TGraphic } from "@/types";
+import { UI } from "@/engine";
 
 class Inits {
     ui: UI;
     preCacheGraphics: Record<string, any>;
-    graphics: Record<string, any>;
+    graphics: Record<string, TGraphic>;
     heads: Record<string, any>;
     bodies: Record<string, any>;
     armas: Record<string, any>;
@@ -17,7 +18,7 @@ class Inits {
     loaded: boolean;
     fxs: Record<string, any>;
 
-    constructor(ui: UI) {
+    constructor(ui: UI = null) {
         this.ui = ui;
         this.preCacheGraphics = {};
         this.graphics = {};

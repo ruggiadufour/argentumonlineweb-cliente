@@ -1,19 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import MainContainer from "../components/MainContainer";
-import inits from "../engine/inits";
-import RenderCharacters from "../engine/RenderCharacters";
-import { fetchUrl, routerPush } from "../config/utils";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import MainContainer from "@/components/MainContainer";
+import Inits from "@/engine/inits";
+import RenderCharacters from "@/engine/RenderCharacters";
+import { fetchUrl, routerPush } from "@/config/utils";
 import {
     clases,
     razas,
     nameClases,
     nameGeneros,
     nameRazas
-} from "../config/config";
-import style from "../../styles/CreateCharacter.module.scss";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
+} from "@/config/config";
+import style from "@/styles/CreateCharacter.module.scss";
+
+import { RootState } from "@/types/store";
 
 // Constantes para las cabezas de los personajes
 const HEADS = {
@@ -33,10 +35,10 @@ export async function getServerSideProps({ req }) {
 }
 
 const CreateCharacter = ({ userAgent }) => {
+    const inits = new Inits();
+    
     const canvasRef = useRef(null);
-    const initsLoaded = useSelector((state) => state.initsLoaded);
-    const account = useSelector((state) => state.account);
-
+    const initsLoaded = useSelector((state: RootState) => state.initsLoaded);
     const [characterState, setCharacterState] = useState({
         idClaseSelected: 1,
         idRazaSelected: 1,

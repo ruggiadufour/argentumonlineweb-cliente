@@ -10,16 +10,17 @@ async function handler(
 ) {
     const { id } = req.query;
 
+    // TODO: refactorizar codigo
     // Validar que el ID sea válido
-    if (!mongoose.Types.ObjectId.isValid(id as string)) {
-        return res.status(400).json({
-            success: false,
-            error: 'ID de personaje inválido'
-        });
-    }
+    // if (!mongoose.Types.ObjectId.isValid(id as string)) {
+    //     return res.status(400).json({
+    //         success: false,
+    //         error: 'ID de personaje inválido'
+    //     });
+    // }
 
     try {
-        const character = await Character.findOne({
+        const character = await Character().findOne({
             _id: id,
             accountId: req.user._id
         }).select('-__v');

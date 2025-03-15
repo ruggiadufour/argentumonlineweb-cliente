@@ -1,6 +1,7 @@
 import { proxy } from 'valtio';
-import { TUI, TNameKeyCode } from '../types';
+import { TUI } from '@/types';
 import { User } from '@/engine';
+import { generateKeyCodeDefault, generateKeyMacro, generateListKeyMacro } from '@/utils/genereators';
 
 export const UIStore = proxy<TUI>({
     itemSelected: false,
@@ -28,101 +29,18 @@ export const UIStore = proxy<TUI>({
         titleItem: "",
         infoItem: "",
         imgItem: "",
-        goldItem: "",
+        goldItem: 0,
         itemsTrade: {},
         itemsUser: {}
     },
     cantTrade: 1,
     mapasToLoad: 0,
     mapasCargados: 0,
-    keyMacro: {
-        indexMacro: 0,
-        idPosItem: "",
-        idSpell: -1,
-        idPosSpell: "",
-        key: "",
-        keyChar: "",
-        img: ""
-    },
-    valueKeyMacro: [
-        {
-            idPosItem: "",
-            idSpell: -1,
-            idPosSpell: "",
-            img: "",
-            key: "",
-            keyChar: ""
-        },
-        {
-            idPosItem: "",
-            idSpell: -1,
-            idPosSpell: "",
-            img: "",
-            key: "",
-            keyChar: ""
-        },
-        {
-            idPosItem: "",
-            idSpell: -1,
-            idPosSpell: "",
-            img: "",
-            key: "",
-            keyChar: ""
-        },
-        {
-            idPosItem: "",
-            idSpell: -1,
-            idPosSpell: "",
-            img: "",
-            key: "",
-            keyChar: ""
-        },
-        {
-            idPosItem: "",
-            idSpell: -1,
-            idPosSpell: "",
-            img: "",
-            key: "",
-            keyChar: ""
-        },
-        {
-            idPosItem: "",
-            idSpell: -1,
-            idPosSpell: "",
-            img: "",
-            key: "",
-            keyChar: ""
-        }
-    ],
+    keyMacro: generateKeyMacro(),
+    valueKeyMacro: generateListKeyMacro(),
     keyCodeMacros: {},
     tmpKeyCodeDefault: {},
-    keyCodeDefault: {
-        [TNameKeyCode.flechaArriba]: 38,
-        [TNameKeyCode.flechaAbajo]: 40,
-        [TNameKeyCode.flechaIzquierda]: 37,
-        [TNameKeyCode.flechaDerecha]: 39,
-        [TNameKeyCode.usar]: 85,
-        [TNameKeyCode.atacar]: 17,
-        [TNameKeyCode.agarrar]: 65,
-        [TNameKeyCode.tirar]: 84,
-        [TNameKeyCode.equipar]: 69,
-        [TNameKeyCode.domar]: 68,
-        [TNameKeyCode.robar]: 82,
-        [TNameKeyCode.seguro]: 83
-    },
-    keyCodeDefaultReset: {
-        [TNameKeyCode.flechaArriba]: 38,
-        [TNameKeyCode.flechaAbajo]: 40,
-        [TNameKeyCode.flechaIzquierda]: 37,
-        [TNameKeyCode.flechaDerecha]: 39,
-        [TNameKeyCode.usar]: 85,
-        [TNameKeyCode.atacar]: 17,
-        [TNameKeyCode.agarrar]: 65,
-        [TNameKeyCode.tirar]: 84,
-        [TNameKeyCode.equipar]: 69,
-        [TNameKeyCode.domar]: 68,
-        [TNameKeyCode.robar]: 82,
-        [TNameKeyCode.seguro]: 83
-    },
+    keyCodeDefault: generateKeyCodeDefault(),
+    keyCodeDefaultReset: generateKeyCodeDefault(),
     charKeyCodeDefault: {}
 })

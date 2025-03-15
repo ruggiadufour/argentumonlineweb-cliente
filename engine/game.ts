@@ -102,6 +102,24 @@ class Game {
             consoleElem.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
         }
     };
+
+    buyTrade = () => {
+        if (this.ui.state.trade.idPosTrade) {
+            this.pkg.setPackageID(this.pkg.serverPacketID.buyItem);
+            this.pkg.writeByte(this.ui.state.trade.idPosTrade);
+            this.pkg.writeShort(this.ui.state.cantTrade);
+            this.config.ws.send(this.pkg.dataSend());
+        }
+    };
+
+    sellTrade = () => {
+        if (this.ui.state.trade.idPosInv) {
+            this.pkg.setPackageID(this.pkg.serverPacketID.sellItem);
+            this.pkg.writeByte(this.ui.state.trade.idPosInv);
+            this.pkg.writeShort(this.ui.state.cantTrade);
+            this.config.ws.send(this.pkg.dataSend());
+        }
+    };
 }
 
 export default Game;

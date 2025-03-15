@@ -1,3 +1,5 @@
+import { TDialog } from "@/types";
+
 class Config {
     ws: WebSocket;
     canvasSize: {
@@ -25,7 +27,7 @@ class Config {
     mapNumber: number;
     timeWalkMS: number;
     requestAnimationFrame: (callback: FrameRequestCallback) => number;
-    dialogs: Record<string, unknown>;
+    dialogs: Record<string, TDialog>;
     spells: Record<string, unknown>;
     items: Record<string, unknown>;
     textMaxLength: number;

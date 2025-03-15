@@ -1,15 +1,16 @@
 import { Inits } from "./index";
 import { ICharacter } from "../models";
+import { TGraphic } from "@/types";
 
 class RenderCharacters {
     inits: Inits;
     ctx: CanvasRenderingContext2D;
-    character: ICharacter;
+    character: Partial<ICharacter>;
     sX: number;
     sY: number;
     OffsetXHead: number;
 
-    constructor(inits: Inits, ctx: CanvasRenderingContext2D, character: ICharacter, sX: number, sY: number) {
+    constructor(inits: Inits, ctx: CanvasRenderingContext2D, character: Partial<ICharacter>, sX: number, sY: number) {
         this.inits = inits;
         this.ctx = ctx;
         this.character = character;
@@ -43,9 +44,9 @@ class RenderCharacters {
             frameCounter > 0 &&
             Math.ceil(frameCounter) <= this.inits.graphics[grhRopa].numFrames
         ) {
-            var graphicsGrhRopa = "";
-            var graphicsGrhWeapon = "";
-            var graphicsGrhShield = "";
+            var graphicsGrhRopa: TGraphic | null = null;
+            var graphicsGrhWeapon: TGraphic | null = null;
+            var graphicsGrhShield: TGraphic | null = null;
 
             if (grhRopa) {
                 var CurrentGrhRopa = this.inits.graphics[grhRopa].frames[

@@ -1,0 +1,1 @@
+export type TKeyCode = Record<string, number>;

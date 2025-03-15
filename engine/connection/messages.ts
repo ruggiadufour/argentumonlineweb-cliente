@@ -120,7 +120,7 @@ class Messages {
             this.user.items[idPos] = {
                 idItem: this.pkg.getInt(),
                 nameItem: this.pkg.getString(),
-                equipped: this.pkg.getByte(),
+                equipped: Boolean(this.pkg.getByte()),
                 grhIndex: this.pkg.getShort(),
                 cant: this.pkg.getShort(),
                 gold: this.pkg.getInt(),
@@ -207,7 +207,7 @@ class Messages {
         tmpPersonaje.frameFxCounter = 0;
         tmpPersonaje.scrollDirectionX = 0;
         tmpPersonaje.scrollDirectionY = 0;
-        tmpPersonaje.moving = 0;
+        tmpPersonaje.moving = false;
         tmpPersonaje.frameCounter = 0;
 
         this.engine.setPersonaje(tmpPersonaje);
@@ -250,7 +250,7 @@ class Messages {
         tmpPersonaje.frameFxCounter = 0;
         tmpPersonaje.scrollDirectionX = 0;
         tmpPersonaje.scrollDirectionY = 0;
-        tmpPersonaje.moving = 0;
+        tmpPersonaje.moving = false;
         tmpPersonaje.frameCounter = 0;
 
         this.engine.setPersonaje(tmpPersonaje);
@@ -279,7 +279,7 @@ class Messages {
 
                 if (item.objType == this.config.objType.armaduras) {
                     if (String(idIndexPos) != String(idPos)) {
-                        this.user.items[idIndexPos].equipped = false;
+                        this.user.items[String(idIndexPos)].equipped = false;
                     }
                 }
             }
@@ -621,7 +621,7 @@ class Messages {
 
         if (this.user.id == id) {
             for (let idIndexPos in this.user.items) {
-                this.user.items[idIndexPos].equipped = 0;
+                this.user.items[idIndexPos].equipped = false;
             }
         }
 
@@ -707,7 +707,7 @@ class Messages {
         this.user.items[idPos] = {
             idItem: this.pkg.getInt(),
             nameItem: this.pkg.getString(),
-            equipped: this.pkg.getByte(),
+            equipped: Boolean(this.pkg.getByte()),
             grhIndex: this.pkg.getShort(),
             cant: this.pkg.getShort(),
             gold: this.pkg.getInt(),
@@ -759,7 +759,7 @@ class Messages {
 
         let itemsLength = this.pkg.getByte();
 
-        this.user.npcTrade = true;
+        this.user.npcTrade = 1; // TODO: ver puede ser numero (antes true)
 
         trade.itemsTrade = {};
 
@@ -779,7 +779,8 @@ class Messages {
                 gold: Math.trunc(gold / 2),
                 imgItem: `/static/graficos/${this.inits.graphics[objIndex].numFile
                     }.png`,
-                validUser: itemValidUser
+                validUser: itemValidUser,
+                equipped: false
             };
         }
 
@@ -806,7 +807,7 @@ class Messages {
                 imgItem: `/static/graficos/${this.inits.graphics[objIndexItemInv].numFile
                     }.png`,
                 validUser: itemValidUserItemInv,
-                equipped: equippedItemInv
+                equipped: Boolean(equippedItemInv)
             };
         }
 

@@ -1,11 +1,12 @@
 import { User } from "@/engine";
+import { TItemTrade, TKeyMacro, TKeyCode } from "./index";
 
 export type TUI = {
     mapasToLoad: number;
     mapasCargados: number;
     nameMap: string;
-    keyCodeDefault: Record<string, number>;
-    keyCodeDefaultReset: Record<string, number>;
+    keyCodeDefault: TKeyCode;
+    keyCodeDefaultReset: TKeyCode;
     crosshair: boolean;
     itemSelected: boolean;
     hechizoSelected: boolean;
@@ -38,28 +39,13 @@ export type TUI = {
         titleItem: string,
         infoItem: string,
         imgItem: string,
-        goldItem: string,
-        itemsTrade: unknown,
-        itemsUser: unknown
+        goldItem: number,
+        itemsTrade: Record<string, TItemTrade>,
+        itemsUser: Record<string, TItemTrade>
     },
     cantTrade: number,
-    keyMacro: {
-        indexMacro: number,
-        idPosItem: string,
-        idSpell: number,
-        idPosSpell: string,
-        key: string,
-        keyChar: string,
-        img: string,
-    },
-    valueKeyMacro: {
-        idPosItem: string,
-        idSpell: number,
-        idPosSpell: string,
-        img: string,
-        key: string,
-        keyChar: string
-    }[],
+    keyMacro: TKeyMacro,
+    valueKeyMacro: TKeyMacro[],
     keyCodeMacros: unknown,
     tmpKeyCodeDefault: unknown,
     // keyCodeDefault: {
