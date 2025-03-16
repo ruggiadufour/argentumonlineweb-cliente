@@ -232,6 +232,9 @@ onBeforeUnmount(() => {
 });
 
 const setCanvas = () => {
+  $fetch('/api/auth/is_logged').then((res) => {
+    console.log(res);
+  });
   if (!gameView.value) return;
 
   canvas.background = gameView.value?.canvasBackground || null;

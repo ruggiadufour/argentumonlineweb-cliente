@@ -1,7 +1,7 @@
 import { defineStore } from "pinia"
 
 export const useAuthStore = defineStore('auth',()=>{
-    const account = useState<any>('account', () => null)
+    const account = useState<any>('account', () => ({}))
     const initsLoaded = useState('initsLoaded', () => false)
 
     const setAccount = (account: any) => {

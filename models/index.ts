@@ -1,2 +1,2 @@
 export * from "./Character";
-export * from "./Account";
+export * from "../server/models/Account";

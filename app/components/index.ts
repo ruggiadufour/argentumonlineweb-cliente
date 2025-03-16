@@ -10,11 +10,10 @@ import ModalTrade from "@/components/play/ModalTrade.vue";
 import PlayerPannel from "@/components/play/PlayerPannel.vue";
 import Spells from "@/components/play/Spells.vue";
 // General
-// import CreateLink from "@/components/CreateLink";
 // import Head from "@/components/Head";
-// import Header from "@/components/Header";
-// import Login from "@/components/Login";
-// import MainContainer from "@/components/MainContainer";
+import Header from "@/components/Header.vue";
+import Login from "@/components/Login";
+import MainContainer from "@/components/MainContainer.vue";
 
 export {
     // Play
@@ -29,9 +28,8 @@ export {
     PlayerPannel,
     Spells,
     // General
-    // CreateLink,
     // Head,
-    // Header,
-    // Login,
-    // MainContainer,
+    Header,
+    Login,
+    MainContainer,
 }
