@@ -1,75 +1,104 @@
-// import { NextApiResponse } from 'next';
-// import { withAuth } from '../../../lib/middleware';
-// import { ApiResponse, ExtendedNextApiRequest } from '../../../app/types/api';
-// import { getAccountModel } from '../../../models/Account';
-// import { getCharacterModel } from '../../../models/Character';
+import mongoose from 'mongoose';
+import { getAccountModel } from '../../models/Account';
+import { getCharacterModel } from '../../models/Character';
 
-// async function handler(
-//     req: ExtendedNextApiRequest,
-//     res: NextApiResponse<ApiResponse>
-// ) {
-//     if (req.method !== 'GET') {
-//         return res.status(405).json({
-//             success: false,
-//             error: 'Método no permitido'
-//         });
-//     }
+export default defineEventHandler(async (event) => {
+    // Verificamos que sea método GET
+    if (event.method !== 'GET') {
+        throw createError({
+            statusCode: 405,
+            message: 'Método no permitido'
+        });
+    }
 
-//     const { idAccount, idCharacter, email } = req.query;
+    try {
+        // Obtenemos los query params
+        const query = getQuery(event);
+        const { idAccount, idCharacter, email } = query;
 
-//     if (!idAccount || typeof idAccount !== 'string') {
-//         return res.status(400).json({
-//             success: false,
-//             error: 'ID de cuenta requerido'
-//         });
-//     }
+        // if (!idAccount || typeof idAccount !== 'string') {
+        //     console.log('Invalid idAccount:', idAccount);
+        //     throw createError({
+        //         statusCode: 400,
+        //         message: 'ID de cuenta requerido'
+        //     });
+        // }
 
-//     try {
-//         const Account = getAccountModel();
-//         const Character = getCharacterModel();
+        // Verificamos que el usuario esté autenticado
+        // if (!event.context.auth?.user) {
+        //     throw createError({
+        //         statusCode: 401,
+        //         message: 'No autorizado'
+        //     });
+        // }
 
-//         const account = await Account.findOne({
-//             _id: idAccount,
-//             email: email as string
-//         }).select('-password');
+        // Validamos que los IDs sean ObjectId válidos
+        const isAccountIdValid = mongoose.Types.ObjectId.isValid(idAccount);
+        if (!isAccountIdValid) {
+            throw createError({
+                statusCode: 400,
+                message: 'ID de cuenta inválido'
+            });
+        }
 
-//         if (!account) {
-//             return res.status(404).json({
-//                 success: false,
-//                 error: 'Cuenta no encontrada'
-//             });
-//         }
+        const Account = getAccountModel();
+        const Character = getCharacterModel();
 
-//         let characterData = null;
+        const account = await Account.findOne({
+            _id: idAccount,
+            email: email as string
+        }).select('-password');
 
-//         if (idCharacter && typeof idCharacter === 'string') {
-//             characterData = await Character.findOne({
-//                 _id: idCharacter,
-//                 idAccount
-//             });
+        if (!account) {
+            throw createError({
+                statusCode: 404,
+                message: 'Cuenta no encontrada'
+            });
+        }
 
-//             if (!characterData) {
-//                 return res.status(404).json({
-//                     success: false,
-//                     error: 'Personaje no encontrado'
-//                 });
-//             }
-//         }
+        let characterData = null;
 
-//         return res.status(200).json({
-//             success: true,
-//             data: {
-//                 account: account.toObject(),
-//                 character: characterData ? characterData.toObject() : null
-//             }
-//         });
-//     } catch (error) {
-//         console.error('Error al obtener datos:', error);
-//         return res.status(500).json({
-//             success: false,
-//             error: 'Error interno del servidor'
-//         });
-//     }
-// }
+        if (idCharacter && typeof idCharacter === 'string') {
+            try {
+                characterData = await Character.findOne({
+                    idAccount: idAccount,
+                    _id: idCharacter
+                });
+            } catch (error) {
+                console.log('No se ha encontrado el personaje');
+            }
+            if (!characterData) {
+                // throw createError({
+                //     statusCode: 404,
+                //     message: 'Personaje no encontrado'
+                // });
+            }
+        }
+
+        return {
+            success: true,
+            data: {
+                account: account.toObject(),
+                character: characterData ? characterData.toObject() : null
+            }
+        };
+    } catch (error: any) {
+        console.error('Error al obtener datos:', error);
+        
+        // Si es un error que nosotros lanzamos, lo devolvemos como está
+        if (error.statusCode) {
+            return {
+                success: false,
+                error: error.message
+            };
+        }
+
+        // Si es un error interno, devolvemos un mensaje genérico
+        return {
+            success: false,
+            error: 'Error interno del servidor'
+        };
+    }
+});
 
 // export default withAuth(handler); 

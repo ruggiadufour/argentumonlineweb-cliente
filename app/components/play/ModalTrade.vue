@@ -56,8 +56,6 @@ const handleSelectItem = (item: TItemTrade | undefined) => {
     uiStore.ui.trade.imgItem = "";
     uiStore.ui.trade.goldItem = 0;
   }
-
-  // ui.current.setProperty("trade", UIStore.trade);
 };
 </script>
 

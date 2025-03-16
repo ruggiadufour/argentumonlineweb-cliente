@@ -59,7 +59,7 @@ const handleSelectItem = (i: number) => {
 const handleShowConfiguration = () => {
   uiStore.ui.showModalControlPanel = true;
   uiStore.ui.tmpKeyCodeDefault = _.cloneDeep(uiStore.ui.keyCodeDefault);
-  emit('onCharKeyCodeDefault');
+  emit("onCharKeyCodeDefault");
 };
 </script>
 
@@ -67,42 +67,43 @@ const handleShowConfiguration = () => {
   <div class="content_right">
     <div class="header">
       <div class="level">{{ uiStore.ui.user.level }}</div>
-    </div>
-    <div class="configuration" @click="handleShowConfiguration" />
-    <div class="name">{{ uiStore.ui.user.nameCharacter }}</div>
-    <div class="exp">
-      <div
-        class="progress_bar"
-        :style="{
-          width: progressBarPx,
-        }"
-      />
-      <div class="porcentaje">
-        {{ percentage }}
+
+      <div class="configuration" @click="handleShowConfiguration" />
+      <div class="name">{{ uiStore.ui.user.nameCharacter }}</div>
+      <div class="exp">
+        <div
+          class="progress_bar"
+          :style="{
+            width: progressBarPx,
+          }"
+        />
+        <div class="porcentaje">
+          {{ percentage }}
+        </div>
+        <div class="num">{{ user.exp }} / {{ user.expNextLevel }}</div>
       </div>
-      <div class="num">{{ user.exp }} / {{ user.expNextLevel }}</div>
-    </div>
-    <div class="buttons">
-      <div
-        class="button_inv"
-        :class="{
-          buttonInvSelected: !uiStore.ui.showInventary,
-        }"
-        @click="handleShowInventary"
-      />
-      <div
-        class="button_spell"
-        :class="{
-          buttonSpellSelected: uiStore.ui.showInventary,
-        }"
-        @click="handleShowSpells"
-      />
+      <div class="buttons">
+        <div
+          class="button_inv"
+          :class="{
+            buttonInvSelected: !uiStore.ui.showInventary,
+          }"
+          @click="handleShowInventary"
+        />
+        <div
+          class="button_spell"
+          :class="{
+            buttonSpellSelected: uiStore.ui.showInventary,
+          }"
+          @click="handleShowSpells"
+        />
+      </div>
     </div>
     <div class="body">
       <div v-show="uiStore.ui.showInventary" class="inventary">
         <Inventary
           :graphics="graphics"
-          :handleSelectItem="handleSelectItem"
+          @on-select-item="handleSelectItem"
           @on-use-item="emit('onUseItem', $event)"
         />
       </div>
@@ -133,7 +134,7 @@ const handleShowConfiguration = () => {
         </div>
         <div class="mana">
           <div
-            className="{style.progress_bar}"
+            class="progress_bar"
             :style="{
               width: progressBarManaPx,
             }"
@@ -353,13 +354,31 @@ const handleShowConfiguration = () => {
       }
     }
     .spell {
-      display: none;
       margin-top: 45px;
       margin-left: 43px;
       width: 300px;
       height: 134px;
       overflow-y: scroll;
       font-size: 0;
+    }
+    .slot_spell {
+      cursor: pointer;
+      width: 64px;
+      height: 64px;
+      background-image: url("/static/imgs/slotHechi.png");
+      background-repeat: no-repeat;
+      display: inline-block;
+      margin-right: 6px;
+      margin-bottom: 6px;
+      position: relative;
+      .img_spell {
+        width: 60px;
+        height: 60px;
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        background-size: 100%;
+      }
     }
     .last_slot_spell {
       margin-right: 0;

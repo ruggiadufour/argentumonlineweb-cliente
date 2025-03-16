@@ -37,8 +37,6 @@ const selectItem = (i: number) => {
       }.png`;
     }
 
-    // ui.current.setProperty("keyMacro", currentKeyMacro);
-
     return;
   }
 

@@ -31,8 +31,6 @@ const handleKeyMacro = (e: KeyboardEvent) => {
     uiStore.ui.keyMacro.key = keyCode;
     uiStore.ui.keyMacro.keyChar = fromChar;
   }
-
-  // ui.setProperty("keyMacro", uiStore.ui.keyMacro);
 };
 
 const saveMacro = () => {
@@ -47,11 +45,6 @@ const saveMacro = () => {
   };
 
   uiStore.ui.keyCodeMacros[uiStore.ui.keyMacro.key] = uiStore.ui.keyMacro.indexMacro;
-
-  // ui.setProperties({
-  //     valueKeyMacro: uiStore.ui.valueKeyMacro,
-  //     keyCodeMacros: uiStore.ui.keyCodeMacros,
-  // });
   uiStore.ui.showMacroConfig = false;
 
   window.localStorage.setItem("macros", JSON.stringify(uiStore.ui.valueKeyMacro));

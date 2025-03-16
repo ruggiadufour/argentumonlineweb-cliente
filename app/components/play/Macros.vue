@@ -33,9 +33,6 @@ const handleShowMacroConfig = (e: MouseEvent, key: number) => {
   uiStore.ui.keyMacro.key = -1;
   uiStore.ui.keyMacro.keyChar = "";
 
-  // ui.current.setProperties({
-  //   keyMacro: uiStore.ui.keyMacro,
-  // });
   uiStore.ui.showMacroConfig = true;
 };
 </script>

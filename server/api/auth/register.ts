@@ -78,3 +78,104 @@
 // }
 
 // export default withAuth(handler); 
+
+import { getAccountModel } from '../../models/Account';
+
+interface RegisterCredentials {
+    name: string;
+    email: string;
+    password: string;
+}
+
+// Cookie configuration - mantener consistente con login
+const COOKIE_CONFIG = {
+    name: 'userId',
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax' as const,
+    maxAge: 60 * 60 * 24 * 7 // 1 semana
+};
+
+export default defineEventHandler(async (event) => {
+    // Verificamos que sea método POST
+    if (event.method !== 'POST') {
+        throw createError({
+            statusCode: 405,
+            message: 'Método no permitido'
+        });
+    }
+
+    try {
+        const body = await readBody<RegisterCredentials>(event);
+        const { name, email, password } = body;
+
+        // Validar campos requeridos
+        if (!name || !email || !password) {
+            throw createError({
+                statusCode: 400,
+                message: 'Todos los campos son requeridos'
+            });
+        }
+
+        const Account = getAccountModel();
+
+        // Verificar si el usuario ya existe
+        const existingUser = await Account.findOne({
+            $or: [
+                { nameSanitized: name.toLowerCase() },
+                { email: email.toLowerCase() }
+            ]
+        });
+
+        if (existingUser) {
+            throw createError({
+                statusCode: 400,
+                message: 'El usuario o email ya está registrado'
+            });
+        }
+
+        // Crear nuevo usuario
+        const newUser = new Account({
+            name,
+            nameSanitized: name.toLowerCase(),
+            email: email.toLowerCase(),
+            password
+        });
+
+        await newUser.save();
+
+        // Guardamos el ID del usuario en una cookie
+        const userId = newUser._id.toString();
+        setCookie(event, COOKIE_CONFIG.name, userId, COOKIE_CONFIG);
+
+        // Preparamos la respuesta con los datos del usuario
+        const bodyAccount = {
+            accountId: newUser._id,
+            name: newUser.name,
+            nameSanitized: newUser.nameSanitized,
+            email: newUser.email
+        };
+
+        return {
+            success: true,
+            data: { user: bodyAccount }
+        };
+
+    } catch (error: any) {
+        console.error('Error en registro:', error);
+        
+        // Si es un error que nosotros lanzamos, lo devolvemos como está
+        if (error.statusCode) {
+            return {
+                success: false,
+                error: error.message
+            };
+        }
+
+        // Si es un error interno, devolvemos un mensaje genérico
+        return {
+            success: false,
+            error: 'Error interno del servidor'
+        };
+    }
+}); 

@@ -43,7 +43,7 @@ onMounted(() => {
   console.log("Header", authStore.account);
 
   const initializeComponent = async () => {
-    if (authStore.account.accountId && !loadCharacters.value) {
+    if (authStore.account?.accountId && !loadCharacters.value) {
       loadCharacters.value = true;
       getAllCharacters();
     }
@@ -97,14 +97,18 @@ const renderCharacters = () => {
   });
 };
 
-const play = (character: unknown, key: number) => {
+const play = (character: Record<string, any>, key: number) => {
+  console.log("!", !authStore.account);
+  if (!authStore.account) return;
+  console.log("play", character);
+
   if (!character) {
     openModalCharacters.value = false;
     return router.push("/createCharacter");
   }
 
-  window.localStorage.setItem("idAccount", authStore.account.accountId);
-  window.localStorage.setItem("email", authStore.account.email);
+  window.localStorage.setItem("idAccount", authStore.account.accountId || "");
+  window.localStorage.setItem("email", authStore.account.email || "");
   if (typeGame.value === "PvE") {
     window.localStorage.setItem("idCharacter", character._id);
   } else {
@@ -125,7 +129,7 @@ const openModal = () => {
   //   return;
   // }
 
-  if (!authStore.account.accountId) {
+  if (!authStore.account?.accountId) {
     return router.push("/register");
   }
 
@@ -136,7 +140,7 @@ const openModal = () => {
 watchEffect(() => {
   if (
     typeof window !== "undefined" &&
-    authStore.account.accountId &&
+    authStore.account?.accountId &&
     !loadCharacters.value
   ) {
     getAllCharacters();
@@ -145,72 +149,70 @@ watchEffect(() => {
 </script>
 
 <template>
-  <template>
-    <div class="logo">
+  <div class="logo">
+    <NuxtLink to="/home">
+      <img src="/static/imgs/logo.png" alt="logo" />
+    </NuxtLink>
+  </div>
+
+  <nav class="nav">
+    <ul>
       <NuxtLink to="/home">
-        <img src="/static/imgs/logo.png" alt="logo" />
+        <li class="inicio">INICIO</li>
       </NuxtLink>
-    </div>
 
-    <nav class="nav">
-      <ul>
-        <NuxtLink to="/home">
-          <li class="inicio">INICIO</li>
-        </NuxtLink>
+      <a @click="openModal">
+        <li class="jugar" />
+      </a>
 
-        <a @click="openModal">
-          <li class="jugar" />
-        </a>
+      <NuxtLink to="/ranking">
+        <li class="inicio">RANKING</li>
+      </NuxtLink>
+    </ul>
+  </nav>
+  <div v-show="openModalCharacters" class="modalPlay">
+    <div class="shadow">
+      <div class="header">
+        <div class="selectTypeGame">
+          <button
+            :class="typeGame === 'PvE' ? 'selected' : ''"
+            @click="changeTypeGame('PvE')"
+          >
+            PvE
+          </button>
+          <button
+            :class="typeGame === 'PvP' ? 'selected' : ''"
+            @click="changeTypeGame('PvP')"
+          >
+            PvP
+          </button>
+        </div>
 
-        <NuxtLink to="/ranking">
-          <li class="inicio">RANKING</li>
-        </NuxtLink>
-      </ul>
-    </nav>
-    <div v-show="openModalCharacters" class="modalPlay">
-      <div class="shadow">
-        <div class="header">
-          <div class="selectTypeGame">
-            <button
-              :class="typeGame === 'PvE' ? 'selected' : ''"
-              @click="changeTypeGame('PvE')"
-            >
-              PvE
-            </button>
-            <button
-              :class="typeGame === 'PvP' ? 'selected' : ''"
-              @click="changeTypeGame('PvP')"
-            >
-              PvP
-            </button>
-          </div>
-
-          <!-- <FontAwesomeIcon
+        <!-- <FontAwesomeIcon
               icon={faTimes}
               class="closeWindow"
               @click="openModalCharacters = !openModalCharacters"
           /> -->
-        </div>
+      </div>
 
-        <div v-for="(character, i) of boxCharacters" class="contentGral" :key="i">
-          <span class="name">{{ character ? character.name : "" }}</span>
-          <canvas
-            ref="canvasCharacterRefs"
-            class="contentImgA"
-            @click="play(character, i)"
-            width="80"
-            height="100"
-          />
-        </div>
+      <div v-for="(character, i) of boxCharacters" class="contentGral" :key="i">
+        <span class="name">{{ character ? character.name : "" }}</span>
+        <canvas
+          ref="canvasCharacterRefs"
+          class="contentImgA"
+          @click="play(character, i)"
+          width="80"
+          height="100"
+        />
+      </div>
 
-        <div class="createCharacter" data-js="createCharacter">
-          <NuxtLink to="/createCharacter">
-            <div className="{style.buttonRegister}">{buttonCreatePj}</div>
-          </NuxtLink>
-        </div>
+      <div class="createCharacter" data-js="createCharacter">
+        <NuxtLink to="/createCharacter">
+          <div className="{style.buttonRegister}">{buttonCreatePj}</div>
+        </NuxtLink>
       </div>
     </div>
-  </template>
+  </div>
 </template>
 
 <style scoped>

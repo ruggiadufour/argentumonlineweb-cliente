@@ -12,25 +12,23 @@ const openConsole = () => {
 </script>
 
 <template>
-  <template>
-    <div
-      id="console"
-      class="console"
-      :style="{
-        display: uiStore.ui.showConsole ? 'block' : 'none',
-      }"
-    >
-      <span
-        v-for="message in uiStore.ui.messagesConsole"
-        :style="message.style"
-        :key="message.id"
-        v-html="message.message"
-      />
-    </div>
-    <div class="openConsole" title="Abrir o cerrar consola" @click="openConsole">
-      <!-- <FontAwesomeIcon icon={faComment as any} /> -->
-    </div>
-  </template>
+  <div
+    id="console"
+    class="console"
+    :style="{
+      display: uiStore.ui.showConsole ? 'block' : 'none',
+    }"
+  >
+    <span
+      v-for="message in uiStore.ui.messagesConsole"
+      :style="message.style"
+      :key="message.id"
+      v-html="message.message"
+    />
+  </div>
+  <div class="openConsole" title="Abrir o cerrar consola" @click="openConsole">
+    <!-- <FontAwesomeIcon icon={faComment as any} /> -->
+  </div>
 </template>
 
 <style scoped>
