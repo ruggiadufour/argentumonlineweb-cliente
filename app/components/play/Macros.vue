@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useUIStore } from "@/store/ui.store";
-import { AMOUNT_SLOTS_MACROS } from "~/utils/constants";
+import { AMOUNT_SLOTS_MACROS } from "@/utils/constants";
 
 const { modalMacro } = defineProps<{
   modalMacro: HTMLDivElement;

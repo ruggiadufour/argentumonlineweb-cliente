@@ -11,7 +11,7 @@ const uiStore = useUIStore();
 const boxSpells = computed(() => {
   const boxes = [];
   for (let i = 1; i < 29; i++) {
-    const spell = uiStore.ui.user.spells[i];
+    const spell = uiStore.ui.user.spells?.[i];
     boxes.push(spell);
   }
   return boxes;

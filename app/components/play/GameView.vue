@@ -46,12 +46,13 @@ defineExpose({
 
 <template>
   <template>
-    <canvas width="544" height="544" id="canvas_background" class="background" />
-    <canvas width="544" height="544" id="canvas_foreground" class="foreground" />
-    <canvas width="544" height="544" id="canvas_items" class="items" />
-    <canvas width="544" height="544" id="canvas_techos" class="techos" />
-    <canvas width="544" height="544" id="canvas_textos" class="textos" />
+    <canvas ref="canvasBackground" width="544" height="544" id="canvas_background" class="background" />
+    <canvas ref="canvasForeground" width="544" height="544" id="canvas_foreground" class="foreground" />
+    <canvas ref="canvasItems" width="544" height="544" id="canvas_items" class="items" />
+    <canvas ref="canvasTechos" width="544" height="544" id="canvas_techos" class="techos" />
+    <canvas ref="canvasTextos" width="544" height="544" id="canvas_textos" class="textos" />
     <canvas
+      ref="canvasMouseEvent"
       width="544"
       height="544"
       id="canvas_mouseEvent"

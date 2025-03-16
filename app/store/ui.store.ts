@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia'
 import { generateKeyCodeDefault, generateKeyMacro, generateListKeyMacro } from '@/utils/genereators'
-import type { TUI } from '~/types'
-import { User } from '~/engine'
+import type { TUI } from '@/types'
+import { User } from '@/engine'
 
 export const useUIStore = defineStore('ui', ()=>{
     const ui = reactive<TUI>({
-        itemSelected: false,
+        itemSelected: -1,
         hechizoSelected: false,
         timeRangeStart: 0,
         timeSpellStart: 0,
@@ -14,7 +14,7 @@ export const useUIStore = defineStore('ui', ()=>{
         showInventary: true,
         showMacroConfig: false,
         loading: true,
-        user: new User(),
+        user: {} as User,
         selectItem: 0,
         showConsole: true,
         messagesConsole: [],

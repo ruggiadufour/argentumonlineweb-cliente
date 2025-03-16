@@ -7,7 +7,7 @@ defineEmits<{}>();
 const uiStore = useUIStore();
 </script>
 <template>
-  <div class="progressBar" :style="{ display: uiStore.ui.loading ? 'block' : 'none' }">
+  <div class="progressBar">
     <div class="logo_tmp" />
     <div class="text">
       <span id="porcentajeBarra">

@@ -23,7 +23,7 @@ import {
   GameView,
 } from "@/components";
 import { useUIStore } from "@/store/ui.store";
-import type { TUI } from "~/types";
+import type { TUI } from "@/types";
 
 const uiStore = useUIStore();
 const modalMacro = ref<HTMLDivElement>();
@@ -232,10 +232,6 @@ onBeforeUnmount(() => {
 });
 
 const setCanvas = () => {
-    console.log('initCanvas');
-    console.log(gameView.value);
-    
-
   if (!gameView.value) return;
 
   canvas.background = gameView.value?.canvasBackground || null;
@@ -284,17 +280,25 @@ const handleSelectSpell = (i: number) => {
 </script>
 
 <template>
-  <LoadingInfo />
+  <LoadingInfo v-if="uiStore.ui.loading" />
 
   <ul class="modalInfo" />
 
-  <Configuration :config="config" @on-char-key-code-default="handleCharKeyCodeDefault" />
+  <Configuration
+    v-if="!uiStore.ui.loading"
+    :config="config"
+    @on-char-key-code-default="handleCharKeyCodeDefault"
+  />
 
   <div class="modalReconnect" style="top: 285px; left: 638.5px" />
 
   <ConfigurationMacro v-if="modalMacro" :modal-macro="modalMacro" :config="config" />
 
-  <ModalTrade @on-buy-trade="game.buyTrade" @on-sell-trade="game.sellTrade" />
+  <ModalTrade 
+    v-if="!uiStore.ui.loading"
+    @on-buy-trade="game.buyTrade"
+    @on-sell-trade="game.sellTrade"
+  />
 
   <div class="outer" :style="{ display: uiStore.ui.loading ? 'none' : 'table' }">
     <div class="middle">
@@ -310,13 +314,18 @@ const handleSelectSpell = (i: number) => {
               ref="input"
               v-model="uiStore.ui.textDialog"
             />
-            <GameView :engine="engine" :canvas="canvas" />
-            <Console />
+            <GameView 
+              ref="gameView"
+              :engine="engine" 
+              :canvas="canvas" 
+            />
+            <Console v-if="!uiStore.ui.loading" />
           </div>
 
           <Macros v-if="modalMacro" :modal-macro="modalMacro" />
         </div>
         <PlayerPannel
+          v-if="!uiStore.ui.loading"
           @on-char-key-code-default="handleCharKeyCodeDefault"
           @on-select-spell="handleSelectSpell"
           @on-use-item="game.useItem"
