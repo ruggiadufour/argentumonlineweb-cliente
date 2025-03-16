@@ -15,7 +15,6 @@ import {
 import {
   LoadingInfo,
   Configuration,
-  ConfigurationMacro,
   ModalTrade,
   Macros,
   Console,
@@ -26,7 +25,6 @@ import { useUIStore } from "@/store/ui.store";
 import type { TUI } from "@/types";
 
 const uiStore = useUIStore();
-const modalMacro = ref<HTMLDivElement>();
 const gameView = ref<InstanceType<typeof GameView>>();
 const canvas: Record<string, HTMLCanvasElement | null> = {
   background: null,
@@ -35,7 +33,7 @@ const canvas: Record<string, HTMLCanvasElement | null> = {
   items: null,
   textos: null,
 };
-const ui = new UI(uiStore as any);
+const ui = new UI((()=>uiStore) as any);
 let pkg: Package = {};
 let inits: Inits = {};
 let user: User = {};
@@ -70,11 +68,6 @@ onMounted(() => {
     if (defaultKeys) {
       const jsonDefaultKeys = JSON.parse(defaultKeys);
 
-      // TODO: ver si este await tiene algun efecto con el cambio
-      //   await ui.setProperties({
-      //     keyCodeDefault: _.cloneDeep(jsonDefaultKeys),
-      //     tmpKeyCodeDefault: _.cloneDeep(jsonDefaultKeys),
-      //   });
       uiStore.ui.keyCodeDefault = _.cloneDeep(jsonDefaultKeys);
       uiStore.ui.tmpKeyCodeDefault = _.cloneDeep(jsonDefaultKeys);
     }
@@ -291,8 +284,6 @@ const handleSelectSpell = (i: number) => {
 
   <div class="modalReconnect" style="top: 285px; left: 638.5px" />
 
-  <ConfigurationMacro v-if="modalMacro" :modal-macro="modalMacro" :config="config" />
-
   <ModalTrade 
     v-if="!uiStore.ui.loading"
     @on-buy-trade="game.buyTrade"
@@ -310,18 +301,17 @@ const handleSelectSpell = (i: number) => {
               name="text"
               autoFocus
               class="text"
-              ref="input"
+              placeholder="Escribe un mensaje..."
               v-model="uiStore.ui.textDialog"
             />
             <GameView 
               ref="gameView"
               :engine="engine" 
-              :canvas="canvas" 
             />
             <Console v-if="!uiStore.ui.loading" />
           </div>
 
-          <Macros v-if="modalMacro" :modal-macro="modalMacro" />
+          <Macros :config="config" />
         </div>
         <PlayerPannel
           v-if="!uiStore.ui.loading"
@@ -392,7 +382,6 @@ const handleSelectSpell = (i: number) => {
           position: absolute;
           margin: 0px;
           width: 538px;
-          display: none;
           z-index: 10;
         }
       }

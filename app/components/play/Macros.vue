@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import { useUIStore } from "@/store/ui.store";
 import { AMOUNT_SLOTS_MACROS } from "@/utils/constants";
+import ConfigurationMacro from "@/components/play/ConfigurationMacro.vue";
+import type { Config } from "@/engine";
 
-const { modalMacro } = defineProps<{
-  modalMacro: HTMLDivElement;
+const { config } = defineProps<{
+  config: Config;
 }>();
 defineEmits<{}>();
 
 const uiStore = useUIStore();
 const macros = ref<HTMLDivElement[]>([]);
+const configurationMacro = ref<InstanceType<typeof ConfigurationMacro>>();
 const boxMacros = computed(() => {
   const boxes = [];
   for (let i = 0; i < AMOUNT_SLOTS_MACROS; i++) {
@@ -23,8 +26,11 @@ const handleShowMacroConfig = (e: MouseEvent, key: number) => {
 
   const refMacro = macros.value[key];
   if (!refMacro) return;
-  modalMacro.style.left = `${refMacro.offsetLeft - 57}px`;
-  modalMacro.style.top = `${refMacro.offsetTop - 210}px`;
+  const modalMacro = configurationMacro.value?.modalMacro;
+  if (modalMacro) {
+    modalMacro.style.left = `${refMacro.offsetLeft - 57}px`;
+    modalMacro.style.top = `${refMacro.offsetTop - 210}px`;
+  }
 
   uiStore.ui.keyMacro.indexMacro = key;
   uiStore.ui.keyMacro.idPosItem = -1;
@@ -38,7 +44,8 @@ const handleShowMacroConfig = (e: MouseEvent, key: number) => {
 </script>
 
 <template>
-  <div className="{style.macros}">
+  <div class="macros">
+    <ConfigurationMacro ref="configurationMacro" :config="config" />
     <div
       v-for="(macro, i) of boxMacros"
       :key="i"

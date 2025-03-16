@@ -3,12 +3,12 @@ import _ from "lodash";
 import { useUIStore } from "@/store/ui.store";
 import type { Config, UI } from "@/engine";
 
-const { config, modalMacro } = defineProps<{
-  modalMacro: HTMLDivElement;
+const { config } = defineProps<{
   config: Config;
 }>();
 
 const emits = defineEmits<{}>();
+const modalMacro = ref<HTMLDivElement>();
 const uiStore = useUIStore();
 
 const handleKeyMacro = (e: KeyboardEvent) => {
@@ -53,6 +53,10 @@ const saveMacro = () => {
 const handleCloseModalMacro = () => {
   uiStore.ui.showMacroConfig = false;
 };
+
+defineExpose({
+  modalMacro,
+});
 </script>
 
 <template>
