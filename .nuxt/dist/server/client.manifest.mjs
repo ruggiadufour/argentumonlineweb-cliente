@@ -1,0 +1,1 @@
+export { default } from "file:///Users/angel_ruggia/Desktop/mine/rao2/argentumonlineweb-cliente/node_modules/.pnpm/@nuxt+vite-builder@3.16.0_@types+node@22.13.10_sass@1.85.1_typescript@5.8.2_vue@3.5.13/node_modules/@nuxt/vite-builder/dist/runtime/client.manifest.mjs"

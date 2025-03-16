@@ -1,6 +1,6 @@
 import { NextApiResponse } from 'next';
 import { withAuth } from '../../../lib/middleware';
-import { ApiResponse, ExtendedNextApiRequest } from '../../../types/api';
+import { ApiResponse, ExtendedNextApiRequest } from '../../../app/types/api';
 import Character from '../../../models/Character';
 
 async function handler(

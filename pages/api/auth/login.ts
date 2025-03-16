@@ -1,7 +1,7 @@
 import { NextApiResponse } from 'next';
 import { withAuth } from '../../../lib/middleware';
 import passport from 'passport';
-import { ApiResponse, LoginCredentials, ExtendedNextApiRequest } from '../../../types/api';
+import { ApiResponse, LoginCredentials, ExtendedNextApiRequest } from '../../../app/types/api';
 
 async function handler(
     req: ExtendedNextApiRequest,

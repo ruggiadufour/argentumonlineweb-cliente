@@ -1,6 +1,6 @@
 import { NextApiResponse } from 'next';
 import { withAuth } from '../../../lib/middleware';
-import { ApiResponse, ExtendedNextApiRequest, RegisterCredentials } from '../../../types/api';
+import { ApiResponse, ExtendedNextApiRequest, RegisterCredentials } from '../../../app/types/api';
 import getAccount from '../../../models/Account';
 
 const Account = getAccount();

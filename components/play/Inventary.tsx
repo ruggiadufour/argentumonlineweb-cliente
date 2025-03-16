@@ -60,35 +60,7 @@ const Inventary = ({
   };
 
   return (
-    <div className="">
-      {getSlots().map((item, i) => (
-        <div
-          className={`${style.slot_inv} ${
-            uiStore.selectItem === i ? style.item_selected : ""
-          }`}
-          key={i}
-          onClick={() => selectItem(i)}
-        >
-          <div
-            className={`${style.img_item} ${
-              item && !item.validUser ? style.itemNotValid : ""
-            }`}
-            style={{
-              backgroundImage: item
-                ? `url("/static/graficos/${
-                    graphics[item.grhIndex].numFile
-                  }.png")`
-                : "none",
-            }}
-          />
-          <div className={style.amount}>{item ? item.cant : ""}</div>
-
-          {item && item.equipped ? (
-            <div className={style.equipped}>E</div>
-          ) : null}
-        </div>
-      ))}
-    </div>
+   
   );
 };
 

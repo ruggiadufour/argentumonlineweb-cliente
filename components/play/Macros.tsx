@@ -21,62 +21,14 @@ const Macros = ({ modalMacro, ui }: TProps) => {
       const macro = uiStore.valueKeyMacro[i];
 
       html.push(
-        <div
-          key={i}
-          className={style.macro}
-          onContextMenu={(e) => handleShowMacroConfig(e, i)}
-          ref={(ref) => {
-            macros[i] = ref;
-          }}
-        >
-          {macro.idPosItem !== "" && macro.img ? (
-            <div
-              className={style.item}
-              style={{
-                backgroundImage: `url("${macro.img}")`,
-              }}
-            />
-          ) : null}
-
-          {macro.idSpell !== -1 && macro.img ? (
-            <div
-              className={style.spell}
-              style={{
-                backgroundImage: `url("${macro.img}")`,
-              }}
-            />
-          ) : null}
-
-          {macro.keyChar !== "" ? (
-            <div className={style.key}>{macro.keyChar}</div>
-          ) : null}
-        </div>
+        
       );
     }
 
     return html;
   };
 
-  const handleShowMacroConfig = (e, key: number) => {
-    e.preventDefault();
-
-    const refMacro = macros[key];
-
-    modalMacro.current.style.left = `${refMacro.offsetLeft - 57}px`;
-    modalMacro.current.style.top = `${refMacro.offsetTop - 210}px`;
-
-    UIStore.keyMacro.indexMacro = key;
-    UIStore.keyMacro.idPosItem = "";
-    UIStore.keyMacro.idPosSpell = -1;
-    UIStore.keyMacro.idSpell = -1;
-    UIStore.keyMacro.key = "";
-    UIStore.keyMacro.keyChar = "";
-
-    ui.current.setProperties({
-      showMacroConfig: true,
-      keyMacro: UIStore.keyMacro,
-    });
-  };
+  
 
   return <>{renderBoxMacros()}</>;
 };
