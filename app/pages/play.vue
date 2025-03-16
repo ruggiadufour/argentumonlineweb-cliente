@@ -85,7 +85,6 @@ onMounted(() => {
 
     inits = new Inits(ui);
     // inits.setUI(props);
-
     general = new General(pkg, config);
     game = new Game(inits, ui, user, pkg, config);
     engine = new Engine(inits, ui, user, pkg, config, game, canvas);
@@ -232,9 +231,6 @@ onBeforeUnmount(() => {
 });
 
 const setCanvas = () => {
-  $fetch('/api/auth/is_logged').then((res) => {
-    console.log(res);
-  });
   if (!gameView.value) return;
 
   canvas.background = gameView.value?.canvasBackground || null;

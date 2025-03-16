@@ -138,7 +138,8 @@ export default defineEventHandler(async (event) => {
         }
 
         // Guardamos el ID del usuario en una cookie
-        setCookie(event, COOKIE_CONFIG.name, user._id.toString(), COOKIE_CONFIG);
+        const userId = user._id.toString();
+        setCookie(event, COOKIE_CONFIG.name, userId, COOKIE_CONFIG);
 
         // Preparamos la respuesta con los datos del usuario
         const bodyAccount = {

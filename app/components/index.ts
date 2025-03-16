@@ -12,7 +12,7 @@ import Spells from "@/components/play/Spells.vue";
 // General
 // import Head from "@/components/Head";
 import Header from "@/components/Header.vue";
-import Login from "@/components/Login";
+import Login from "@/components/Login.vue";
 import MainContainer from "@/components/MainContainer.vue";
 
 export {

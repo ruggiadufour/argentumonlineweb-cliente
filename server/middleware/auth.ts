@@ -62,6 +62,8 @@ export default defineEventHandler(async (event) => {
                     // Si no encontramos el usuario, eliminamos la cookie
                     deleteCookie(event, COOKIE_CONFIG.name, COOKIE_CONFIG);
                 }
+            } else {
+                console.log('No userId cookie found');
             }
         } catch (sessionError) {
             console.error('Error al obtener la sesión:', sessionError);

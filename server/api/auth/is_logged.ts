@@ -7,26 +7,19 @@ interface SessionData {
 
 export default defineEventHandler(async (event) => {
   try {
-    const session = await getSession<SessionData>(event, {
-      name: 'nuxt-session',
-      password: process.env.SESSION_SECRET || 'super-secret-key'
-    });
     
     return {
       success: true,
       data: {
-        logged: !!session.data?.userId,
+        logged: !!event.context.auth?.user,
         user: event.context.auth?.user || null
       }
     };
   } catch (error) {
     console.error("Error al verificar autenticación:", error);
-    return {
-      success: true,
-      data: {
-        logged: false,
-        user: null
-      }
-    };
+    throw createError({
+      statusCode: 500,
+      message: "Error interno del servidor"
+    });
   }
 });

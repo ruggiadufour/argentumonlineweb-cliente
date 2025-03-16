@@ -38,7 +38,7 @@ class Connection {
         this.config.ws.onopen = () => {
             this.ui.setProperty("showModalReconnect", false);
 
-            console.log("Conecto Web Socket");
+            console.log("Conect Web Socket");
             this.game.connectCharacter();
 
             setInterval(() => {
