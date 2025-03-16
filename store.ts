@@ -1,6 +1,6 @@
 import { createStore, applyMiddleware, compose, Store, Action } from 'redux';
 import { thunk, ThunkAction, ThunkDispatch } from 'redux-thunk';
-import { RootState, Account, AppDispatch } from './types/store';
+import { RootState, Account, AppDispatch } from './app/types/store';
 
 const InitialState: RootState = {
     account: {},
