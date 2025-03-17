@@ -1,27 +1,19 @@
 import type { TUI } from "@/types";
-
-type Writeable<T> = { -readonly [P in keyof T]: T[P] };
-type TStore = Writeable<TUI>;
-// type TStore = Snapshot<TUI>;
+import { useUIStore } from "@/store/ui.store";
 
 class UI {
-  getStore: any;
-  refs: Record<string, null | HTMLElement> = {
-    console: null,
-  };
+  store: ReturnType<typeof useUIStore>;
 
-  constructor(store: TStore) {
-    this.getStore = store;
+  constructor() {
+    this.store = useUIStore();
   }
 
   get state() {
-    const store = this.getStore();
-    return store.ui;
+    return this.store.ui;
   }
 
-  setProperty(property: string, value: any) {
-    const store = this.getStore();
-    
+  setProperty(property: keyof TUI, value: typeof this.state[keyof TUI]) {
+    const store = this.store;
     if (property in this.state) {
       if (property === 'user') {
         // For user updates, we need to ensure we maintain reactivity
@@ -44,7 +36,7 @@ class UI {
   }
 
   setUserProperty(property: string, value: any) {
-    const store = this.getStore();
+    const store = this.store;
     if (typeof value === 'object' && value !== null) {
       store.ui.user[property] = { ...store.ui.user[property], ...value };
     } else {
@@ -52,8 +44,8 @@ class UI {
     }
   }
 
-  setProperties(properties: Partial<TStore>) {
-    const store = this.getStore();
+  setProperties(properties: Partial<TUI>) {
+    const store = this.store;
     Object.keys(properties).forEach((key) => {
       if (key in store.ui) {
         if (key === 'user') {
@@ -64,14 +56,6 @@ class UI {
       }
     });
   }
-
-  setRef(ref: string, value: any) {
-    this.refs[ref] = value;
-  }
-
-  // setStore(store: TStore) {
-  //   this.store = store;
-  // }
 }
 
 export default UI;

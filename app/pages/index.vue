@@ -1,11 +1,8 @@
 <script setup lang="ts">
-
+navigateTo('/home');
 </script>
 
 <template>
-    <div>
-        <h1>Home</h1>
-    </div>
 </template>
 
 <style scoped>

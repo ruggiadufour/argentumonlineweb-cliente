@@ -33,7 +33,7 @@ const canvas: Record<string, HTMLCanvasElement | null> = {
   items: null,
   textos: null,
 };
-const ui = new UI((()=>uiStore) as any);
+const ui = new UI();
 let pkg: Package = {};
 let inits: Inits = {};
 let user: User = {};

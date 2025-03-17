@@ -15,7 +15,7 @@ const router = useRouter();
 const uiStore = useUIStore();
 const authStore = useAuthStore();
 
-const ui = new UI(uiStore as any);
+const ui = new UI();
 const inits = new Inits(ui);
 const openModalCharacters = useState("openModalCharacters", () => false);
 const characters = useState("characters", () => []);

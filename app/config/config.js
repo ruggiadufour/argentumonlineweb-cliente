@@ -51,4 +51,4 @@ self.nameRazas[self.razas.elfoDrow] = "Elfo Drow";
 self.nameRazas[self.razas.enano] = "Enano";
 self.nameRazas[self.razas.gnomo] = "Gnomo";
 
-module.exports = self;
+export default self;
