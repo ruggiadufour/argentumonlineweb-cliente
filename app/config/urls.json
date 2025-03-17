@@ -1,7 +1,7 @@
 {
     "/": "/home",
     "/register": "/register",
-    "/createCharacter": "/createCharacter",
+    "/create_character": "/create_character",
     "/ranking": "/ranking",
     "/play": "/play"
 }

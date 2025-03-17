@@ -40,8 +40,6 @@ const boxCharacters = computed(() => {
 });
 
 onMounted(() => {
-  console.log("Header", authStore.account);
-
   const initializeComponent = async () => {
     if (authStore.account?.accountId && !loadCharacters.value) {
       loadCharacters.value = true;
@@ -98,13 +96,11 @@ const renderCharacters = () => {
 };
 
 const play = (character: Record<string, any>, key: number) => {
-  console.log("!", !authStore.account);
   if (!authStore.account) return;
-  console.log("play", character);
 
   if (!character) {
     openModalCharacters.value = false;
-    return router.push("/createCharacter");
+    return router.push("/create_character");
   }
 
   window.localStorage.setItem("idAccount", authStore.account.accountId || "");
@@ -207,8 +203,8 @@ watchEffect(() => {
       </div>
 
       <div class="createCharacter" data-js="createCharacter">
-        <NuxtLink to="/createCharacter">
-          <div className="{style.buttonRegister}">{buttonCreatePj}</div>
+        <NuxtLink to="/create_character">
+          <div class="buttonRegister">{{ buttonCreatePj }}</div>
         </NuxtLink>
       </div>
     </div>

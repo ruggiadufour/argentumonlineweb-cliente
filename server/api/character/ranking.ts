@@ -2,6 +2,12 @@ import mongoose from 'mongoose';
 import { getCharacterModel } from '../../models/Character';
 import type { ICharacterDocument } from '../../models/Character';
 
+interface PopulatedCharacter extends ICharacterDocument {
+    accountId: {
+        username: string;
+    };
+}
+
 export default defineEventHandler(async (event) => {
     // Verificamos que sea método GET
     if (event.method !== 'GET') {
@@ -17,20 +23,45 @@ export default defineEventHandler(async (event) => {
         const limit = Math.min(parseInt(query.limit as string) || 100, 100);
         
         const Character = getCharacterModel();
+        
         const characters = await Character.find()
-            .select('name level experience race class')
             .sort({ level: -1, experience: -1 })
             .limit(limit)
             .populate('accountId', 'username');
 
-        const ranking = characters.map((char: ICharacterDocument & { accountId: { username: string } }, index) => ({
+        const ranking = (characters as PopulatedCharacter[]).map((char, index) => ({
             rank: index + 1,
             name: char.name,
             level: char.level,
             experience: char.experience,
-            race: (char as any).race,
-            class: (char as any).class,
-            owner: char.accountId.username
+            exp: char.exp,
+            expNextLevel: char.expNextLevel,
+            idClase: char.idClase,
+            idRaza: char.idRaza,
+            idGenero: char.idGenero,
+            idHead: char.idHead,
+            idBody: char.idBody,
+            idWeapon: char.idWeapon,
+            idShield: char.idShield,
+            idHelmet: char.idHelmet,
+            hp: char.hp,
+            maxHp: char.maxHp,
+            mana: char.mana,
+            maxMana: char.maxMana,
+            minHit: char.minHit,
+            maxHit: char.maxHit,
+            map: char.map,
+            posX: char.posX,
+            posY: char.posY,
+            gold: char.gold,
+            muerto: char.muerto,
+            dead: char.dead,
+            criminal: char.criminal,
+            navegando: char.navegando,
+            connected: char.connected,
+            items: char.items,
+            spells: char.spells,
+            owner: char.accountId?.username || 'Desconocido'
         }));
 
         return {
