@@ -1,3 +1,4 @@
+import type { ICharacter, TSimpleAccount } from '../../types';
 import { getCharacterModel } from '../../models/Character';
 
 // Mapeos de nombres a IDs según config.js
@@ -34,7 +35,7 @@ export default defineEventHandler(async (event) => {
 
     try {
         // Obtener el ID de la cuenta del usuario autenticado primero
-        const authUser = event.context.auth?.user;
+        const authUser: TSimpleAccount = event.context.auth?.user;
         console.log("Auth user:", authUser);
         
         if (!authUser?.accountId) {
@@ -52,7 +53,7 @@ export default defineEventHandler(async (event) => {
         console.log("Parsed data:", data);
 
         // Extraer los datos
-        const name = data.name;
+        const name: string = data.name;
         const characterClass = data.class;
         const race = data.race;
         const idGenero = data.idGenero;
@@ -108,7 +109,7 @@ export default defineEventHandler(async (event) => {
         }
 
         // Crear nuevo personaje con los campos según el modelo
-        const newCharacter = new Character({
+        const character: ICharacter = {
             name: name.toLowerCase(),
             idAccount: authUser.accountId,
             idClase,
@@ -141,7 +142,9 @@ export default defineEventHandler(async (event) => {
             items: [],
             spells: [],
             isNpc: false
-        });
+        };
+
+        const newCharacter = new Character(character);
 
         await newCharacter.save();
 

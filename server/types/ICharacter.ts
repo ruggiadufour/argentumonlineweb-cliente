@@ -1,4 +1,4 @@
-import type { TItem, TSpell } from "@/types";
+import type { TItem, TSpell } from "./index";
 
 export interface ICharacter {
     idAccount: string;

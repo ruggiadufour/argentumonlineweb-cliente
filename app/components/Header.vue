@@ -23,6 +23,15 @@ const charactersPvP = useState("charactersPvP", () => pvpChars);
 const typeGame = useState("typeGame", () => "PvE");
 const loadCharacters = useState("loadCharacters", () => false);
 const buttonCreatePj = useState("buttonCreatePj", () => "Creación deshabilitada");
+await useFetch("/api/character/list", {
+  onResponse({ response }) {
+    if (response._data.success) {
+      console.log(response._data.data.characters);
+      
+      characters.value = response._data.data.characters;
+    }
+  },
+});
 
 const canvasCharacterRefs = ref<HTMLCanvasElementExtended[]>([]);
 

@@ -1,3 +1,5 @@
+import type { TSpell } from "@/types";
+
 class User {
     moving: boolean;
     addtoUserPos: {
@@ -20,11 +22,7 @@ class User {
         validUser: number,
         info: string
     }>;
-    spells: Record<string, {
-        idSpell: number,
-        name: string,
-        manaRequired: number
-    }>;
+    spells: Record<string, TSpell>;
     clan: string;
     color: string;
     exp: number;
@@ -60,20 +58,20 @@ class User {
     scrollDirectionX: number;
     scrollDirectionY: number;
     frameCounter: number;
-    scrollPixelsPerFrameX: number;
-    scrollPixelsPerFrameY: number;
-    posYDescClient: number;
-    sumPosY: number;
-    lifeDescClient: number;
-    timeMoveDescClient: number;
-    timeWalk: number;
-    canvas: HTMLCanvasElement;
-    refCanvas: HTMLCanvasElement;
-    keydown: Record<string, unknown>;
-    keysTemp: string[];
-    feedBackButtonOpen: boolean;
-    volume: number;
-    muerto: boolean;
+    scrollPixelsPerFrameX: number = 0;
+    scrollPixelsPerFrameY: number = 0;
+    posYDescClient: number = 0;
+    sumPosY: number = 0;
+    lifeDescClient: number = 0;
+    timeMoveDescClient: number = 0;
+    timeWalk: number = 0;
+    canvas: HTMLCanvasElement | null = null;
+    refCanvas: HTMLCanvasElement | null = null;
+    keydown: Record<string, unknown> = {};
+    keysTemp: string[] = [];
+    feedBackButtonOpen: boolean = false;
+    volume: number = 0;
+    muerto: boolean = false;
     
     constructor() {
         this.addtoUserPos = {

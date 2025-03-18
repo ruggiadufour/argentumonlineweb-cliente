@@ -93,14 +93,15 @@ class Game {
 
         this.ui.setProperty("messagesConsole", messagesConsole);
 
-        const consoleElem = this.ui.refs.console;
-        if (consoleElem) {
-            const scrollHeight = consoleElem.scrollHeight;
-            const height = consoleElem.clientHeight;
+        // TODO: Implementar scroll de consola
+        // const consoleElem = this.ui.refs.console;
+        // if (consoleElem) {
+        //     const scrollHeight = consoleElem.scrollHeight;
+        //     const height = consoleElem.clientHeight;
 
-            const maxScrollTop = scrollHeight - height;
-            consoleElem.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
-        }
+        //     const maxScrollTop = scrollHeight - height;
+        //     consoleElem.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
+        // }
     };
 
     buyTrade = () => {

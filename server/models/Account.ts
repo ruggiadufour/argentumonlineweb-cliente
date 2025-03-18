@@ -1,14 +1,6 @@
 import mongoose, { Document, Model } from 'mongoose';
 import bcrypt from 'bcryptjs';
-
-export interface IAccount {
-    name: string;
-    nameSanitized: string;
-    email: string;
-    password: string;
-    createdAt?: Date;
-    updatedAt?: Date;
-}
+import type { IAccount } from '../types';
 
 export interface IAccountDocument extends IAccount, Document {
     comparePassword(candidatePassword: string): Promise<boolean>;
