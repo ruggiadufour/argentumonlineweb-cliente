@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { ICharacter } from "~/types";
 import configCharacter from "@/config/config";
 import { useAuthStore } from "~/store/auth.store";
 import { Inits, UI, RenderCharacters } from "~/engine";

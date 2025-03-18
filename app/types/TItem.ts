@@ -1,10 +1,9 @@
-export type TItem = {
-    idPos: number,
+import type { TItem } from "@/types";
+
+export type TItemPlay = TItem & {
     name: string,
     info: string,
-    cant: number,
     gold: number,
     imgItem: string,
     validUser: number,
-    equipped: boolean
 }

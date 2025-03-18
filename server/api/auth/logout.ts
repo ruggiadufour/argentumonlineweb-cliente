@@ -35,3 +35,44 @@
 // }
 
 // export default withAuth(handler); 
+
+export default defineEventHandler(async (event) => {
+    // Verificamos que sea método POST
+    if (event.method !== 'POST') {
+        throw createError({
+            statusCode: 405,
+            message: 'Método no permitido'
+        });
+    }
+
+    try {
+        // Configuración de la cookie igual que en el middleware de auth
+        const COOKIE_CONFIG = {
+            name: 'userId',
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax' as const,
+            maxAge: 60 * 60 * 24 * 7 // 1 semana
+        };
+
+        // Eliminar la cookie de autenticación
+        deleteCookie(event, COOKIE_CONFIG.name, COOKIE_CONFIG);
+
+        // Limpiar el contexto de autenticación
+        event.context.auth = {
+            user: null
+        };
+
+        return {
+            success: true,
+            data: { message: 'Sesión cerrada correctamente' }
+        };
+    } catch (error: any) {
+        console.error('Error en logout:', error);
+        
+        return {
+            success: false,
+            error: 'Error interno del servidor'
+        };
+    }
+}); 

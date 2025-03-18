@@ -2,7 +2,7 @@
 import { Inits, UI } from "@/engine";
 import { useAuthStore } from "~/store/auth.store";
 import nameClases from "@/config/config";
-import type { ICharacter } from "~/types";
+import type { ICharacter } from "@/types";
 
 const authStore = useAuthStore();
 const rankingList = useState<ICharacter[]>("rankingList", () => []);
@@ -39,7 +39,7 @@ const setHeadAndBody = () => {
     const grhHelmet = idHelmet ? inits.cascos[idHelmet] : "";
     const graphicGrhHelmet = inits.graphics[grhHelmet[2]];
 
-    const grhRopa = idBody ? inits.bodies[idBody][2] : "";
+    const grhRopa: string = idBody ? inits.bodies[idBody][2] : "";
     // if(!inits.graphics[grhRopa]) return;
     const currentGrhRopa = inits.graphics[grhRopa].frames[1];
     // if(!currentGrhRopa) return;

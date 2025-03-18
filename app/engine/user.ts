@@ -1,4 +1,4 @@
-import type { TSpell } from "@/types";
+import type { TSpellPlay } from "@/types";
 
 class User {
     moving: boolean;
@@ -22,7 +22,7 @@ class User {
         validUser: number,
         info: string
     }>;
-    spells: Record<string, TSpell>;
+    spells: Record<string, TSpellPlay>;
     clan: string;
     color: string;
     exp: number;

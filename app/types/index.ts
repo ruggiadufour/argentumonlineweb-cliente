@@ -8,4 +8,4 @@ export type * from "./TGraphic";
 export type * from "./TMap";
 export type * from "./TItem";
 export type * from "./TSpell";
-export type * from "./ICharacter";
+export type * from "../../server/types";

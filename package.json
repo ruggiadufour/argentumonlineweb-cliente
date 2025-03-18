@@ -16,6 +16,8 @@
         "@nuxt/server": "^2.18.1",
         "@pinia/nuxt": "^0.10.1",
         "@sidebase/nuxt-session": "^0.2.8",
+        "@types/bcryptjs": "^3.0.0",
+        "@types/bytebuffer": "^5.0.49",
         "@types/passport-local": "^1.0.38",
         "autoprefixer": "^10.4.21",
         "axios": "^1.8.3",

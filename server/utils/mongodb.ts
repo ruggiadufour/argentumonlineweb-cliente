@@ -26,7 +26,7 @@ async function connectDB(): Promise<Connection> {
     }
 
     if (!cached.promise) {
-        const opts = {
+        const opts: mongoose.ConnectOptions = {
             useNewUrlParser: true,
             useUnifiedTopology: true,
             bufferCommands: false,
