@@ -3,6 +3,7 @@ import { UI, Inits, RenderCharacters } from "@/engine";
 import { useUIStore } from "@/store/ui.store";
 import { useAuthStore } from "@/store/auth.store";
 import pvpChars from "@/config/pvpChars.json";
+import type { ICharacter } from "@/types";
 
 interface HTMLCanvasElementExtended extends HTMLCanvasElement {
   ctx: CanvasRenderingContext2D | null;
@@ -18,11 +19,11 @@ const authStore = useAuthStore();
 const ui = new UI();
 const inits = new Inits(ui);
 const openModalCharacters = useState("openModalCharacters", () => false);
-const characters = useState("characters", () => []);
-const charactersPvP = useState("charactersPvP", () => pvpChars);
-const typeGame = useState("typeGame", () => "PvE");
+const characters = useState<ICharacter[]>("characters", () => []);
+const charactersPvP = useState<ICharacter[]>("charactersPvP", () => pvpChars as any);
 const loadCharacters = useState("loadCharacters", () => false);
 const buttonCreatePj = useState("buttonCreatePj", () => "Creación deshabilitada");
+
 await useFetch("/api/character/list", {
   onResponse({ response }) {
     if (response._data.success) {
@@ -40,7 +41,7 @@ const boxCharacters = computed(() => {
 
   for (let i = 0; i < 10; i++) {
     const character =
-      typeGame.value === "PvE" ? characters.value[i] : charactersPvP.value[i];
+      authStore.typeGame === "PvE" ? characters.value[i] : charactersPvP.value[i];
 
     boxes.push(character);
   }
@@ -83,8 +84,8 @@ const getAllCharacters = async () => {
   characters.value = [];
 };
 
-const changeTypeGame = async (newTypeGame: string) => {
-  typeGame.value = newTypeGame;
+const changeTypeGame = async (newTypeGame: "PvE" | "PvP") => {
+  authStore.typeGame = newTypeGame;
   buttonCreatePj.value =
     newTypeGame === "PvP" ? "Crear Personaje" : "Creación deshabilitada";
   renderCharacters();
@@ -93,7 +94,7 @@ const changeTypeGame = async (newTypeGame: string) => {
 const renderCharacters = () => {
   clearCanvas();
 
-  const tmpCharacters = typeGame.value === "PvE" ? characters : charactersPvP;
+  const tmpCharacters = authStore.typeGame === "PvE" ? characters : charactersPvP;
 
   tmpCharacters.value.forEach((character, index) => {
     const canvas = canvasCharacterRefs.value[index];
@@ -112,18 +113,9 @@ const play = (character: Record<string, any>, key: number) => {
     return router.push("/create_character");
   }
 
-  window.localStorage.setItem("idAccount", authStore.account.accountId || "");
-  window.localStorage.setItem("email", authStore.account.email || "");
-  if (typeGame.value === "PvE") {
-    window.localStorage.setItem("idCharacter", character._id);
-  } else {
-    window.localStorage.setItem("idCharacter", key.toString());
-  }
+  authStore.setCharacter(character, key);
 
-  window.localStorage.setItem("typeGame", typeGame.value === "PvE" ? "1" : "2");
-
-  // return router.push("/play", "", true);
-  document.location.href = "/play";
+  router.push("/play"); 
 };
 
 const openModal = () => {
@@ -180,13 +172,13 @@ watchEffect(() => {
       <div class="header">
         <div class="selectTypeGame">
           <button
-            :class="typeGame === 'PvE' ? 'selected' : ''"
+            :class="authStore.typeGame === 'PvE' ? 'selected' : ''"
             @click="changeTypeGame('PvE')"
           >
             PvE
           </button>
           <button
-            :class="typeGame === 'PvP' ? 'selected' : ''"
+            :class="authStore.typeGame === 'PvP' ? 'selected' : ''"
             @click="changeTypeGame('PvP')"
           >
             PvP
@@ -205,7 +197,7 @@ watchEffect(() => {
         <canvas
           ref="canvasCharacterRefs"
           class="contentImgA"
-          @click="play(character, i)"
+          @click="character ? play(character, i) : null"
           width="80"
           height="100"
         />

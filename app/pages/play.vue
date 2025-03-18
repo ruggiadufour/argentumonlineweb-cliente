@@ -45,6 +45,7 @@ let connection: Connection = {};
 let config: Config = {};
 
 onMounted(() => {
+  uiStore.ui.loading = true;
   setCanvas();
  
   const asyncInit = async () => {
