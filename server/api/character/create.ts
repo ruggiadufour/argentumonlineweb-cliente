@@ -130,7 +130,7 @@ export default defineEventHandler(async (event) => {
             maxMana: 100,
             minHit: 1,
             maxHit: 2,
-            map: 1,            // Mapa inicial
+            map: 1,            
             posX: 50,          // Posición inicial X
             posY: 50,  
             gold: 0,
