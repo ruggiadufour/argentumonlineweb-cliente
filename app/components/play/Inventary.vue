@@ -16,7 +16,7 @@ const clickUse = useState("clickUse", () => 0);
 
 const getSlots = () => {
   const slots_ = [];
-  for (let i = 1; i < 22; i++) {
+  for (let i = 0; i < 22; i++) {
     slots_.push(uiStore.ui.user.items?.[i] || null);
   }
   return slots_ as (User["items"][string] | null)[];
@@ -59,7 +59,7 @@ const getStyle = (item: any) => {
 </script>
 
 <template>
-  <div className="">
+  <div class="">
     <div
       v-for="(item, i) in getSlots()"
       :class="['slot_inv', uiStore.ui.itemSelected === i ? 'item_selected' : '']"

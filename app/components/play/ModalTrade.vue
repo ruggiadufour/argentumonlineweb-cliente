@@ -16,7 +16,7 @@ const handleCloseModalTrade = () => {
 
 const boxItemsTrade = computed(() => {
   const boxes = [];
-  for (let i = 1; i < 26; i++) {
+  for (let i = 0; i < 26; i++) {
     const item = uiStore.ui.trade.itemsTrade[i];
     boxes.push(item);
   }
@@ -25,7 +25,7 @@ const boxItemsTrade = computed(() => {
 
 const boxItemsUserTrade = computed(() => {
   const boxes = [];
-  for (let i = 1; i < 26; i++) {
+  for (let i = 0; i < 26; i++) {
     const item = uiStore.ui.trade.itemsUser[i];
     boxes.push(item);
   }
@@ -99,7 +99,7 @@ const handleSelectItem = (item: TItemTrade | undefined) => {
         >
           <div
             v-if="item"
-            className="{style.imgItem}"
+            class="imgItem"
             :style="{
               backgroundImage: item ? `url('${item.imgItem}')` : 'none',
             }"
