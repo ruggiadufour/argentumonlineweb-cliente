@@ -132,7 +132,7 @@ export default defineEventHandler(async (event) => {
             maxHit: 2,
             map: 1,            // Mapa inicial
             posX: 50,          // Posición inicial X
-            posY: 50,          // Posición inicial Y
+            posY: 50,  
             gold: 0,
             muerto: false,
             dead: false,
