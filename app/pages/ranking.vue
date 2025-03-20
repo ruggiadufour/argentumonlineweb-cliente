@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Inits, UI } from "@/engine";
-import { useAuthStore } from "~/store/auth.store";
+import { useAuthStore } from "@/store/auth.store";
 import nameClases from "@/config/config";
 import type { ICharacter } from "@/types";
 

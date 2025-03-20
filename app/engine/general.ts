@@ -13,9 +13,11 @@ class General {
         msg = msg.trim();
         if (msg) {
             const msgsplit = msg.split(" ");
+            const [fSegment] = msgsplit;
+            let firstSegment = fSegment || "";
 
-            if (msgsplit[0].charAt(0) == "/") {
-                msgsplit[0] = msgsplit[0].toLowerCase();
+            if (firstSegment.charAt(0) == "/") {
+                firstSegment = firstSegment.toLowerCase();
             }
             if (msg.length > this.config.textMaxLength) {
                 msg = msg.slice(0, this.config.textMaxLength);
@@ -23,7 +25,7 @@ class General {
 
             this.pkg.setPackageID(this.pkg.serverPacketID.dialog);
             this.pkg.writeString(msg);
-            this.config.ws.send(this.pkg.dataSend());
+            this.config.ws?.send(this.pkg.dataSend());
         }
     };
 }

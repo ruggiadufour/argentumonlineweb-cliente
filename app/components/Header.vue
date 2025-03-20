@@ -105,7 +105,7 @@ const renderCharacters = () => {
   });
 };
 
-const play = (character: Record<string, any>, key: number) => {
+const play = (character: Record<string, any> | undefined, key: number) => {
   if (!authStore.account) return;
 
   if (!character) {
@@ -197,7 +197,7 @@ watchEffect(() => {
         <canvas
           ref="canvasCharacterRefs"
           class="contentImgA"
-          @click="character ? play(character, i) : null"
+          @click="play(character, i)"
           width="80"
           height="100"
         />

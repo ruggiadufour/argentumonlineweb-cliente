@@ -145,7 +145,9 @@ class Package {
         this.bufferSnd = new ByteBuffer(ByteBuffer.DEFAULT_CAPACITY, true);
     }
 
-    setData = data => {
+    setData = (data: Buffer) => {
+        // TODO: ver corregir esto
+        // @ts-ignore
         this.bufferRcv = new ByteBuffer.wrap(data, "utf8", true);
     };
 
@@ -155,64 +157,64 @@ class Package {
         return packageID;
     };
 
-    setPackageID = packageID => {
+    setPackageID = (packageID: number) => {
         this.bufferSnd = new ByteBuffer(ByteBuffer.DEFAULT_CAPACITY, true);
         this.writeByte(packageID);
     };
 
-    writeByte = (numByte, signed = null) => {
+    writeByte = (numByte: number | string, signed = null) => {
         if (!numByte) {
             numByte = 0;
         }
 
         if (signed) {
-            this.bufferSnd.writeInt8(parseInt(numByte));
+            this.bufferSnd.writeInt8(Number(numByte));
         } else {
-            this.bufferSnd.writeUint8(parseInt(numByte));
+            this.bufferSnd.writeUint8(Number(numByte));
         }
     };
 
-    writeShort = (numShort, signed = null) => {
+    writeShort = (numShort: number | string, signed = null) => {
         if (!numShort) {
             numShort = 0;
         }
 
         if (signed) {
-            this.bufferSnd.writeInt16(parseInt(numShort));
+            this.bufferSnd.writeInt16(Number(numShort));
         } else {
-            this.bufferSnd.writeUint16(parseInt(numShort));
+            this.bufferSnd.writeUint16(Number(numShort));
         }
     };
 
-    writeInt = (numInt, signed = null) => {
+    writeInt = (numInt: number | string, signed = null) => {
         if (!numInt) {
             numInt = 0;
         }
 
         if (signed) {
-            this.bufferSnd.writeInt32(parseInt(numInt));
+            this.bufferSnd.writeInt32(Number(numInt));
         } else {
-            this.bufferSnd.writeUint32(parseInt(numInt));
+            this.bufferSnd.writeUint32(Number(numInt));
         }
     };
 
-    writeFloat = (numFloat) => {
+    writeFloat = (numFloat: number | string) => {
         if (!numFloat) {
             numFloat = 0;
         }
 
-        this.bufferSnd.writeFloat(parseInt(numFloat));
+        this.bufferSnd.writeFloat(Number(numFloat));
     };
 
-    writeDouble = numDouble => {
+    writeDouble = (numDouble: number | string) => {
         if (!numDouble) {
             numDouble = 0;
         }
 
-        this.bufferSnd.writeDouble(parseInt(numDouble));
+        this.bufferSnd.writeDouble(Number(numDouble));
     };
 
-    writeString = dataString => {
+    writeString = (dataString: string) => {
         if (!dataString) {
             dataString = "";
         }

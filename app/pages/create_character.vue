@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import configCharacter from "@/config/config";
-import { useAuthStore } from "~/store/auth.store";
-import { Inits, UI, RenderCharacters } from "~/engine";
+import { useAuthStore } from "@/store/auth.store";
+import { Inits, UI, RenderCharacters } from "@/engine";
 
 interface HTMLCanvasElementExtended extends HTMLCanvasElement {
   ctx: CanvasRenderingContext2D | null;

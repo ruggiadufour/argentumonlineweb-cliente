@@ -15,15 +15,17 @@ class Game {
         this.config = config;
     }
 
-    useItem = idPos => {
+    useItem = (idPos: number) => {
         if (idPos) {
-            const items = this.user.items;
-            const objItem = this.inits.objs[items[idPos].idItem];
+            const item = this.user.items[idPos];
+            if(!item) return;
 
-            if (objItem.proyectil && items[idPos].equipped) {
+            const objItem = this.inits.objs[item.idItem];
+
+            if (objItem.proyectil && item.equipped) {
                 this.ui.setProperty("crosshair", true);
 
-                this.config.itemSelected = items[idPos].idItem;
+                this.config.itemSelected = item.idItem;
             } else {
                 if (
                     +Date.now() - this.config.timeItemStart >
@@ -33,47 +35,39 @@ class Game {
 
                     this.pkg.setPackageID(this.pkg.serverPacketID.useItem);
                     this.pkg.writeInt(idPos);
-                    this.config.ws.send(this.pkg.dataSend());
+                    this.config.ws?.send(this.pkg.dataSend());
                 }
             }
         }
     };
 
-    equiparItem = (idPos, id) => {
+    equiparItem = (idPos: number, idItem: number) => {
         this.pkg.setPackageID(this.pkg.serverPacketID.equiparItem);
         this.pkg.writeInt(idPos);
-        this.config.ws.send(this.pkg.dataSend());
+        this.config.ws?.send(this.pkg.dataSend());
     };
 
     connectCharacter = () => {
-        this.pkg.setPackageID(this.pkg.serverPacketID.connectCharacter);
-        this.pkg.writeString(localStorage.getItem("idAccount"));
-        this.pkg.writeString(localStorage.getItem("idCharacter") || "");
-        this.pkg.writeString(localStorage.getItem("email"));
-        this.pkg.writeByte(parseInt(localStorage.getItem("typeGame")));
-        this.pkg.writeByte(parseInt(localStorage.getItem("idChar")));
+        const idAccount = localStorage.getItem("idAccount") || "";
+        const idCharacter = localStorage.getItem("idCharacter") || "";
+        const email = localStorage.getItem("email") || "";
+        const typeGame = localStorage.getItem("typeGame") || "";
+        const idChar = localStorage.getItem("idChar") || "";
 
-        this.config.ws.send(this.pkg.dataSend());
+        this.pkg.setPackageID(this.pkg.serverPacketID.connectCharacter);
+        this.pkg.writeString(idAccount);
+        this.pkg.writeString(idCharacter);
+        this.pkg.writeString(email);
+        this.pkg.writeByte(parseInt(typeGame));
+        this.pkg.writeByte(parseInt(idChar));
+
+        this.config.ws?.send(this.pkg.dataSend());
     };
 
-    writeConsole = (msg, color, bold = null, italic = null) => {
+    writeConsole = (msg: string, color: string = "white", isBold: boolean | false = false, isItalic: boolean | false = false) => {
         const messagesConsole = this.ui.state.messagesConsole;
-
-        if (!color) {
-            color = "white";
-        }
-
-        if (bold) {
-            bold = "bold";
-        } else {
-            bold = "normal";
-        }
-
-        if (italic) {
-            italic = "italic";
-        } else {
-            italic = "normal";
-        }
+        const bold = isBold ? "bold" : "normal";
+        const italic = isItalic ? "italic" : "normal";
 
         messagesConsole.push(
             {
@@ -109,7 +103,7 @@ class Game {
             this.pkg.setPackageID(this.pkg.serverPacketID.buyItem);
             this.pkg.writeByte(this.ui.state.trade.idPosTrade);
             this.pkg.writeShort(this.ui.state.cantTrade);
-            this.config.ws.send(this.pkg.dataSend());
+            this.config.ws?.send(this.pkg.dataSend());
         }
     };
 
@@ -118,7 +112,7 @@ class Game {
             this.pkg.setPackageID(this.pkg.serverPacketID.sellItem);
             this.pkg.writeByte(this.ui.state.trade.idPosInv);
             this.pkg.writeShort(this.ui.state.cantTrade);
-            this.config.ws.send(this.pkg.dataSend());
+            this.config.ws?.send(this.pkg.dataSend());
         }
     };
 }

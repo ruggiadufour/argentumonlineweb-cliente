@@ -1,4 +1,4 @@
-import type { TGraphic, TMap } from "@/types";
+import type { TGraphic, TMap, TUI } from "@/types";
 import { UI } from "@/engine";
 
 class Inits {
@@ -16,9 +16,9 @@ class Inits {
   mapasCargados: number;
   completedCount: number;
   loaded: boolean;
-  fxs: Record<string, any>;
+  fxs: Record<string, any> = {};
 
-  constructor(ui: UI = null) {
+  constructor(ui: UI) {
     this.ui = ui;
     this.preCacheGraphics = {};
     this.graphics = {};
@@ -37,7 +37,7 @@ class Inits {
     this.loaded = false;
   }
 
-  setUI = (properties) => {
+  setUI = (properties: Partial<TUI>) => {
     this.ui.setProperties(properties);
   };
 
@@ -61,7 +61,7 @@ class Inits {
   loadMaps = async () => {
     var arLoadMaps = [];
 
-    const typeGame = parseInt(localStorage.getItem("typeGame"));
+    const typeGame = Number(localStorage.getItem("typeGame") || "1");
 
     if (typeGame === 2) {
       this.ui.setProperty("mapasToLoad", 1);
@@ -78,7 +78,7 @@ class Inits {
     await Promise.all(arLoadMaps);
   };
 
-  loadMap = async (map) => {
+  loadMap = async (map: number) => {
     const response = await fetch("/static/mapas/mapa_" + map + ".map");
     const result = await response.json();
 
@@ -91,7 +91,7 @@ class Inits {
     this.ui.setProperty("mapasCargados", this.mapasCargados);
   };
 
-  createMapData = (idMap) => {
+  createMapData = (idMap: number) => {
     this.mapData[idMap] = [];
 
     for (var y = 1; y <= 100; y++) {
@@ -105,7 +105,7 @@ class Inits {
     }
   };
 
-  loadImage = (numFile) => {
+  loadImage = (numFile: number) => {
     return new Promise((resolve, reject) => {
       var image = new Image();
 

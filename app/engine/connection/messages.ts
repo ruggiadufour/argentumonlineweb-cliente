@@ -73,12 +73,14 @@ class Messages {
         };
     }
 
-    connectionMessages = res => {
+    connectionMessages = (res: MessageEvent) => {
         this.pkg.setData(res.data);
 
         const packageID = this.pkg.getPackageID();
 
-        this.dictionaryClient[packageID]();
+        if (this.dictionaryClient[packageID]) {
+            this.dictionaryClient[packageID]();
+        }
     };
 
     getMyCharacter = () => {
@@ -277,16 +279,18 @@ class Messages {
             for (let idIndexPos in this.user.items) {
                 const item = this.user.items[idIndexPos];
 
-                if (item.objType == this.config.objType.armaduras) {
+                if (item && item.objType == this.config.objType.armaduras) {
                     if (String(idIndexPos) != String(idPos)) {
-                        this.user.items[String(idIndexPos)].equipped = false;
+                        item.equipped = false;
                     }
                 }
             }
 
             const item = this.user.items[idPos];
 
-            this.user.items[idPos].equipped = !item.equipped;
+            if (item) {
+                item.equipped = !item.equipped;
+            }
 
             this.ui.setProperty("user", this.user);
         }
@@ -304,16 +308,18 @@ class Messages {
             for (let idIndexPos in this.user.items) {
                 const item = this.user.items[idIndexPos];
 
-                if (item.objType == this.config.objType.cascos) {
+                if (item && item.objType == this.config.objType.cascos) {
                     if (String(idIndexPos) != String(idPos)) {
-                        this.user.items[idIndexPos].equipped = false;
+                        item.equipped = false;
                     }
                 }
             }
 
             const item = this.user.items[idPos];
 
-            this.user.items[idPos].equipped = !item.equipped;
+            if (item) {
+                item.equipped = !item.equipped;
+            }
 
             this.ui.setProperty("user", this.user);
         }
@@ -331,16 +337,18 @@ class Messages {
             for (let idIndexPos in this.user.items) {
                 const item = this.user.items[idIndexPos];
 
-                if (item.objType == this.config.objType.armas) {
+                if (item && item.objType == this.config.objType.armas) {
                     if (String(idIndexPos) != String(idPos)) {
-                        this.user.items[idIndexPos].equipped = false;
+                        item.equipped = false;
                     }
                 }
             }
 
             const item = this.user.items[idPos];
 
-            this.user.items[idPos].equipped = !item.equipped;
+            if (item) {
+                item.equipped = !item.equipped;
+            }
 
             this.ui.setProperty("user", this.user);
         }
@@ -356,16 +364,18 @@ class Messages {
             for (let idIndexPos in this.user.items) {
                 const item = this.user.items[idIndexPos];
 
-                if (item.objType == this.config.objType.flechas) {
+                if (item && item.objType == this.config.objType.flechas) {
                     if (String(idIndexPos) != String(idPos)) {
-                        this.user.items[idIndexPos].equipped = false;
+                        item.equipped = false;
                     }
                 }
             }
 
             const item = this.user.items[idPos];
 
-            this.user.items[idPos].equipped = !item.equipped;
+            if (item) {
+                item.equipped = !item.equipped;
+            }
 
             this.ui.setProperty("user", this.user);
         }
@@ -381,16 +391,18 @@ class Messages {
             for (let idIndexPos in this.user.items) {
                 const item = this.user.items[idIndexPos];
 
-                if (item.objType == this.config.objType.escudos) {
+                if (item && item.objType == this.config.objType.escudos) {
                     if (String(idIndexPos) != String(idPos)) {
-                        this.user.items[idIndexPos].equipped = false;
+                        item.equipped = false;
                     }
                 }
             }
 
             const item = this.user.items[idPos];
 
-            this.user.items[idPos].equipped = !item.equipped;
+            if (item) {
+                item.equipped = !item.equipped;
+            }
 
             this.ui.setProperty("user", this.user);
         }
@@ -437,8 +449,8 @@ class Messages {
             this.game.writeConsole(
                 "[" + name + "]  " + htmlEntities(msg),
                 this.config.dialogs[id].color,
-                0,
-                1
+                false,
+                true
             );
         }
     };
@@ -455,7 +467,7 @@ class Messages {
         const bold = this.pkg.getByte();
         const italic = this.pkg.getByte();
 
-        this.game.writeConsole(msg, color, bold, italic);
+        this.game.writeConsole(msg, color, Boolean(bold), Boolean(italic));
     };
 
     pong = () => {
@@ -621,7 +633,11 @@ class Messages {
 
         if (this.user.id == id) {
             for (let idIndexPos in this.user.items) {
-                this.user.items[idIndexPos].equipped = false;
+                const item = this.user.items[idIndexPos];
+
+                if (item) {
+                    item.equipped = false;
+                }
             }
         }
 
@@ -652,8 +668,11 @@ class Messages {
         const idUser = this.pkg.getDouble();
         const idPos = this.pkg.getByte();
         const cant = this.pkg.getShort();
+        const item  = this.user.items[idPos];
 
-        const cantOld = this.user.items[idPos].cant;
+        if (!item) return;
+
+        const cantOld = item.cant;
 
         const newCant = cantOld - cant;
 
@@ -664,10 +683,12 @@ class Messages {
                 delete trade.itemsUser[idPos];
             }
         } else {
-            this.user.items[idPos].cant = newCant;
+            item.cant = newCant;
 
-            if (showModalTrade) {
-                trade.itemsUser[idPos].cant = newCant;
+            const itemTrade = trade.itemsUser[idPos];
+
+            if (showModalTrade && itemTrade) {
+                itemTrade.cant = newCant;
             }
         }
 
@@ -676,27 +697,50 @@ class Messages {
     };
 
     renderItem = () => {
-        const idItem = this.pkg.getInt(),
-            idMap = this.pkg.getShort(),
-            posX = this.pkg.getByte(),
-            posY = this.pkg.getByte();
+        const idItem = this.pkg.getInt();
+        const idMap = this.pkg.getShort();
+        const posX = this.pkg.getByte();
+        const posY = this.pkg.getByte();
 
-        this.inits.mapa[idMap][posY][posX].o = {
-            oi: idItem
-        };
+        const cell = this.getCell(idMap, posX, posY);
+        if(cell) {
+            cell.o = {
+                oi: idItem
+            };
+        }
 
         this.engine.updateItems(0, 0);
     };
+
+    getCell = (idMap: number, posX: number, posY: number) => {
+        const map = this.inits.mapa[idMap];
+        if(!map) return null;
+
+        const row = map[posY];
+        if(!row) return null;
+
+        const cell = row[posX];
+        if(!cell) return null;
+
+        return cell;
+    }
 
     deleteItem = () => {
-        const idMap = this.pkg.getShort(),
-            posX = this.pkg.getByte(),
-            posY = this.pkg.getByte();
+        const idMap = this.pkg.getShort()
+        const posX = this.pkg.getByte()
+        const posY = this.pkg.getByte();
 
-        delete this.inits.mapa[idMap][posY][posX].o;
+        const cell = this.getCell(idMap, posX, posY);
+        if(cell) delete cell.o;
 
         this.engine.updateItems(0, 0);
     };
+
+    getGraphicURL = (graphicIndex: number) => {
+        const graphic = this.inits.graphics[graphicIndex];
+        if(!graphic) return '';
+        return `/static/graficos/${graphic.numFile}.png`;
+    }
 
     agregarUserInvItem = () => {
         const trade = this.ui.state.trade;
@@ -718,18 +762,21 @@ class Messages {
 
         if (showModalTrade) {
             const item = this.user.items[idPos];
+            
+            if(trade.itemsUser[idPos]) {
+                trade.itemsUser[idPos] = {
+                    name: item.nameItem,
+                    info: item.info,
+                    gold: item.gold,
+                    imgItem: this.getGraphicURL(item.grhIndex),
+                    validUser: item.validUser,
+                    idPos: idPos,
+                    cant: item.cant,
+                    equipped: item.equipped,
+                    idItem: item.idItem,
+                };
+            }
 
-            trade.itemsUser[idPos] = {
-                idPos: idPos,
-                name: item.nameItem,
-                cant: item.cant,
-                info: item.info,
-                gold: item.gold,
-                imgItem: `/static/graficos/${this.inits.graphics[item.grhIndex].numFile
-                    }.png`,
-                validUser: item.validUser,
-                equipped: item.equipped
-            };
         }
 
         this.ui.setProperty("user", this.user);
@@ -741,8 +788,10 @@ class Messages {
         const posX = this.pkg.getByte();
         const posY = this.pkg.getByte();
         const blocked = this.pkg.getByte();
-
-        this.inits.mapa[idMap][posY][posX].b = blocked;
+        const cell = this.getCell(idMap, posX, posY);
+        if(cell) {
+            cell.b = blocked;
+        }
     };
 
     changeObjIndex = () => {
@@ -751,7 +800,10 @@ class Messages {
         const posY = this.pkg.getByte();
         const objIndex = this.pkg.getShort();
 
-        this.inits.mapa[idMap][posY][posX].o.oi = objIndex;
+        const cell = this.getCell(idMap, posX, posY);
+        if(cell && cell.o) {
+            cell.o.oi = objIndex;
+        }
     };
 
     openTrade = () => {
@@ -771,16 +823,17 @@ class Messages {
             const itemValidUser = this.pkg.getByte();
             const info = this.pkg.getString();
 
+            
             trade.itemsTrade[i] = {
                 idPos: i,
                 name: name,
                 info: info,
                 cant: cant,
                 gold: Math.trunc(gold / 2),
-                imgItem: `/static/graficos/${this.inits.graphics[objIndex].numFile
-                    }.png`,
+                imgItem: this.getGraphicURL(objIndex),
                 validUser: itemValidUser,
-                equipped: false
+                equipped: false,
+                idItem: objIndex
             };
         }
 
@@ -798,17 +851,19 @@ class Messages {
             const itemValidUserItemInv = this.pkg.getByte();
             const infoItemInv = this.pkg.getString();
 
-            trade.itemsUser[idPos] = {
-                idPos: idPos,
-                name: nameItemInv,
-                cant: cantItemInv,
-                info: infoItemInv,
-                gold: goldItemInv,
-                imgItem: `/static/graficos/${this.inits.graphics[objIndexItemInv].numFile
-                    }.png`,
-                validUser: itemValidUserItemInv,
-                equipped: Boolean(equippedItemInv)
-            };
+            if(trade.itemsUser[idPos]) {
+                trade.itemsUser[idPos] = {
+                    idPos: idPos,
+                    name: nameItemInv,
+                    cant: cantItemInv,
+                    info: infoItemInv,
+                    gold: goldItemInv,
+                    imgItem: this.getGraphicURL(objIndexItemInv),
+                    validUser: itemValidUserItemInv,
+                    equipped: Boolean(equippedItemInv),
+                    idItem: objIndexItemInv // TODO: esta propiedad no estaba antes, ver si afecta en algo
+                };
+            }
         }
 
         this.ui.setProperty("showModalTrade", true);

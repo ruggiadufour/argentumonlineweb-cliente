@@ -8,8 +8,8 @@ class Connection {
     engine: Engine;
     user: User;
     config: Config;
-    items: Record<string, unknown>;
-    spells: Record<string, unknown>;
+    items: Record<string, unknown> = {};
+    spells: Record<string, unknown> = {};
 
     constructor(ui: UI, messages: Messages, pkg: Package, game: Game, engine: Engine, user: User, config: Config) {
         this.ui = ui;
@@ -21,6 +21,8 @@ class Connection {
         this.config = config;
 
         window.onbeforeunload = () => {
+            if (!this.config.ws) return;
+
             this.config.ws.onclose = () => { };
             this.config.ws.close();
         };
@@ -42,7 +44,7 @@ class Connection {
             this.game.connectCharacter();
 
             setInterval(() => {
-                if (this.user.id) {
+                if (this.user.id && this.config.ws) {
                     this.config.pingStart = +Date.now();
 
                     this.pkg.setPackageID(this.pkg.serverPacketID.ping);

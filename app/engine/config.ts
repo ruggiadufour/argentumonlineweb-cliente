@@ -1,7 +1,7 @@
 import type { TDialog } from "@/types";
 
 class Config {
-    ws: WebSocket;
+    ws: WebSocket | null;
     canvasSize: {
         width: number;
         height: number;
