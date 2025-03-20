@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
         // }
 
         // Validamos que los IDs sean ObjectId válidos
-        const isAccountIdValid = mongoose.Types.ObjectId.isValid(idAccount);
+        const isAccountIdValid = mongoose.Types.ObjectId.isValid(idAccount as string);
         if (!isAccountIdValid) {
             throw createError({
                 statusCode: 400,
@@ -61,7 +61,7 @@ export default defineEventHandler(async (event) => {
         if (idCharacter && typeof idCharacter === 'string') {
             try {
                 characterData = await Character.findOne({
-                    idAccount: idAccount,
+                    idAccount: idAccount as string,
                     _id: idCharacter
                 });
             } catch (error) {

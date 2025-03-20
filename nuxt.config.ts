@@ -16,7 +16,7 @@ export default defineNuxtConfig({
     maxAge: 60 * 60 * 24 * 7 // 1 week
   },
   nitro: {
-    cookieSecret: 'this-is-a-secure-session-key-that-is-at-least-32-chars-long',
-    cookieName: 'nuxt-session'
+    // cookieSecret: 'this-is-a-secure-session-key-that-is-at-least-32-chars-long',
+    // cookieName: 'nuxt-session'
   }
 });

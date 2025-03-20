@@ -1,4 +1,5 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
+import type { Request, Response } from 'express';
 import next from 'next';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
@@ -7,7 +8,7 @@ import passport from 'passport';
 import flash from 'express-flash';
 import mongoose from 'mongoose';
 import compression from 'compression';
-import { ParsedUrlQuery } from 'querystring';
+import type { ParsedUrlQuery } from 'querystring';
 
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });

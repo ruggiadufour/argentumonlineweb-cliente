@@ -53,15 +53,16 @@ AccountSchema.pre('save', async function(this: IAccountDocument, next) {
         const salt = await bcrypt.genSalt(10);
         this.password = await bcrypt.hash(this.password, salt);
         next();
-    } catch (error: any) {
-        next(error);
+    } catch (error) {
+        // TODO: ver si se puede mejorar el tipado
+        next(error as any);
     }
 });
 
 // Compare password method
-AccountSchema.methods.comparePassword = async function(this: IAccountDocument, candidatePassword: string): Promise<boolean> {
+AccountSchema.methods.comparePassword = async function(candidatePassword: string): Promise<boolean> {
     try {
-        return await bcrypt.compare(candidatePassword, this.password);
+        return await bcrypt.compare(candidatePassword, (this as IAccountDocument).password);
     } catch (error) {
         throw error;
     }

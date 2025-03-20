@@ -35,7 +35,7 @@ class UI {
     }
   }
 
-  setUserProperty(property: string, value: any) {
+  setUserProperty(property: keyof TUI['user'], value: TUI['user'][keyof TUI['user']]) {
     const store = this.store;
     if (typeof value === 'object' && value !== null) {
       store.ui.user[property] = { ...store.ui.user[property], ...value };

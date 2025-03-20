@@ -2,7 +2,7 @@ import type { ICharacter, TSimpleAccount } from '../../types';
 import { getCharacterModel } from '../../models/Character';
 
 // Mapeos de nombres a IDs según config.js
-const CLASS_MAP = {
+const CLASS_MAP: Record<string, number> = {
     'Mago': 1,
     'Clérigo': 2,
     'Guerrero': 3,
@@ -16,7 +16,7 @@ const CLASS_MAP = {
     'Pirata': 11
 } as const;
 
-const RACE_MAP = {
+const RACE_MAP: Record<string, number> = {
     'Humano': 1,
     'Elfo': 2,
     'Elfo Drow': 3,
@@ -54,14 +54,14 @@ export default defineEventHandler(async (event) => {
 
         // Extraer los datos
         const name: string = data.name;
-        const characterClass = data.class;
-        const race = data.race;
-        const idGenero = data.idGenero;
-        const idHead = data.idHead;
-        const idBody = data.idBody;
-        const idWeapon = data.idWeapon ?? 48;
-        const idShield = data.idShield ?? 0;
-        const idHelmet = data.idHelmet ?? 0;
+        const characterClass: string = data.class;
+        const race: string = data.race;
+        const idGenero: number = data.idGenero;
+        const idHead: number = data.idHead;
+        const idBody: number = data.idBody;
+        const idWeapon: number = data.idWeapon ?? 48;
+        const idShield: number = data.idShield ?? 0;
+        const idHelmet: number = data.idHelmet ?? 0;
 
         console.log("Received class:", characterClass);
         console.log("Received race:", race);
@@ -109,7 +109,7 @@ export default defineEventHandler(async (event) => {
         }
 
         // Crear nuevo personaje con los campos según el modelo
-        const character: ICharacter = {
+        const character: Partial<ICharacter> = {
             name: name.toLowerCase(),
             idAccount: authUser.accountId,
             idClase,
