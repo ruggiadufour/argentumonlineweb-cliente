@@ -33,7 +33,6 @@ export default defineEventHandler(async (event) => {
 
         // Obtener los datos a actualizar del body
         const updateData = await readBody(event);
-        console.log('Datos a actualizar:', updateData);
 
         // Lista de campos que se pueden actualizar
         const allowedFields = [
@@ -52,14 +51,12 @@ export default defineEventHandler(async (event) => {
                 return obj;
             }, {} as Record<string, any>);
 
-        console.log('Campos filtrados a actualizar:', filteredUpdate);
-
         const Character = getCharacterModel();
 
         // Buscar el personaje y verificar que pertenece al usuario
         const character = await Character.findOne({
             _id: idCharacter,
-            idAccount: authUser.accountId
+            // idAccount: authUser.accountId
         });
 
         if (!character) {
@@ -72,16 +69,16 @@ export default defineEventHandler(async (event) => {
         // Actualizar el personaje
         const updatedCharacter = await Character.findByIdAndUpdate(
             idCharacter,
-            { $set: filteredUpdate },
+            { $set: updateData },
             { 
                 new: true,  // Devolver el documento actualizado
                 runValidators: true  // Ejecutar validadores del esquema
             }
         ).lean();
-
+        console.log('Personaje actualizado:', updatedCharacter?.name);
         return {
             success: true,
-            data: { character: updatedCharacter }
+            data: { character: filteredUpdate }
         };
     } catch (error: any) {
         console.error('Error al actualizar personaje:', error);
