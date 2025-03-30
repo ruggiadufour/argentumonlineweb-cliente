@@ -246,7 +246,7 @@ const handleCharKeyCodeDefault = () => {
       fromChar = config.keyCodeMap[keyCode];
     }
 
-    charKeyCodeDefault[Number(key)] = Number(fromChar);
+    charKeyCodeDefault[Number(key)] = fromChar;
   });
 
   uiStore.ui.charKeyCodeDefault = charKeyCodeDefault;

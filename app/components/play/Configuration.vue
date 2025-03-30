@@ -34,7 +34,7 @@ const handleKeyDefault = (e: KeyboardEvent, keyType: number) => {
     }
 
     uiStore.ui.tmpKeyCodeDefault[keyType] = keyCode;
-    uiStore.ui.charKeyCodeDefault[keyType] = Number(fromChar);
+    uiStore.ui.charKeyCodeDefault[keyType] = fromChar;
   }
 
   uiStore.ui.charKeyCodeDefault = uiStore.ui.charKeyCodeDefault;
@@ -59,7 +59,7 @@ const saveChangesKeys = () => {
 
   uiStore.ui.keyCodeDefault = _.cloneDeep(tmpKeyCodeDefault);
 
-  alert("Teclas guardadas.");
+  uiStore.ui.showModalControlPanel = false;
 };
 
 const restoreMacros = () => {

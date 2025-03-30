@@ -48,7 +48,7 @@ export type TUI = {
     valueKeyMacro: TKeyMacro[],
     keyCodeMacros: Record<number, number>,
     tmpKeyCodeDefault: Record<number, number>,
-    charKeyCodeDefault: Record<number, number>
+    charKeyCodeDefault: Record<number, string>
 
     // keyCodeDefault: {
     //     [nameKeyCode.flechaArriba]: 38,
