@@ -174,6 +174,7 @@ onMounted(() => {
         }
 
         uiStore.ui.showInputText = !uiStore.ui.showInputText;
+        document.getElementById('chat_input')?.focus();
       }
 
       if (keyCode == 77 && !uiStore.ui.showInputText) {
@@ -295,8 +296,9 @@ const handleSelectSpell = (i: number) => {
         <div class="content_left">
           <div class="render">
             <input
-              v-show="uiStore.ui.showInputText"
+              :style="{ left: uiStore.ui.showInputText ? '0' : '-5000px' }"
               type="text"
+              id="chat_input"
               name="text"
               autoFocus
               class="text"
