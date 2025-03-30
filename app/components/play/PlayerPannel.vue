@@ -53,7 +53,7 @@ const handleShowSpells = () => {
 };
 
 const handleSelectItem = (i: number) => {
-  uiStore.ui.itemSelected = i;
+  uiStore.ui.selectItem = i;
 };
 
 const handleShowConfiguration = () => {

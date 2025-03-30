@@ -11,6 +11,7 @@ const { nameClases, nameRazas, nameGeneros, razas, clases } = configCharacter;
 
 const ui = new UI();
 const inits = new Inits(ui);
+const router = useRouter();
 inits.initialize();
 
 const authStore = useAuthStore();
@@ -231,7 +232,6 @@ const nextRaza = async () => {
   if (form.value.idRazaSelected < 5) {
     form.value.idRazaSelected = form.value.idRazaSelected + 1;
     console.log("nextRaza", form.value.idRazaSelected);
-    
 
     if (form.value.idRazaSelected == razas.humano) {
       form.value.character.idBody = 1;
@@ -302,19 +302,22 @@ const createCharacter = async () => {
   const response = await fetch("/api/character/create", {
     method: "POST",
     body: JSON.stringify({
-        // ...form.value.character,
-        name: form.value.character.name, 
-        class: form.value.nameClase, 
-        race: form.value.nameRaza, 
-        idGenero: form.value.idGeneroSelected,
-        idHead: form.value.idHeadSelected,
-        idBody: form.value.character.idBody,
-        idWeapon: form.value.character.idWeapon,
-        idShield: form.value.character.idShield,
-        idHelmet: form.value.character.idHelmet
+      // ...form.value.character,
+      name: form.value.character.name,
+      class: form.value.nameClase,
+      race: form.value.nameRaza,
+      idGenero: form.value.idGeneroSelected,
+      idHead: form.value.idHeadSelected,
+      idBody: form.value.character.idBody,
+      idWeapon: form.value.character.idWeapon,
+      idShield: form.value.character.idShield,
+      idHelmet: form.value.character.idHelmet,
     }),
   });
-  console.log("response", response);
+  const data = await response.json();
+  if (data.data.success) {
+    router.push("/home");
+  }
 };
 </script>
 
@@ -328,7 +331,12 @@ const createCharacter = async () => {
           <div class="content_general">
             <div class="content_left">
               <label htmlFor="name" class="text"> Nombre </label>
-              <input type="text" class="input_text" id="name" v-model="form.character.name" />
+              <input
+                type="text"
+                class="input_text"
+                id="name"
+                v-model="form.character.name"
+              />
               <div class="canvasCharacter">
                 <!-- <FontAwesomeIcon
                   icon="{faAngleLeft}"

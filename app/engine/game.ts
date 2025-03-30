@@ -82,7 +82,7 @@ class Game {
         );
 
         if (messagesConsole.length > 8) {
-            messagesConsole.shift();
+            // messagesConsole.shift();
         }
 
         this.ui.setProperty("messagesConsole", messagesConsole);

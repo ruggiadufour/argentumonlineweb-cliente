@@ -11,7 +11,7 @@ class User {
         y: number;
     };
     id: number;
-    items: Record<string, {
+    items: Record<string, undefined |{
         idItem: number,
         nameItem: string,
         equipped: boolean,

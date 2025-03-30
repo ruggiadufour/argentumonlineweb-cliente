@@ -81,7 +81,6 @@ const clearCanvas = () => {
 
 const getAllCharacters = async () => {
   // const result = await $fetch("/character/list");
-  characters.value = [];
 };
 
 const changeTypeGame = async (newTypeGame: "PvE" | "PvP") => {
@@ -115,6 +114,7 @@ const play = (character: Record<string, any> | undefined, key: number) => {
 
   authStore.setCharacter(character, key);
 
+  openModalCharacters.value = false;
   router.push("/play"); 
 };
 

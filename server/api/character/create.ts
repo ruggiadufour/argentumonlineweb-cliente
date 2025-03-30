@@ -109,7 +109,7 @@ export default defineEventHandler(async (event) => {
         }
 
         // Crear nuevo personaje con los campos según el modelo
-        const character: Partial<ICharacter> = {
+        const character: ICharacter = {
             name: name.toLowerCase(),
             idAccount: authUser.accountId,
             idClase,
@@ -133,7 +133,7 @@ export default defineEventHandler(async (event) => {
             map: 1,            
             posX: 50,          // Posición inicial X
             posY: 50,  
-            gold: 0,
+            gold: 100,
             muerto: false,
             dead: false,
             criminal: false,
@@ -141,7 +141,32 @@ export default defineEventHandler(async (event) => {
             connected: false,
             items: [],
             spells: [],
-            isNpc: false
+            isNpc: false,
+            idLastHead: 0,
+            idLastBody: 0,
+            idLastHelmet: 0,
+            idLastWeapon: 0,
+            idLastShield: 0,
+            idItemWeapon: 0,
+            idItemBody: 0,
+            idItemHelmet: 0,
+            idItemShield: 0,
+            attrFuerza: 14,
+            attrAgilidad: 14,
+            attrInteligencia: 14,
+            privileges: 0,
+            updatedAt: new Date(),
+            createdAt: new Date(),
+            spellsAcertados: 0,
+            spellsErrados: 0,
+            attrConstitucion: 18,
+            countKilled: 0,
+            countDie: 0,
+            ip: '',
+            npcMatados: 0,            
+            criminalesMatados: 0,
+            fianza: 0,
+            ciudadanosMatados: 0,
         };
 
         const newCharacter = new Character(character);

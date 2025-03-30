@@ -23,6 +23,7 @@ const boxSpells = computed(() => {
     v-for="(spell, i) in boxSpells"
     :key="i"
     class="slot_spell"
+    :title="spell ? spell.name : ''"
     @click="$emit('onSelectSpell', i)"
   >
     <div

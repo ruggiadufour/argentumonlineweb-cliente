@@ -153,17 +153,15 @@ onMounted(() => {
         !uiStore.ui.showInputText
       ) {
         let cantItem = 1;
-
-        if (uiStore.ui.selectItem) {
+        if (uiStore.ui.selectItem >= 0) {
           const promptResult = prompt("¿Cuántos quieres tirar?", "1");
           cantItem = parseInt(promptResult || "1");
         }
-
         if (cantItem > 0) {
           pkg.setPackageID(pkg.serverPacketID.tirarItem);
           pkg.writeInt(uiStore.ui.selectItem);
           pkg.writeShort(Math.trunc(cantItem));
-          config.ws.send(pkg.dataSend());
+          config.ws?.send(pkg.dataSend());
         }
       }
 

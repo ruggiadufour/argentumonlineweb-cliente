@@ -5,6 +5,7 @@ defineProps<{}>();
 defineEmits<{}>();
 
 const uiStore = useUIStore();
+const messages = computed(()=> [...uiStore.ui.messagesConsole].reverse())
 
 const openConsole = () => {
   uiStore.ui.showConsole = !uiStore.ui.showConsole;
@@ -20,7 +21,7 @@ const openConsole = () => {
     }"
   >
     <span
-      v-for="message in uiStore.ui.messagesConsole"
+      v-for="message in messages"
       :style="message.style"
       :key="message.id"
       v-html="message.message"
@@ -48,6 +49,7 @@ const openConsole = () => {
   z-index: 6;
   display: none;
   font-family: "Doppio One", sans-serif;
+  overflow: auto;
 
   span {
     display: block;

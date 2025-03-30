@@ -677,7 +677,7 @@ class Messages {
         const newCant = cantOld - cant;
 
         if (newCant <= 0) {
-            delete this.user.items[idPos];
+            this.user.items[idPos] = undefined;
 
             if (showModalTrade) {
                 delete trade.itemsUser[idPos];

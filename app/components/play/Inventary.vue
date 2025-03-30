@@ -62,8 +62,9 @@ const getStyle = (item: any) => {
   <div class="">
     <div
       v-for="(item, i) in getSlots()"
-      :class="['slot_inv', uiStore.ui.itemSelected === i ? 'item_selected' : '']"
+      :class="['slot_inv', uiStore.ui.selectItem === i ? 'item_selected' : '']"
       :key="i"
+      :title="item ? item.nameItem : ''"
       @click="selectItem(i)"
     >
       <div
