@@ -851,21 +851,19 @@ class Messages {
             const itemValidUserItemInv = this.pkg.getByte();
             const infoItemInv = this.pkg.getString();
 
-            if(trade.itemsUser[idPos]) {
-                trade.itemsUser[idPos] = {
-                    idPos: idPos,
-                    name: nameItemInv,
-                    cant: cantItemInv,
-                    info: infoItemInv,
-                    gold: goldItemInv,
-                    imgItem: this.getGraphicURL(objIndexItemInv),
-                    validUser: itemValidUserItemInv,
-                    equipped: Boolean(equippedItemInv),
-                    idItem: objIndexItemInv // TODO: esta propiedad no estaba antes, ver si afecta en algo
-                };
-            }
+            trade.itemsUser[idPos] = {
+                idPos: idPos,
+                name: nameItemInv,
+                cant: cantItemInv,
+                info: infoItemInv,
+                gold: goldItemInv,
+                imgItem: this.getGraphicURL(objIndexItemInv),
+                validUser: itemValidUserItemInv,
+                equipped: Boolean(equippedItemInv),
+                idItem: objIndexItemInv // TODO: esta propiedad no estaba antes, ver si afecta en algo
+            };
         }
-
+        
         this.ui.setProperty("showModalTrade", true);
         this.ui.setProperty("trade", trade);
     };

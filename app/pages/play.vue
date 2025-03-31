@@ -269,6 +269,10 @@ const handleSelectSpell = (i: number) => {
     game.writeConsole("Haz click sobre el objetivo...", "gray");
   }
 };
+
+const handleTelepPosition = (pos: { x: number; y: number }) => {
+  general.sendDialog(`/telepme ${config.mapNumber} @${pos.x} @${pos.y}`);
+};
 </script>
 
 <template>
@@ -308,6 +312,7 @@ const handleSelectSpell = (i: number) => {
             <GameView 
               ref="gameView"
               :engine="engine" 
+              @telep-position="handleTelepPosition"
             />
             <Console v-if="!uiStore.ui.loading" />
           </div>

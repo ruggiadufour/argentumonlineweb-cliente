@@ -12,7 +12,9 @@ const { engine } = defineProps<{
   //   textos: {};
   // };
 }>();
-defineEmits<{}>();
+const emit = defineEmits<{
+  (e: "telep-position", pos: { x: number; y: number }): void;
+}>();
 
 const uiStore = useUIStore();
 const canvasBackground = ref<HTMLCanvasElement>();
@@ -21,18 +23,27 @@ const canvasItems = ref<HTMLCanvasElement>();
 const canvasTechos = ref<HTMLCanvasElement>();
 const canvasTextos = ref<HTMLCanvasElement>();
 
-const handleClickCanvas = (e: MouseEvent) => {
+const getPosCanvas = (e: MouseEvent) => {
   let xCanvas = e.offsetX;
   let yCanvas = e.offsetY;
   const user = engine.user;
 
   const posX = Math.round(user.pos.x + xCanvas / 32 - 544 / 64);
   const posY = Math.round(user.pos.y + yCanvas / 32 - 544 / 64);
-
-  engine.clickCanvas({
+  return {
     x: posX,
     y: posY,
-  });
+  };
+};
+
+const handleClickCanvas = (e: MouseEvent) => {
+  const pos = getPosCanvas(e);
+  engine.clickCanvas(pos);
+};
+
+const handleClickCanvasRight = (e: MouseEvent) => {
+  const pos = getPosCanvas(e);
+  emit("telep-position", pos);
 };
 
 defineExpose({
@@ -69,6 +80,7 @@ defineExpose({
     id="canvas_mouseEvent"
     class="mouseEvent"
     @click="handleClickCanvas"
+    @click.right="handleClickCanvasRight"
     :style="{
       cursor: uiStore.ui.crosshair ? 'crosshair' : 'default',
     }"
