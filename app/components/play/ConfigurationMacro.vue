@@ -60,18 +60,22 @@ defineExpose({
 </script>
 
 <template>
-  <div
-    class="modalMacro"
-    :style="{ display: uiStore.ui.showMacroConfig ? 'block' : 'none' }"
-    ref="modalMacro"
-  >
-    <div class="cruz closeMacro" @click="handleCloseModalMacro()" />
+  <div class="modalMacro" v-show="uiStore.ui.showMacroConfig" ref="modalMacro">
+    <div class="titleMacro">
+      ACCIÓN RÁPIDA
+      <button class="closeMacro" @click="handleCloseModalMacro()">x</button>
+    </div>
+
     <input
       type="text"
       @keyup="handleKeyMacro"
       class="keyMacro"
       :value="uiStore.ui.keyMacro.keyChar"
+      placeholder="Ingresa una tecla"
     />
+    <div class="descriptionMacro">
+      Haz click en el item/hechizo que quieres asignar a la tecla
+    </div>
     <div class="img">
       <div
         v-if="uiStore.ui.keyMacro.idPosItem && uiStore.ui.keyMacro.img"
@@ -80,16 +84,8 @@ defineExpose({
           backgroundImage: `url('${uiStore.ui.keyMacro.img}')`,
         }"
       />
-
-      <div
-        v-if="uiStore.ui.keyMacro.idSpell && uiStore.ui.keyMacro.img"
-        class="spell"
-        :style="{
-          backgroundImage: `url('${uiStore.ui.keyMacro.img}')`,
-        }"
-      />
     </div>
-    <div class="guardarMacro" @click="saveMacro" />
+    <button class="guardarMacro" @click="saveMacro">Guardar</button>
   </div>
 </template>
 
@@ -97,23 +93,38 @@ defineExpose({
 .modalMacro {
   width: 178px;
   height: 195px;
-  background-image: url("/static/imgs/macros.png");
-  background-repeat: no-repeat;
+  background-color: var(--background-color-1);
+  color: var(--text-color-1);
   position: absolute;
-  display: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  flex-direction: column;
   z-index: 100;
-  font-family: "Doppio One", sans-serif;
-  .closeMacro {
-    float: right;
-    &:hover {
-      cursor: pointer;
-    }
+  font-size: 12px;
+  padding: 10px;
+  border-radius: 8px;
+
+  input {
+    background-color: var(--background-color-inverted-1) !important;
+    border: none;
+    color: var(--text-color-inverted-1) !important;
+    text-align: center;
   }
-  .guardarMacro {
-    width: 65px;
-    height: 15px;
-    margin-top: 2px;
-    margin-left: 57px;
+
+  .descriptionMacro {
+    color: var(--text-color-1);
+    text-align: center;
+  }
+
+  .closeMacro {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: transparent;
+    border: none;
+    color: var(--text-color-1);
     &:hover {
       cursor: pointer;
     }
@@ -122,33 +133,33 @@ defineExpose({
     text-align: center;
     background: transparent;
     border: none;
-    margin-top: 16px;
-    margin-left: 17px;
     padding: 8px;
     color: #fff;
     width: 128px;
   }
   .img {
-    width: 64px;
-    height: 64px;
-    margin-top: 34px;
-    margin-left: 57px;
+    /* width: 64px;
+    height: 64px; */
     .spell {
       width: 60px;
       height: 60px;
       position: relative;
       top: 4px;
-      margin-left: 2px;
       background-size: 100%;
     }
     .item {
       width: 32px;
       height: 32px;
-      position: relative;
-      top: 16px;
-      margin-left: 16px;
       background-size: 100%;
     }
+  }
+
+  .guardarMacro {
+    background-color: var(--background-color-inverted-1);
+    color: var(--text-color-inverted-1);
+    border: none;
+    padding: 4px;
+    border-radius: 4px;
   }
 }
 </style>

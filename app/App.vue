@@ -17,6 +17,15 @@ await useFetch("/api/auth/is_logged", {
 </template>
 
 <style>
+
+:root {
+    --background-color-1: #15110c;
+    --background-color-2: #221b16;
+    --text-color-1: #aa967f;
+    --text-color-inverted-1: #15110c;
+    --background-color-inverted-1: #aa967f;
+}
+
 body,
 html {
     margin: 0;

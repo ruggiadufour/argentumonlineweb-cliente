@@ -27,17 +27,23 @@ const handleShowMacroConfig = (e: MouseEvent, key: number) => {
   const refMacro = macros.value[key];
   if (!refMacro) return;
   const modalMacro = configurationMacro.value?.modalMacro;
+  
   if (modalMacro) {
     modalMacro.style.left = `${refMacro.offsetLeft - 57}px`;
     modalMacro.style.top = `${refMacro.offsetTop - 210}px`;
   }
 
-  uiStore.ui.keyMacro.indexMacro = key;
-  uiStore.ui.keyMacro.idPosItem = -1;
-  uiStore.ui.keyMacro.idPosSpell = -1;
-  uiStore.ui.keyMacro.idSpell = -1;
-  uiStore.ui.keyMacro.key = -1;
-  uiStore.ui.keyMacro.keyChar = "";
+  if(boxMacros.value[key]) {
+    uiStore.ui.keyMacro = {...boxMacros.value[key]};
+  } else {
+    uiStore.ui.keyMacro.indexMacro = key;
+    uiStore.ui.keyMacro.idPosItem = -1;
+    uiStore.ui.keyMacro.idPosSpell = -1;
+    uiStore.ui.keyMacro.idSpell = -1;
+    uiStore.ui.keyMacro.key = -1;
+    uiStore.ui.keyMacro.keyChar = "";
+    uiStore.ui.keyMacro.img = "";
+  }
 
   uiStore.ui.showMacroConfig = true;
 };
