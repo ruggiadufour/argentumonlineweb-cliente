@@ -30,6 +30,10 @@ class Engine {
   canvas: any;
   refCanvas: any;
   keydown: Record<string, any>;
+  PIXELS = 32;
+  HALF_PIXELS = this.PIXELS / 2;
+  ONE_AND_HALF_PIXELs = this.HALF_PIXELS + this.PIXELS;
+
 
   constructor(
     inits: Inits,
@@ -101,6 +105,22 @@ class Engine {
         this.keydown[e.keyCode] = false;
       }
     });
+  }
+
+  getOffsets() {
+    const screenWidth = this.ui.state.screen.width;
+    const screenHeight = this.ui.state.screen.height;
+    
+    const offsetX = Math.ceil((screenWidth / this.PIXELS + 2)) - 1;
+    const offsetY = Math.ceil((screenHeight / this.PIXELS + 2)) - 1;
+    
+    
+    return {
+      xMin: offsetX,
+      xMax: offsetX + 1,
+      yMin: offsetY,
+      yMax: offsetY + 1,
+    }
   }
 
   initCanvas = async () => {    
@@ -399,8 +419,8 @@ class Engine {
     this.canvas[capa].ctx.clearRect(
       0,
       0,
-      this.config.canvasSize.width,
-      this.config.canvasSize.height
+      this?.ui.state.screen.width,
+      this?.ui.state.screen.height
     );
   };
 
@@ -414,7 +434,7 @@ class Engine {
 
           if (
             Math.abs(this.offsetCounterX) >=
-            Math.abs(32 * this.user.addtoUserPos.x)
+            Math.abs(this.PIXELS * this.user.addtoUserPos.x)
           ) {
             this.offsetCounterX = 0;
             this.user.addtoUserPos.x = 0;
@@ -431,7 +451,7 @@ class Engine {
 
           if (
             Math.abs(this.offsetCounterY) >=
-            Math.abs(32 * this.user.addtoUserPos.y)
+            Math.abs(this.PIXELS * this.user.addtoUserPos.y)
           ) {
             this.offsetCounterY = 0;
             this.user.addtoUserPos.y = 0;
@@ -492,6 +512,11 @@ class Engine {
     const screenmaxY = tileY + 10;
     const screenminX = tileX - 9;
     const screenmaxX = tileX + 10;
+    // const { xMin, xMax, yMin, yMax } = this.getOffsets();
+    // const screenminY = tileY - yMax;
+    // const screenmaxY = tileY + yMin;
+    // const screenminX = tileX - xMax;
+    // const screenmaxX = tileX + xMin;
 
     let minY = screenminY - this.config.TileBufferSize + 2;
     let maxY = screenmaxY + this.config.TileBufferSize;
@@ -525,8 +550,8 @@ class Engine {
       ScreenX = minXOffset - this.config.TileBufferSize;
 
       for (let x = minX; x < maxX; x++) {
-        PixelOffsetXTemp = ScreenX * 32 + pixelOffsetX;
-        PixelOffsetYTemp = ScreenY * 32 + pixelOffsetY;
+        PixelOffsetXTemp = ScreenX * this.PIXELS + pixelOffsetX;
+        PixelOffsetYTemp = ScreenY * this.PIXELS + pixelOffsetY;
 
         objInfo = this.inits.mapa[this.config.mapNumber][y][x].o;
 
@@ -538,8 +563,8 @@ class Engine {
 
             grhObj = this.inits.graphics[CurrentGrhIndex];
 
-            PixelOffsetXTemp -= Math.floor((grhObj.width * 16) / 32) - 48;
-            PixelOffsetYTemp -= Math.floor((grhObj.height * 16) / 16) - 64;
+            PixelOffsetXTemp -= Math.floor((grhObj.width * this.HALF_PIXELS) / this.PIXELS) - this.ONE_AND_HALF_PIXELs;
+            PixelOffsetYTemp -= Math.floor((grhObj.height * this.HALF_PIXELS) / this.HALF_PIXELS) - this.PIXELS * 2;
 
             this.drawGrhCapa(
               "items",
@@ -572,6 +597,12 @@ class Engine {
     const screenminX = tileX - 9;
     const screenmaxX = tileX + 10;
 
+    // const { xMin, xMax, yMin, yMax } = this.getOffsets();
+    // const screenminY = tileY - yMin;
+    // const screenmaxY = tileY + yMax;
+    // const screenminX = tileX - xMin;
+    // const screenmaxX = tileX + xMax;
+
     let minY = screenminY - this.config.TileBufferSize + 2;
     let maxY = screenmaxY + this.config.TileBufferSize;
     let minX = screenminX - this.config.TileBufferSize + 2;
@@ -601,8 +632,8 @@ class Engine {
           y > 0 &&
           y <= this.config.YMaxMapSize
         ) {
-          const tempPixelOffsetX = (ScreenX - 1) * 32 + pixelOffsetX;
-          const tempPixelOffsetY = (ScreenY - 1) * 32 + pixelOffsetY;
+          const tempPixelOffsetX = (ScreenX - 1) * this.PIXELS + pixelOffsetX;
+          const tempPixelOffsetY = (ScreenY - 1) * this.PIXELS + pixelOffsetY;
 
           const grhCapa1 =
             this.inits.graphics[
@@ -621,8 +652,8 @@ class Engine {
           let tmpX = x;
           let tmpY = y;
 
-          const tempPixelOffsetX = (ScreenX - 1) * 32 + pixelOffsetX;
-          const tempPixelOffsetY = (ScreenY - 1) * 32 + pixelOffsetY;
+          const tempPixelOffsetX = (ScreenX - 1) * this.PIXELS + pixelOffsetX;
+          const tempPixelOffsetY = (ScreenY - 1) * this.PIXELS + pixelOffsetY;
 
           if (y > this.config.YMaxMapSize) {
             tmpY = this.config.YMaxMapSize;
@@ -679,10 +710,22 @@ class Engine {
     let ScreenX = 0;
     let ScreenY = 0;
 
+    const { xMin, xMax, yMin, yMax } = this.getOffsets();
+
+    // const screenminY = tileY - yMax;
+    // const screenmaxY = tileY + yMin;
+    // const screenminX = tileX - xMax;
+    // const screenmaxX = tileX + xMin;
+
     const screenminY = tileY - 10;
     const screenmaxY = tileY + 9;
     const screenminX = tileX - 10;
     const screenmaxX = tileX + 9;
+
+    // const screenminY2 = tileY - yMin;
+    // const screenmaxY2 = tileY + yMax;
+    // const screenminX2 = tileX - xMin;
+    // const screenmaxX2 = tileX + xMax;
 
     const screenminY2 = tileY - 9;
     const screenmaxY2 = tileY + 10;
@@ -720,8 +763,8 @@ class Engine {
           y > 0 &&
           y <= this.config.YMaxMapSize
         ) {
-          const tempPixelOffsetX = (ScreenX - 1) * 32 + pixelOffsetX;
-          const tempPixelOffsetY = (ScreenY - 1) * 32 + pixelOffsetY;
+          const tempPixelOffsetX = (ScreenX - 1) * this.PIXELS + pixelOffsetX;
+          const tempPixelOffsetY = (ScreenY - 1) * this.PIXELS + pixelOffsetY;
 
           let grhCapa1 =
             this.inits.graphics[
@@ -776,8 +819,8 @@ class Engine {
       ScreenX = minXOffset - this.config.TileBufferSize;
 
       for (let x = minX; x < maxX; x++) {
-        PixelOffsetXTemp = ScreenX * 32 + pixelOffsetX;
-        PixelOffsetYTemp = ScreenY * 32 + pixelOffsetY;
+        PixelOffsetXTemp = ScreenX * this.PIXELS + pixelOffsetX;
+        PixelOffsetYTemp = ScreenY * this.PIXELS + pixelOffsetY;
 
         const objInfo = this.inits.mapa[this.config.mapNumber][y][x].o;
 
@@ -798,8 +841,8 @@ class Engine {
 
             grhObj = this.inits.graphics[CurrentGrhIndex];
 
-            PixelOffsetXTemp -= Math.floor((grhObj.width * 16) / 32) - 48;
-            PixelOffsetYTemp -= Math.floor((grhObj.height * 16) / 16) - 64;
+            PixelOffsetXTemp -= Math.floor((grhObj.width * this.HALF_PIXELS) / this.PIXELS) - this.ONE_AND_HALF_PIXELs;
+            PixelOffsetYTemp -= Math.floor((grhObj.height * this.HALF_PIXELS) / this.HALF_PIXELS) - this.PIXELS * 2;
 
             this.drawGrhCapa(
               "foreground",
@@ -822,8 +865,8 @@ class Engine {
       ScreenX = minXOffset - this.config.TileBufferSize;
 
       for (let x = minX; x < maxX; x++) {
-        PixelOffsetXTemp = (ScreenX + 0) * 32 + pixelOffsetX;
-        PixelOffsetYTemp = (ScreenY + 0) * 32 + pixelOffsetY;
+        PixelOffsetXTemp = (ScreenX + 0) * this.PIXELS + pixelOffsetX;
+        PixelOffsetYTemp = (ScreenY + 0) * this.PIXELS + pixelOffsetY;
 
         let grhCapa3 =
           this.inits.graphics[
@@ -837,8 +880,10 @@ class Engine {
           y <= this.config.YMaxMapSize
         ) {
           if (this.inits.mapData[this.config.mapNumber][y][x].id) {
-            const tempPixelOffsetX = (ScreenX + 1) * 32 + pixelOffsetX;
-            const tempPixelOffsetY = (ScreenY + 1) * 32 + pixelOffsetY;
+            const tempPixelOffsetX = (ScreenX + 1) * this.PIXELS + pixelOffsetX;
+            const tempPixelOffsetY = (ScreenY + 1) * this.PIXELS + pixelOffsetY;
+            // const tempPixelOffsetX = (ScreenX) * this.HALF_PIXELS + pixelOffsetX;
+            // const tempPixelOffsetY = (ScreenY) * this.HALF_PIXELS + pixelOffsetY;
 
             const personaje =
               this.personajes[
@@ -856,8 +901,8 @@ class Engine {
 
           grhCapa3 = this.inits.graphics[CurrentGrhIndex];
 
-          PixelOffsetXTemp -= Math.floor((grhCapa3.width * 16) / 32) - 48;
-          PixelOffsetYTemp -= Math.floor((grhCapa3.height * 16) / 16) - 64;
+          PixelOffsetXTemp -= Math.floor((grhCapa3.width * this.HALF_PIXELS) / this.PIXELS) - this.ONE_AND_HALF_PIXELs;
+          PixelOffsetYTemp -= Math.floor((grhCapa3.height * this.HALF_PIXELS) / this.PIXELS) - this.PIXELS * 2;
 
           this.drawGrhCapa(
             "foreground",
@@ -879,8 +924,8 @@ class Engine {
         ScreenX = minXOffset - this.config.TileBufferSize;
 
         for (let x = minX; x < maxX; x++) {
-          let PixelOffsetXTemp = ScreenX * 32 + pixelOffsetX;
-          let PixelOffsetYTemp = ScreenY * 32 + pixelOffsetY;
+          let PixelOffsetXTemp = ScreenX * this.PIXELS + pixelOffsetX;
+          let PixelOffsetYTemp = ScreenY * this.PIXELS + pixelOffsetY;
 
           let grhCapa4 =
             this.inits.graphics[
@@ -891,8 +936,8 @@ class Engine {
             var CurrentGrhIndex = grhCapa4.frames[1];
 
             grhCapa4 = this.inits.graphics[CurrentGrhIndex];
-            PixelOffsetXTemp -= Math.floor((grhCapa4.width * 16) / 32) - 48;
-            PixelOffsetYTemp -= Math.floor((grhCapa4.height * 16) / 16) - 64;
+            PixelOffsetXTemp -= Math.floor((grhCapa4.width * this.HALF_PIXELS) / this.PIXELS) - this.ONE_AND_HALF_PIXELs;
+            PixelOffsetYTemp -= Math.floor((grhCapa4.height * this.HALF_PIXELS) / this.HALF_PIXELS) - this.PIXELS * 2;
 
             this.drawGrhCapa(
               "techos",
@@ -1194,8 +1239,8 @@ class Engine {
             const widthRopa = graphicsGrhRopa.width;
             const heightRopa = graphicsGrhRopa.height;
 
-            const tmpsX = sX - Math.floor((widthRopa * 16) / 32) + 16;
-            const tmpsY = sY - Math.floor((heightRopa * 32) / 32) + 32;
+            const tmpsX = sX - Math.floor((widthRopa * this.HALF_PIXELS) / this.PIXELS) + this.HALF_PIXELS;
+            const tmpsY = sY - Math.floor((heightRopa * this.PIXELS) / this.PIXELS) + this.PIXELS;
 
             if (this.inits.preCacheGraphics[graphicsGrhRopa.numFile]) {
               this.canvas.foreground.ctx.drawImage(
@@ -1248,8 +1293,8 @@ class Engine {
             const widthWeapon = graphicsGrhWeapon.width;
             const heightWeapon = graphicsGrhWeapon.height;
 
-            const tmpsX = sX - Math.floor((widthWeapon * 16) / 32) + 16;
-            const tmpsY = sY - Math.floor((heightWeapon * 32) / 32) + 28;
+            const tmpsX = sX - Math.floor((widthWeapon * this.HALF_PIXELS) / this.PIXELS) + this.HALF_PIXELS;
+            const tmpsY = sY - Math.floor((heightWeapon * this.PIXELS) / this.PIXELS) + 28;
 
             if (this.inits.preCacheGraphics[graphicsGrhWeapon.numFile]) {
               this.canvas.foreground.ctx.drawImage(
@@ -1272,8 +1317,8 @@ class Engine {
             const widthShield = graphicsGrhShield.width;
             const heightShield = graphicsGrhShield.height;
 
-            const tmpsX = sX - Math.floor((widthShield * 16) / 32) + 16;
-            const tmpsY = sY - Math.floor((heightShield * 32) / 32) + 32;
+            const tmpsX = sX - Math.floor((widthShield * this.HALF_PIXELS) / this.PIXELS) + this.HALF_PIXELS;
+            const tmpsY = sY - Math.floor((heightShield * this.PIXELS) / this.PIXELS) + this.PIXELS;
 
             if (this.inits.preCacheGraphics[graphicsGrhShield.numFile]) {
               this.canvas.foreground.ctx.drawImage(
@@ -1292,7 +1337,7 @@ class Engine {
             }
           }
 
-          const nameX = sX - nameLength + 16;
+          const nameX = sX - nameLength + this.HALF_PIXELS;
 
           this.renderText2(
             personaje.nameCharacter,
@@ -1306,7 +1351,7 @@ class Engine {
 
           if (personaje.clan) {
             var clanLength = personaje.clan.length * 4;
-            const clanX = sX - clanLength + 16;
+            const clanX = sX - clanLength + this.HALF_PIXELS;
 
             this.renderText2(
               personaje.clan,
@@ -1329,7 +1374,7 @@ class Engine {
               firstLineLength = textLength * 3;
             }
 
-            const dialogX = sX + 32 - firstLineLength;
+            const dialogX = sX + this.PIXELS - firstLineLength;
 
             this.renderDialog(
               personaje.id,
@@ -1716,8 +1761,8 @@ class Engine {
       personaje.pos.x = posX;
       personaje.pos.y = posY;
 
-      personaje.moveOffsetX = -1 * (32 * newX);
-      personaje.moveOffsetY = -1 * (32 * newY);
+      personaje.moveOffsetX = -1 * (this.PIXELS * newX);
+      personaje.moveOffsetY = -1 * (this.PIXELS * newY);
 
       personaje.scrollDirectionX = this.sign(newX);
       personaje.scrollDirectionY = this.sign(newY);
@@ -1781,8 +1826,8 @@ class Engine {
 
       personaje.heading = heading;
 
-      personaje.moveOffsetX = -1 * (32 * newX);
-      personaje.moveOffsetY = -1 * (32 * newY);
+      personaje.moveOffsetX = -1 * (this.PIXELS * newX);
+      personaje.moveOffsetY = -1 * (this.PIXELS * newY);
 
       personaje.scrollDirectionX = this.sign(newX);
       personaje.scrollDirectionY = this.sign(newY);
