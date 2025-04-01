@@ -24,6 +24,8 @@ await useFetch("/api/auth/is_logged", {
     --text-color-1: #aa967f;
     --text-color-inverted-1: #15110c;
     --background-color-inverted-1: #aa967f;
+    --border-color-1: #15110c;
+    --border-color-inverted-1: #aa967f;
 }
 
 body,
@@ -32,8 +34,8 @@ html {
     padding: 0;
     font-family: Arial;
 
-    background-color: #131920;
-    background-image: url("/static/imgs/background.jpg");
+    background-color: var(--background-color-2);
+    /* background-image: url("/static/imgs/background.jpg"); */
     background-repeat: no-repeat;
     background-position: center top;
 }

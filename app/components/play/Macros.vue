@@ -84,17 +84,20 @@ const handleShowMacroConfig = (e: MouseEvent, key: number) => {
 
 <style scoped>
 .macros {
-  width: 580px;
-  height: 91px;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+
+
   .macro {
     width: 64px;
     height: 64px;
-    margin-top: 13px;
-    margin-left: 22.2px;
-    display: inline-block;
-    vertical-align: top;
+    
     position: relative;
     cursor: pointer;
+    background-color: var(--background-color-1);
+    border: solid 1px var(--border-color-inverted-1);
+
     .spell {
       width: 60px;
       height: 60px;

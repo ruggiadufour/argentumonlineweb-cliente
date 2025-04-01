@@ -343,24 +343,26 @@ const handleTelepPosition = (pos: { x: number; y: number }) => {
     display: table-cell;
     vertical-align: middle;
     .content {
-      width: 963px;
-      height: 659px;
-      background-image: url("/static/imgs/main.png");
+      width: 100%;
+      height: 100%;
+      /* background-image: url("/static/imgs/main.png"); */
       background-repeat: no-repeat;
       margin: 0 auto;
       font-size: 0;
+      display: grid;
+      grid-template-columns: 1fr 385px;
+
       .content_left {
-        width: 580px;
-        height: 659px;
-        display: inline-block;
+        display: flex;
+        flex-direction: column;
         vertical-align: top;
+
         .render {
-          width: 544px;
-          height: 544px;
-          margin-top: 24px;
-          margin-left: 16px;
+          width: 100%;
+          height: 100%;
           background-color: #000;
           position: relative;
+          padding: 8px;
         }
         .console {
           user-select: none;

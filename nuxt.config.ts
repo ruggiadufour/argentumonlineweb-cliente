@@ -18,5 +18,10 @@ export default defineNuxtConfig({
   nitro: {
     // cookieSecret: 'this-is-a-secure-session-key-that-is-at-least-32-chars-long',
     // cookieName: 'nuxt-session'
+  },
+  routeRules:{
+    '/play': {
+      ssr: false
+    }
   }
 });

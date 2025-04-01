@@ -40,11 +40,9 @@ const boxSpells = computed(() => {
   cursor: pointer;
   width: 64px;
   height: 64px;
-  background-image: url("/static/imgs/slotHechi.png");
+  border: 1px solid var(--border-color-inverted-1);
   background-repeat: no-repeat;
   display: inline-block;
-  margin-right: 6px;
-  margin-bottom: 6px;
   position: relative;
   .img_spell {
     width: 60px;
