@@ -26,6 +26,10 @@ import type { TUI } from "@/types";
 
 const uiStore = useUIStore();
 const gameView = ref<InstanceType<typeof GameView>>();
+const css = computed(() => ({
+  rightSide: `${uiStore.ui.screen.rightSide}px`,
+  bottomSide: `${uiStore.ui.screen.bottomSide}px`,
+}));
 const canvas: Record<string, HTMLCanvasElement | null> = {
   background: null,
   techos: null,
@@ -47,7 +51,7 @@ let config: Config = {};
 onMounted(() => {
   uiStore.ui.loading = true;
   setCanvas();
- 
+
   const asyncInit = async () => {
     const macros = window.localStorage.getItem("macros");
     if (macros) {
@@ -129,7 +133,8 @@ onMounted(() => {
 
       //Equipar
       if (
-        keyCode == uiStore.ui.keyCodeDefault[config.nameKeyCode.equipar || -1] &&
+        keyCode ==
+          uiStore.ui.keyCodeDefault[config.nameKeyCode.equipar || -1] &&
         !uiStore.ui.showInputText
       ) {
         const item = user.items[uiStore.ui.selectItem];
@@ -140,7 +145,8 @@ onMounted(() => {
 
       //Agarrar
       if (
-        keyCode == uiStore.ui.keyCodeDefault[config.nameKeyCode.agarrar || -1] &&
+        keyCode ==
+          uiStore.ui.keyCodeDefault[config.nameKeyCode.agarrar || -1] &&
         !uiStore.ui.showInputText
       ) {
         pkg.setPackageID(pkg.serverPacketID.agarrarItem);
@@ -174,7 +180,7 @@ onMounted(() => {
         }
 
         uiStore.ui.showInputText = !uiStore.ui.showInputText;
-        document.getElementById('chat_input')?.focus();
+        document.getElementById("chat_input")?.focus();
       }
 
       if (keyCode == 77 && !uiStore.ui.showInputText) {
@@ -194,7 +200,9 @@ onMounted(() => {
         pkg.setPackageID(pkg.serverPacketID.changeSeguro);
         config.ws.send(pkg.dataSend());
       }
-      if (keyCode == uiStore.ui.keyCodeDefault[config.nameKeyCode.atacar || -1]) {
+      if (
+        keyCode == uiStore.ui.keyCodeDefault[config.nameKeyCode.atacar || -1]
+      ) {
         if (+Date.now() - config.timeHitStart > config.intervalHit) {
           engine.hit();
         }
@@ -288,13 +296,16 @@ const handleTelepPosition = (pos: { x: number; y: number }) => {
 
   <div class="modalReconnect" style="top: 285px; left: 638.5px" />
 
-  <ModalTrade 
+  <ModalTrade
     v-if="!uiStore.ui.loading"
     @on-buy-trade="game.buyTrade"
     @on-sell-trade="game.sellTrade"
   />
 
-  <div class="outer" :style="{ display: uiStore.ui.loading ? 'none' : 'table' }">
+  <div
+    class="outer"
+    :style="{ display: uiStore.ui.loading ? 'none' : 'table' }"
+  >
     <div class="middle">
       <div class="content">
         <div class="content_left">
@@ -305,19 +316,19 @@ const handleTelepPosition = (pos: { x: number; y: number }) => {
               id="chat_input"
               name="text"
               autoFocus
-              class="text"
+              class="chat_input"
               placeholder="Escribe un mensaje..."
               v-model="uiStore.ui.textDialog"
             />
-            <GameView 
+            <GameView
               ref="gameView"
-              :engine="engine" 
+              :engine="engine"
               @telep-position="handleTelepPosition"
             />
             <Console v-if="!uiStore.ui.loading" />
           </div>
 
-          <Macros :config="config" />
+          <Macros :config="config" :height-px="css.bottomSide" />
         </div>
         <PlayerPannel
           v-if="!uiStore.ui.loading"
@@ -350,7 +361,7 @@ const handleTelepPosition = (pos: { x: number; y: number }) => {
       margin: 0 auto;
       font-size: 0;
       display: grid;
-      grid-template-columns: 1fr 385px;
+      grid-template-columns: 1fr v-bind(css.rightSide);
 
       .content_left {
         display: flex;
@@ -360,9 +371,8 @@ const handleTelepPosition = (pos: { x: number; y: number }) => {
         .render {
           width: 100%;
           height: 100%;
-          background-color: #000;
+          background-color: var(--background-color-2);
           position: relative;
-          padding: 8px;
         }
         .console {
           user-select: none;
@@ -389,8 +399,22 @@ const handleTelepPosition = (pos: { x: number; y: number }) => {
           outline-width: 0;
           position: absolute;
           margin: 0px;
-          width: 538px;
+          width: 100%;
           z-index: 10;
+        }
+
+        .chat_input {
+          outline-width: 0;
+          position: absolute;
+          margin: 0px;
+          width: 100%;
+          z-index: 10;
+          background-color: var(--background-color-1) !important;
+          border: none;
+          color: var(--text-color-1) !important;
+          text-align: center;
+          padding: 10px;
+          font-size: 14px;
         }
       }
     }

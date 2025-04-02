@@ -111,15 +111,18 @@ class Engine {
     const screenWidth = this.ui.state.screen.width;
     const screenHeight = this.ui.state.screen.height;
     
-    const offsetX = Math.ceil((screenWidth / this.PIXELS + 2)) - 1;
-    const offsetY = Math.ceil((screenHeight / this.PIXELS + 2)) - 1;
-    
+    const xP = Math.trunc(screenWidth / (this.PIXELS * 2));
+    const xMin = xP;
+    const xMax = xP + (screenWidth % (this.PIXELS * 2));
+    const yP = Math.trunc(screenHeight / (this.PIXELS * 2));
+    const yMin = yP;
+    const yMax = yP + (screenHeight % (this.PIXELS * 2));
     
     return {
-      xMin: offsetX,
-      xMax: offsetX + 1,
-      yMin: offsetY,
-      yMax: offsetY + 1,
+      xMin,
+      xMax,
+      yMin,
+      yMax,
     }
   }
 
@@ -508,15 +511,15 @@ class Engine {
     let ScreenX = 0;
     let ScreenY = 0;
 
-    const screenminY = tileY - 9;
-    const screenmaxY = tileY + 10;
-    const screenminX = tileX - 9;
-    const screenmaxX = tileX + 10;
-    // const { xMin, xMax, yMin, yMax } = this.getOffsets();
-    // const screenminY = tileY - yMax;
-    // const screenmaxY = tileY + yMin;
-    // const screenminX = tileX - xMax;
-    // const screenmaxX = tileX + xMin;
+    // const screenminY = tileY - 9;
+    // const screenmaxY = tileY + 10;
+    // const screenminX = tileX - 9;
+    // const screenmaxX = tileX + 10;
+    const { xMin, xMax, yMin, yMax } = this.getOffsets();
+    const screenminY = tileY - yMax;
+    const screenmaxY = tileY + yMin;
+    const screenminX = tileX - xMax;
+    const screenmaxX = tileX + xMin;
 
     let minY = screenminY - this.config.TileBufferSize + 2;
     let maxY = screenmaxY + this.config.TileBufferSize;
@@ -592,16 +595,19 @@ class Engine {
     let ScreenX = 0;
     let ScreenY = 0;
 
-    const screenminY = tileY - 9;
-    const screenmaxY = tileY + 10;
-    const screenminX = tileX - 9;
-    const screenmaxX = tileX + 10;
+    // const screenminY = tileY - 9;
+    // const screenmaxY = tileY + 10;
+    // const screenminX = tileX - 9;
+    // const screenmaxX = tileX + 10;
 
-    // const { xMin, xMax, yMin, yMax } = this.getOffsets();
-    // const screenminY = tileY - yMin;
-    // const screenmaxY = tileY + yMax;
-    // const screenminX = tileX - xMin;
-    // const screenmaxX = tileX + xMax;
+    const { xMin, xMax, yMin, yMax } = this.getOffsets();
+    const screenminY = tileY - yMax;
+    const screenmaxY = tileY + yMin;
+    const screenminX = tileX - xMax;
+    const screenmaxX = tileX + xMin;
+
+  
+
 
     let minY = screenminY - this.config.TileBufferSize + 2;
     let maxY = screenmaxY + this.config.TileBufferSize;
@@ -624,16 +630,23 @@ class Engine {
       maxX = this.config.XMaxMapSize;
     }
 
-    for (let y = screenminY; y < screenmaxY; y++) {
-      for (let x = screenminX; x < screenmaxX; x++) {
+    console.log({screenminY, screenmaxY, screenminX, screenmaxX});
+    console.log({minY, maxY, minX, maxX});
+    
+    for (let y = screenminY; y <= screenmaxY; y++) {
+      for (let x = screenminX; x <= screenmaxX; x++) {
         if (
           x > 0 &&
           x <= this.config.XMaxMapSize &&
           y > 0 &&
           y <= this.config.YMaxMapSize
         ) {
+          // const tempPixelOffsetX = (ScreenX - 1) * this.PIXELS + pixelOffsetX;
+          // const tempPixelOffsetY = (ScreenY - 1) * this.PIXELS + pixelOffsetY;
           const tempPixelOffsetX = (ScreenX - 1) * this.PIXELS + pixelOffsetX;
           const tempPixelOffsetY = (ScreenY - 1) * this.PIXELS + pixelOffsetY;
+          // console.log(ScreenX, ScreenY);
+          
 
           const grhCapa1 =
             this.inits.graphics[
@@ -712,25 +725,25 @@ class Engine {
 
     const { xMin, xMax, yMin, yMax } = this.getOffsets();
 
-    // const screenminY = tileY - yMax;
-    // const screenmaxY = tileY + yMin;
-    // const screenminX = tileX - xMax;
-    // const screenmaxX = tileX + xMin;
+    const screenminY = tileY - yMax;
+    const screenmaxY = tileY + yMin;
+    const screenminX = tileX - xMax;
+    const screenmaxX = tileX + xMin;
 
-    const screenminY = tileY - 10;
-    const screenmaxY = tileY + 9;
-    const screenminX = tileX - 10;
-    const screenmaxX = tileX + 9;
+    // const screenminY = tileY - 10;
+    // const screenmaxY = tileY + 9;
+    // const screenminX = tileX - 10;
+    // const screenmaxX = tileX + 9;
 
-    // const screenminY2 = tileY - yMin;
-    // const screenmaxY2 = tileY + yMax;
-    // const screenminX2 = tileX - xMin;
-    // const screenmaxX2 = tileX + xMax;
+    const screenminY2 = tileY - yMax;
+    const screenmaxY2 = tileY + yMin;
+    const screenminX2 = tileX - xMax;
+    const screenmaxX2 = tileX + xMin;
 
-    const screenminY2 = tileY - 9;
-    const screenmaxY2 = tileY + 10;
-    const screenminX2 = tileX - 9;
-    const screenmaxX2 = tileX + 10;
+    // const screenminY2 = tileY - 9;
+    // const screenmaxY2 = tileY + 10;
+    // const screenminX2 = tileX - 9;
+    // const screenmaxX2 = tileX + 10;
 
     let minY = screenminY - this.config.TileBufferSize + 3;
     let maxY = screenmaxY + this.config.TileBufferSize;

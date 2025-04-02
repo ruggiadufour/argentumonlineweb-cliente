@@ -39,4 +39,26 @@ html {
     background-repeat: no-repeat;
     background-position: center top;
 }
+
+*::-webkit-scrollbar {
+  width: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--border-color-inverted-1);
+  border-radius: 2px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--background-color-1);
+  border-radius: 2px;
+  border: 1px solid var(--border-color-inverted-1);
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-color: var(--background-color-1)
+                     var(--border-color-inverted-1);
+  }
+}
 </style>

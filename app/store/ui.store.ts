@@ -55,15 +55,23 @@ export const useUIStore = defineStore('ui', ()=>{
         let height = DEFAULT_SCREEN_SIZE;
         const PIXELS = 32;
 
-        if(window) {
+        if(true && window) {
             const auxWidth = window.innerWidth - RIGHT_SIDE;
             const auxHeight = window.innerHeight - BOTTOM_SIDE;
+            const remWidth = auxWidth % PIXELS;
+            const remHeight = auxHeight % PIXELS;
             const wPixes = Math.trunc(auxWidth / PIXELS);
             const hPixes = Math.trunc(auxHeight / PIXELS);
             width = wPixes * PIXELS;
             height = hPixes * PIXELS;
-            RIGHT_SIDE += auxWidth - width;
-            BOTTOM_SIDE += auxHeight - height;
+
+            const extraWidth = width % (2 * PIXELS) ? PIXELS : 0;
+            const extraHeight = height % (2 * PIXELS) ? PIXELS : 0;
+            width += extraWidth;
+            height += extraHeight;
+
+            RIGHT_SIDE += remWidth;
+            BOTTOM_SIDE += remHeight;
         }
 
         console.log({width, height, RIGHT_SIDE, BOTTOM_SIDE});

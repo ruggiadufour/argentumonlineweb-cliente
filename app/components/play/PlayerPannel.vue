@@ -88,14 +88,14 @@ const handleShowConfiguration = () => {
           :class="{ active: uiStore.ui.showInventary }"
           @click="handleShowInventary"
         >
-          🛠️
+          Inventario
         </button>
         <button
           class="button_inventary"
           :class="{ active: !uiStore.ui.showInventary }"
           @click="handleShowSpells"
         >
-          🧙🏻
+          Hechizos
         </button>
       </div>
     </div>
@@ -186,9 +186,12 @@ const handleShowConfiguration = () => {
   display: grid;
   grid-template-rows: 1fr minmax(0, 300px) 1fr;
   grid-template-columns: 1fr;
-  gap: 16px;
+  gap: 8px;
   height: 100vh;
   box-sizing: border-box;
+  background-color: var(--background-color-2);
+  z-index: 100;
+  padding: 8px;
 
   .header {
     font-size: 0;
@@ -196,7 +199,7 @@ const handleShowConfiguration = () => {
     color: var(--text-color-inverted-1);
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
     gap: 16px;
     align-items: center;
     font-size: 16px;
@@ -282,23 +285,24 @@ const handleShowConfiguration = () => {
       }
     }
     .buttons {
-      height: 108px;
       font-size: 0;
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 10px;
+      width: 100%;
 
       .button_inventary {
-        width: 103px;
-        height: 108px;
         background-color: var(--background-color-1);
         cursor: pointer;
-        font-size: 64px;
+        font-size: 24px;
         border: solid 1px var(--border-color-inverted-1);
-
+        color: var(--text-color-1);
+        width: 100%;
+        
         &.active {
           background-color: var(--background-color-inverted-1);
+          color: var(--text-color-inverted-1);
           border: solid 1px var(--border-color-1);
         }
       }
@@ -306,22 +310,27 @@ const handleShowConfiguration = () => {
   }
   .body {
     width: 100%;
-    display: inline-block;
-    vertical-align: top;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     background-color: var(--background-color-1);
     color: var(--text-color-inverted-1);
-    padding: 16px;
+    padding: 0px;
     box-sizing: border-box;
     overflow: auto;
 
-    .inventary {
+    /* .inventary {
       width: 100%;
       font-size: 0;
-    }
+    } */
 
-    .spell {
-      overflow-y: scroll;
+    .inventary, .spell {
+      overflow-y: auto;
       padding: 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 8px;
     }
   }
   .footer {
