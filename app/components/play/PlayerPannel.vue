@@ -190,7 +190,7 @@ const handleShowConfiguration = () => {
   height: 100vh;
   box-sizing: border-box;
   background-color: var(--background-color-2);
-  z-index: 100;
+  z-index: 99;
   padding: 8px;
 
   .header {
@@ -318,11 +318,11 @@ const handleShowConfiguration = () => {
     padding: 0px;
     box-sizing: border-box;
     overflow: auto;
+    visibility: hidden;
 
-    /* .inventary {
-      width: 100%;
-      font-size: 0;
-    } */
+    &:hover, .inventary, .spell {
+      visibility: visible;
+    }
 
     .inventary, .spell {
       overflow-y: auto;
@@ -331,6 +331,8 @@ const handleShowConfiguration = () => {
       flex-wrap: wrap;
       justify-content: center;
       padding: 8px;
+      gap: 4px;
+      background-color: var(--background-color-1);
     }
   }
   .footer {
