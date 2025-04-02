@@ -110,13 +110,13 @@ class Engine {
   getOffsets() {
     const screenWidth = this.ui.state.screen.width;
     const screenHeight = this.ui.state.screen.height;
-    
-    const xP = Math.trunc(screenWidth / (this.PIXELS * 2));
+    const DOUBLE_PIXELS = this.PIXELS * 2;
+    const xP = Math.trunc(screenWidth / DOUBLE_PIXELS) + 1;
     const xMin = xP;
-    const xMax = xP + (screenWidth % (this.PIXELS * 2));
-    const yP = Math.trunc(screenHeight / (this.PIXELS * 2));
+    const xMax = xP + (screenWidth % DOUBLE_PIXELS);
+    const yP = Math.trunc(screenHeight / DOUBLE_PIXELS) + 1;
     const yMin = yP;
-    const yMax = yP + (screenHeight % (this.PIXELS * 2));
+    const yMax = yP + (screenHeight % DOUBLE_PIXELS);
     
     return {
       xMin,
@@ -629,9 +629,6 @@ class Engine {
     if (maxX > this.config.XMaxMapSize) {
       maxX = this.config.XMaxMapSize;
     }
-
-    console.log({screenminY, screenmaxY, screenminX, screenmaxX});
-    console.log({minY, maxY, minX, maxX});
     
     for (let y = screenminY; y <= screenmaxY; y++) {
       for (let x = screenminX; x <= screenmaxX; x++) {
