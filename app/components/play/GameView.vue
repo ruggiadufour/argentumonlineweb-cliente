@@ -22,14 +22,15 @@ const canvasForeground = ref<HTMLCanvasElement>();
 const canvasItems = ref<HTMLCanvasElement>();
 const canvasTechos = ref<HTMLCanvasElement>();
 const canvasTextos = ref<HTMLCanvasElement>();
+const gameView = ref<HTMLDivElement>();
 
 const getPosCanvas = (e: MouseEvent) => {
   let xCanvas = e.offsetX;
   let yCanvas = e.offsetY;
   const user = engine.user;
 
-  const posX = Math.round(user.pos.x + xCanvas / 32 - 544 / 64);
-  const posY = Math.round(user.pos.y + yCanvas / 32 - 544 / 64);
+  const posX = Math.round(user.pos.x + xCanvas / 32 - uiStore.ui.screen.width / 64);
+  const posY = Math.round(user.pos.y + yCanvas / 32 - uiStore.ui.screen.height / 64);
   return {
     x: posX,
     y: posY,
@@ -38,6 +39,8 @@ const getPosCanvas = (e: MouseEvent) => {
 
 const handleClickCanvas = (e: MouseEvent) => {
   const pos = getPosCanvas(e);
+  console.log(pos);
+  
   engine.clickCanvas(pos);
 };
 
@@ -56,38 +59,63 @@ defineExpose({
 </script>
 
 <template>
-  <canvas
-    ref="canvasBackground"
-    width="544"
-    height="544"
-    id="canvas_background"
-    class="background"
-  />
-  <canvas
-    ref="canvasForeground"
-    width="544"
-    height="544"
-    id="canvas_foreground"
-    class="foreground"
-  />
-  <canvas ref="canvasItems" width="544" height="544" id="canvas_items" class="items" />
-  <canvas ref="canvasTechos" width="544" height="544" id="canvas_techos" class="techos" />
-  <canvas ref="canvasTextos" width="544" height="544" id="canvas_textos" class="textos" />
-  <canvas
-    ref="canvasMouseEvent"
-    width="544"
-    height="544"
-    id="canvas_mouseEvent"
-    class="mouseEvent"
-    @click="handleClickCanvas"
-    @click.right="handleClickCanvasRight"
-    :style="{
-      cursor: uiStore.ui.crosshair ? 'crosshair' : 'default',
-    }"
-  />
+  <div class="game-view" ref="gameView">
+    <canvas
+      ref="canvasBackground"
+      :width="uiStore.ui.screen.width"
+      :height="uiStore.ui.screen.height"
+      id="canvas_background"
+      class="background"
+    />
+    <canvas
+      ref="canvasForeground"
+      :width="uiStore.ui.screen.width"
+      :height="uiStore.ui.screen.height"
+      id="canvas_foreground"
+      class="foreground"
+    />
+      <canvas
+      ref="canvasItems"
+      :width="uiStore.ui.screen.width"
+      :height="uiStore.ui.screen.height"
+      id="canvas_items"
+      class="items"
+    />
+    <canvas
+      ref="canvasTechos"
+      :width="uiStore.ui.screen.width"
+      :height="uiStore.ui.screen.height"
+      id="canvas_techos"
+      class="techos"
+    />
+    <canvas
+      ref="canvasTextos"
+      :width="uiStore.ui.screen.width"
+      :height="uiStore.ui.screen.height"
+      id="canvas_textos"
+      class="textos"
+    />
+    <canvas
+      ref="canvasMouseEvent"
+      :width="uiStore.ui.screen.width"
+      :height="uiStore.ui.screen.height"
+      id="canvas_mouseEvent"
+      class="mouseEvent"
+      @click="handleClickCanvas"
+      @click.right="handleClickCanvasRight"
+      :style="{
+        cursor: uiStore.ui.crosshair ? 'crosshair' : 'default',
+      }"
+    />
+  </div>
 </template>
 
 <style scoped>
+.game-view {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
 .background {
   z-index: 0;
   position: absolute;

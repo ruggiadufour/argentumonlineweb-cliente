@@ -2,6 +2,12 @@ import { User } from "@/engine";
 import type { TItemTrade, TKeyMacro, TKeyCode } from "@/types";
 
 export type TUI = {
+    screen: {
+        width: number,
+        height: number,
+        rightSide: number,
+        bottomSide: number
+    },
     mapasToLoad: number;
     mapasCargados: number;
     nameMap: string;

@@ -82,7 +82,7 @@ const getStyle = (item: any) => {
   cursor: pointer;
   width: 38px;
   height: 38px;
-  background-image: url("/static/imgs/slotInv.png");
+  border: 1px solid var(--border-color-inverted-1);
   background-repeat: no-repeat;
   display: inline-block;
   margin-right: 4px;

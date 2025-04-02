@@ -23,7 +23,6 @@ const boxSpells = computed(() => {
     v-for="(spell, i) in boxSpells"
     :key="i"
     class="slot_spell"
-    :title="spell ? spell.name : ''"
     @click="$emit('onSelectSpell', i)"
   >
     <div
@@ -32,6 +31,9 @@ const boxSpells = computed(() => {
         backgroundImage: spell ? `url('/static/spells/${spell.idSpell}.png')` : 'none',
       }"
     />
+    <div v-if="spell" class="name_spell">
+      {{ spell ? spell.name : '' }}
+    </div>
   </div>
 </template>
 
@@ -40,11 +42,9 @@ const boxSpells = computed(() => {
   cursor: pointer;
   width: 64px;
   height: 64px;
-  background-image: url("/static/imgs/slotHechi.png");
+  border: 1px solid var(--border-color-inverted-1);
   background-repeat: no-repeat;
   display: inline-block;
-  margin-right: 6px;
-  margin-bottom: 6px;
   position: relative;
   .img_spell {
     width: 60px;
@@ -53,6 +53,27 @@ const boxSpells = computed(() => {
     top: 2px;
     left: 2px;
     background-size: 100%;
+  }
+
+  .name_spell {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    width: auto;
+    display: none;
+    background-color: var(--background-color-2);
+    color: var(--text-color-1);
+    border: 1px solid var(--border-color-inverted-1);
+    padding: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 200;
+  }
+
+  &:hover {
+    .name_spell {
+      display: block;
+    }
   }
 }
 </style>

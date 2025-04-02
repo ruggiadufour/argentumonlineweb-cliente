@@ -105,6 +105,7 @@ defineExpose({
   font-size: 12px;
   padding: 10px;
   border-radius: 8px;
+  z-index: 110;
 
   input {
     background-color: var(--background-color-inverted-1) !important;

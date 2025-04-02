@@ -2,10 +2,6 @@ import type { TDialog } from "@/types";
 
 class Config {
     ws: WebSocket | null;
-    canvasSize: {
-        width: number;
-        height: number;
-    };
     canvas: unknown;
     direcciones: {
         up: number;
@@ -69,12 +65,6 @@ class Config {
 
     constructor() {
         this.ws = null;
-
-        this.canvasSize = {
-            width: 544,
-            height: 544
-        };
-
         this.canvas = {};
 
         this.direcciones = {

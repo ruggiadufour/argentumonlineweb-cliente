@@ -4,8 +4,9 @@ import { AMOUNT_SLOTS_MACROS } from "@/utils/constants";
 import ConfigurationMacro from "@/components/play/ConfigurationMacro.vue";
 import type { Config } from "@/engine";
 
-const { config } = defineProps<{
+const { config, heightPx } = defineProps<{
   config: Config;
+  heightPx: string;
 }>();
 defineEmits<{}>();
 
@@ -27,14 +28,14 @@ const handleShowMacroConfig = (e: MouseEvent, key: number) => {
   const refMacro = macros.value[key];
   if (!refMacro) return;
   const modalMacro = configurationMacro.value?.modalMacro;
-  
+
   if (modalMacro) {
     modalMacro.style.left = `${refMacro.offsetLeft - 57}px`;
     modalMacro.style.top = `${refMacro.offsetTop - 210}px`;
   }
 
-  if(boxMacros.value[key]) {
-    uiStore.ui.keyMacro = {...boxMacros.value[key]};
+  if (boxMacros.value[key]) {
+    uiStore.ui.keyMacro = { ...boxMacros.value[key] };
   } else {
     uiStore.ui.keyMacro.indexMacro = key;
     uiStore.ui.keyMacro.idPosItem = -1;
@@ -52,31 +53,34 @@ const handleShowMacroConfig = (e: MouseEvent, key: number) => {
 <template>
   <div class="macros">
     <ConfigurationMacro ref="configurationMacro" :config="config" />
-    <div
-      v-for="(macro, i) of boxMacros"
-      :key="i"
-      class="macro"
-      @contextmenu="handleShowMacroConfig($event, i)"
-      ref="macros"
-    >
-      <div
-        v-if="macro && macro.idPosItem >= 0 && macro.img"
-        class="item"
-        :style="{
-          backgroundImage: `url('${macro.img}')`,
-        }"
-      />
 
+    <div class="macros_container">
       <div
-        v-if="macro && macro.idSpell >= 0 && macro.img"
-        class="spell"
-        :style="{
-          backgroundImage: `url('${macro.img}')`,
-        }"
-      />
+        v-for="(macro, i) of boxMacros"
+        :key="i"
+        class="macro"
+        @contextmenu="handleShowMacroConfig($event, i)"
+        ref="macros"
+      >
+        <div
+          v-if="macro && macro.idPosItem >= 0 && macro.img"
+          class="item"
+          :style="{
+            backgroundImage: `url('${macro.img}')`,
+          }"
+        />
 
-      <div v-if="macro && macro.keyChar !== ''" class="key">
-        {{ macro.keyChar }}
+        <div
+          v-if="macro && macro.idSpell >= 0 && macro.img"
+          class="spell"
+          :style="{
+            backgroundImage: `url('${macro.img}')`,
+          }"
+        />
+
+        <div v-if="macro && macro.keyChar !== ''" class="key">
+          {{ macro.keyChar }}
+        </div>
       </div>
     </div>
   </div>
@@ -84,17 +88,28 @@ const handleShowMacroConfig = (e: MouseEvent, key: number) => {
 
 <style scoped>
 .macros {
-  width: 580px;
-  height: 91px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  height: v-bind(heightPx);
+
+  .macros_container {
+      display: flex;
+      align-items: center;
+      justify-content: start;
+      gap: 8px;
+    }
+
   .macro {
     width: 64px;
     height: 64px;
-    margin-top: 13px;
-    margin-left: 22.2px;
-    display: inline-block;
-    vertical-align: top;
+
     position: relative;
     cursor: pointer;
+    background-color: var(--background-color-1);
+    border: solid 1px var(--border-color-inverted-1);
+
     .spell {
       width: 60px;
       height: 60px;

@@ -40,7 +40,7 @@ const percentage = computed(() => {
 
 const mapInfo = computed(() => {
   return uiStore.ui.user.pos
-    ? `Mapa: ${config.mapNumber} X: ${uiStore.ui.user.pos.x} Y: ${uiStore.ui.user.pos.y}`
+    ? `(${config.mapNumber}, ${uiStore.ui.user.pos.x}, ${uiStore.ui.user.pos.y})`
     : "";
 });
 
@@ -67,8 +67,8 @@ const handleShowConfiguration = () => {
   <div class="content_right">
     <div class="header">
       <div class="level">{{ uiStore.ui.user.level }}</div>
+      <button class="configuration" @click="handleShowConfiguration">💡</button>
 
-      <div class="configuration" @click="handleShowConfiguration" />
       <div class="name">{{ uiStore.ui.user.nameCharacter }}</div>
       <div class="exp">
         <div
@@ -83,20 +83,20 @@ const handleShowConfiguration = () => {
         <div class="num">{{ user.exp }} / {{ user.expNextLevel }}</div>
       </div>
       <div class="buttons">
-        <div
-          class="button_inv"
-          :class="{
-            buttonInvSelected: !uiStore.ui.showInventary,
-          }"
+        <button
+          class="button_inventary"
+          :class="{ active: uiStore.ui.showInventary }"
           @click="handleShowInventary"
-        />
-        <div
-          class="button_spell"
-          :class="{
-            buttonSpellSelected: uiStore.ui.showInventary,
-          }"
+        >
+          Inventario
+        </button>
+        <button
+          class="button_inventary"
+          :class="{ active: !uiStore.ui.showInventary }"
           @click="handleShowSpells"
-        />
+        >
+          Hechizos
+        </button>
       </div>
     </div>
     <div class="body">
@@ -112,14 +112,6 @@ const handleShowConfiguration = () => {
       </div>
     </div>
     <div class="footer">
-      <div class="info_map">
-        <div class="name_map">
-          {{ uiStore.ui.nameMap }}
-        </div>
-        <div class="pos_map">
-          {{ mapInfo }}
-        </div>
-      </div>
       <div class="left_footer">
         <div class="hp">
           <div
@@ -156,6 +148,14 @@ const handleShowConfiguration = () => {
         </div>
       </div>
       <div class="right_footer">
+        <div class="info_map">
+          <div class="name_map">
+            {{ uiStore.ui.nameMap }}
+          </div>
+          <div class="name_map">
+            {{ mapInfo }}
+          </div>
+        </div>
         <div
           class="minimap"
           :style="{
@@ -183,15 +183,29 @@ const handleShowConfiguration = () => {
 
 <style scoped>
 .content_right {
-  width: 383px;
-  height: 659px;
-  display: inline-block;
+  display: grid;
+  grid-template-rows: 1fr minmax(0, 300px) 1fr;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  height: 100vh;
+  box-sizing: border-box;
+  background-color: var(--background-color-2);
+  z-index: 99;
+  padding: 8px;
+
   .header {
-    width: 383px;
-    height: 230px;
     font-size: 0;
-    display: inline-block;
-    vertical-align: top;
+    background-color: var(--background-color-1);
+    color: var(--text-color-inverted-1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: center;
+    font-size: 16px;
+    position: relative;
+    padding: 16px;
+
     .level {
       text-align: center;
       width: 60px;
@@ -199,8 +213,6 @@ const handleShowConfiguration = () => {
       color: #aa967f;
       font-family: "Doppio One", sans-serif;
       font-size: 16px;
-      margin-left: 160px;
-      margin-top: 23px;
       display: inline-block;
       vertical-align: top;
       cursor: default;
@@ -209,224 +221,152 @@ const handleShowConfiguration = () => {
       width: 40px;
       height: 40px;
       display: inline-block;
-      margin-left: 110px;
-      margin-top: 20px;
       cursor: pointer;
+      position: absolute;
+      right: 0;
+      top: 0;
+      background-color: transparent;
+      border: none;
+      font-size: 24px;
     }
     .name {
-      width: 383px;
       height: 30px;
       color: #aa967f;
       font-family: "Doppio One", sans-serif;
       font-size: 24px;
       text-align: center;
-      margin-top: 7px;
       cursor: default;
     }
     .exp {
       width: 203px;
-      margin-top: 3px;
       height: 22px;
-      margin-left: 92px;
       position: relative;
+
       .progress_bar {
         position: absolute;
-        width: 203px;
         height: 22px;
         background-image: url("/static/imgs/fullXP.png");
         background-repeat: no-repeat;
         background-position: -20px -17px;
         max-width: 203px;
       }
+
       .porcentaje {
         position: absolute;
-        width: 203px;
         height: 22px;
         color: #aa967f;
         font-family: "Doppio One", sans-serif;
         font-size: 12px;
         text-align: center;
-        margin-top: 3px;
         text-shadow: 1px 1px 1px #000;
         cursor: default;
       }
       .num {
         display: none;
         position: absolute;
-        width: 203px;
+        right: 0;
+        text-align: right;
         height: 22px;
         color: #aa967f;
         font-family: "Doppio One", sans-serif;
         font-size: 12px;
         text-align: center;
-        margin-top: 3px;
         text-shadow: 1px 1px 1px #000;
         cursor: default;
       }
+
+      &:hover {
+        .num {
+          display: block;
+        }
+        .porcentaje {
+          display: none;
+        }
+      }
     }
     .buttons {
-      width: 383px;
-      height: 108px;
       font-size: 0;
-      .button_inv {
-        width: 103px;
-        height: 108px;
-        background-repeat: no-repeat;
-        margin-top: 10px;
-        margin-left: 63px;
-        display: inline-block;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+
+      .button_inventary {
+        background-color: var(--background-color-1);
         cursor: pointer;
-      }
-      .button_spell {
-        width: 103px;
-        height: 108px;
-        background-repeat: no-repeat;
-        background-position-x: -103px;
-        margin-top: 10px;
-        margin-left: 51px;
-        display: inline-block;
-        cursor: pointer;
-      }
-      .buttonInvSelected {
-        background-image: url("/static/imgs/invyhechi.png");
-      }
-      .buttonSpellSelected {
-        background-image: url("/static/imgs/invyhechi.png");
+        font-size: 24px;
+        border: solid 1px var(--border-color-inverted-1);
+        color: var(--text-color-1);
+        width: 100%;
+        
+        &.active {
+          background-color: var(--background-color-inverted-1);
+          color: var(--text-color-inverted-1);
+          border: solid 1px var(--border-color-1);
+        }
       }
     }
   }
   .body {
-    width: 383px;
-    height: 200px;
-    display: inline-block;
-    vertical-align: top;
-    .inventary {
-      margin-top: 50px;
-      margin-left: 45px;
-      width: 295px;
-      font-size: 0;
-      .slot_inv {
-        cursor: pointer;
-        width: 38px;
-        height: 38px;
-        background-image: url("/static/imgs/slotInv.png");
-        background-repeat: no-repeat;
-        display: inline-block;
-        margin-right: 4px;
-        margin-bottom: 4px;
-        position: relative;
-        .img_item {
-          width: 32px;
-          height: 32px;
-          position: absolute;
-          top: 3px;
-          left: 3px;
-          background-size: 100%;
-        }
-        .amount {
-          width: 32px;
-          height: 32px;
-          position: absolute;
-          top: 3px;
-          left: 3px;
-          color: #fff;
-          font-family: "Doppio One", sans-serif;
-          font-size: 10px;
-        }
-        .equipped {
-          color: #ff0;
-          font-family: "Doppio One", sans-serif;
-          font-size: 11px;
-          position: absolute;
-          bottom: 1px;
-          right: 4px;
-        }
-      }
-      .item_selected {
-        background-image: url("/static/imgs/itemSelected.png");
-        background-repeat: no-repeat;
-      }
-      .last_slot_inv {
-        margin-right: 0;
-      }
-      .itemNotValid {
-        background-color: rgba(255, 0, 0, 0.2);
-      }
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    background-color: var(--background-color-1);
+    color: var(--text-color-inverted-1);
+    padding: 0px;
+    box-sizing: border-box;
+    overflow: auto;
+    visibility: hidden;
+
+    &:hover, .inventary, .spell {
+      visibility: visible;
     }
-    .spell {
-      margin-top: 45px;
-      margin-left: 43px;
-      width: 300px;
-      height: 134px;
-      overflow-y: scroll;
-      font-size: 0;
-    }
-    .slot_spell {
-      cursor: pointer;
-      width: 64px;
-      height: 64px;
-      background-image: url("/static/imgs/slotHechi.png");
-      background-repeat: no-repeat;
-      display: inline-block;
-      margin-right: 6px;
-      margin-bottom: 6px;
-      position: relative;
-      .img_spell {
-        width: 60px;
-        height: 60px;
-        position: absolute;
-        top: 2px;
-        left: 2px;
-        background-size: 100%;
-      }
-    }
-    .last_slot_spell {
-      margin-right: 0;
+
+    .inventary, .spell {
+      overflow-y: auto;
+      padding: 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 8px;
+      gap: 4px;
+      background-color: var(--background-color-1);
     }
   }
   .footer {
-    width: 383px;
-    height: 229px;
-    display: inline-block;
     vertical-align: top;
     font-size: 0;
-    height: 192px;
+    background-color: var(--background-color-1);
+    padding: 16px;
+    box-sizing: border-box;
+    color: var(--text-color-inverted-1);
+    position: relative;
+    display: flex;
+    gap: 8px;
+
     .info_map {
-      color: #aa967f;
+      color: var(--text-color-1);
       font-family: "Doppio One", sans-serif;
       font-size: 14px;
       text-shadow: 1px 1px 1px #000;
       display: inline-block;
-      width: 300px;
-      height: 17px;
-      margin-left: 40px;
-      margin-top: 20px;
       text-align: center;
       position: relative;
+
       .name_map {
-        width: 300px;
         height: 17px;
-        position: absolute;
-        cursor: default;
-      }
-      .pos_map {
-        display: none;
-        width: 300px;
-        height: 17px;
-        position: absolute;
+        /* position: absolute; */
         cursor: default;
       }
     }
     .left_footer {
       display: inline-block;
       vertical-align: top;
-      width: 220px;
-      height: 192px;
       .hp {
         width: 126px;
         height: 20px;
-        margin-top: 15px;
-        margin-left: 83px;
         display: inline-block;
         position: relative;
         .progress_bar {
@@ -452,8 +392,6 @@ const handleShowConfiguration = () => {
       .mana {
         width: 126px;
         height: 20px;
-        margin-top: 29px;
-        margin-left: 82px;
         display: inline-block;
         position: relative;
         .progress_bar {
@@ -482,20 +420,15 @@ const handleShowConfiguration = () => {
         font-size: 14px;
         width: 100px;
         height: 17px;
-        margin-top: 21px;
-        margin-left: 78px;
         cursor: default;
       }
       .attr {
-        width: 220px;
         height: 35px;
         font-size: 0;
         .agilidad {
           color: #aa967f;
           font-family: "Doppio One", sans-serif;
           font-size: 14px;
-          margin-top: 13px;
-          margin-left: 78px;
           display: inline-block;
           cursor: default;
         }
@@ -503,8 +436,6 @@ const handleShowConfiguration = () => {
           color: #aa967f;
           font-family: "Doppio One", sans-serif;
           font-size: 14px;
-          margin-top: 13px;
-          margin-left: 40px;
           display: inline-block;
           cursor: default;
         }
@@ -513,15 +444,12 @@ const handleShowConfiguration = () => {
     .right_footer {
       display: inline-block;
       vertical-align: top;
-      width: 163px;
-      height: 192px;
+
       .minimap {
         width: 100px;
         height: 100px;
         display: inline-block;
         vertical-align: top;
-        margin-top: 12px;
-        margin-left: 12px;
         background-size: 100%;
         .point_minimap {
           width: 3px;
@@ -535,10 +463,8 @@ const handleShowConfiguration = () => {
         vertical-align: top;
         width: 100px;
         height: 45px;
-        margin-left: 12px;
         .open_map {
           cursor: pointer;
-          margin-left: 29px;
           width: 45px;
           height: 45px;
         }

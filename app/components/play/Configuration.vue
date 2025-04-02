@@ -177,7 +177,7 @@ const restoreMacros = () => {
   height: 509px;
   background-image: url("/static/imgs/configuracion.png");
   background-repeat: no-repeat;
-  z-index: 100;
+  z-index: 120;
   position: absolute;
   display: none;
   font-family: "Doppio One", sans-serif;
